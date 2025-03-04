@@ -18,13 +18,10 @@
           <div class="selectType">
             <div class="Classification">
               <div class="ClassificationTitle">{{ $t("type1") }}</div>
-              <Select class="ClassificationSelect" :popper-append-to-body="false" popper-class="dataClass" v-model="categoryId1" @change="handSelectChange1" :placeholder="$t('pleaseSelect')">
-                <Option
-                  style="height: 34px; line-height: 34px; font-size: 12px;padding: 0 0.13rem;"
-                  v-for="item in categoryList1"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id">
+              <Select class="ClassificationSelect" :popper-append-to-body="false" popper-class="dataClass"
+                v-model="categoryId1" @change="handSelectChange1" :placeholder="$t('pleaseSelect')">
+                <Option style="height: 34px; line-height: 34px; font-size: 12px;padding: 0 0.13rem;"
+                  v-for="item in categoryList1" :key="item.id" :label="item.name" :value="item.id">
                 </Option>
               </Select>
             </div>
@@ -34,13 +31,10 @@
                 <option value="" disabled selected hidden>请选择</option>
                 <option value="1" v-for="item in categoryList1" :key="item.id">{{ item.name }}</option>
               </select> -->
-              <Select class="ClassificationSelect" :popper-append-to-body="false" popper-class="dataClass" v-model="categoryId2" @change="handSelectChange2" :placeholder="$t('pleaseSelect')">
-                <Option
-                  style="height: 34px; line-height: 34px; font-size: 12px;padding: 0 0.13rem;"
-                  v-for="item in categoryList2"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id">
+              <Select class="ClassificationSelect" :popper-append-to-body="false" popper-class="dataClass"
+                v-model="categoryId2" @change="handSelectChange2" :placeholder="$t('pleaseSelect')">
+                <Option style="height: 34px; line-height: 34px; font-size: 12px;padding: 0 0.13rem;"
+                  v-for="item in categoryList2" :key="item.id" :label="item.name" :value="item.id">
                 </Option>
               </Select>
             </div>
@@ -55,18 +49,13 @@
                 <template #prev-text>
                   <Icon name="arrow-left" />
                 </template>
-                <template #next-text>
+<template #next-text>
                   <Icon name="arrow" />
                 </template>
-                <template #page="{ text }">{{ text }}</template>
-              </Pagination> -->
-              <Pagination
-                small
-                layout="prev, pager, next, jumper"
-                :current-page.sync="currentPage"
-                @size-change="handleSizeChange"
-                @current-change="handleCurrentChange"
-                :page-size="6"
+<template #page="{ text }">{{ text }}</template>
+</Pagination> -->
+              <Pagination small layout="prev, pager, next, jumper" :current-page.sync="currentPage"
+                @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-size="6"
                 :total="totalItems">
               </Pagination>
             </div>
@@ -87,13 +76,8 @@
               </div>
             </div>
             <div class="current" v-show="totalItems != 0 && !isShowPage">
-              <Pagination
-                small
-                layout="prev, pager, next, jumper"
-                :current-page.sync="currentPage"
-                @size-change="handleSizeChange"
-                @current-change="handleCurrentChange"
-                :page-size="6"
+              <Pagination small layout="prev, pager, next, jumper" :current-page.sync="currentPage"
+                @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-size="6"
                 :total="totalItems">
               </Pagination>
             </div>
@@ -106,7 +90,7 @@
 
 <script>
 import Vue from 'vue'
-import { Swipe, SwipeItem, Lazyload, Icon  } from "vant"
+import { Swipe, SwipeItem, Lazyload, Icon } from "vant"
 import { Select, Option, Pagination } from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import Banner from "components/Banner"
@@ -125,17 +109,17 @@ export default {
     Select,
     Option
   },
-  data () {
+  data() {
     return {
       width: window.innerWidth,
       height: window.innerHeight,
       advertImages: [],
       bannerImages: [],
-      searchList:[],
+      searchList: [],
       showAdvert: false,
       isShowSecondType: false,
-      searchTxt:"",
-      totalItems:"0",
+      searchTxt: "",
+      totalItems: "0",
       currentPage: 1,
       itemsPerPage: 20,
       inactivityTimeout: null,
@@ -151,7 +135,7 @@ export default {
     }
   },
   computed: {},
-  created () {
+  created() {
     const meeting_id = this.$route.query.meeting_id;
     if (meeting_id) {
       this.meeting_id = Number(meeting_id);
@@ -173,7 +157,7 @@ export default {
       })
       if (this.advertImages.length > 0) {
         this.showAdvert = true,
-        setTimeout(() => {
+          setTimeout(() => {
             console.log("广告结束");
             this.showAdvert = false
           }, list[0].stay_duration * 1000)
@@ -193,7 +177,7 @@ export default {
       "uid": 1 //记录id
     }).then(res => {
       console.log("获取类别信息成功", res.data.list);
-      const {list} = res.data
+      const { list } = res.data
       this.categoryList1 = list
     })
     getPosterList({
@@ -206,17 +190,17 @@ export default {
       "uid": 1
     }).then(res => {
       console.log("搜索数据", res);
-      const {list,datacount, pagesum } = res.data
+      const { list, datacount, pagesum } = res.data
       this.searchList = list
       this.totalItems = datacount
       this.lockDuration = list && list[0].lock_duration || 0
       this.monitorInactivity()
     })
   },
-  mounted () {
-    for (let i = 0; i <  10000; i++) {
-        clearTimeout(i);
-      }
+  mounted() {
+    for (let i = 0; i < 10000; i++) {
+      clearTimeout(i);
+    }
     window.addEventListener('resize', this.handResize)
     this.handResize()
   },
@@ -253,41 +237,41 @@ export default {
       this.searchClick()
     },
     handleSizeChange(val) {
-        console.log(`每页 ${val} 条`);
-        this.pageSize = val; // 改变每页记录数
-        this.searchClick()
-      },
+      console.log(`每页 ${val} 条`);
+      this.pageSize = val; // 改变每页记录数
+      this.searchClick()
+    },
     resetTimer() {
-    if (this.inactivityTimeout) {
-      for (let i = 0; i < this.inactivityTimeout+ 1000; i++) {
-        clearTimeout(i);
+      if (this.inactivityTimeout) {
+        for (let i = 0; i < this.inactivityTimeout + 1000; i++) {
+          clearTimeout(i);
+        }
+        // clearTimeout(this.inactivityTimeout);
       }
-      // clearTimeout(this.inactivityTimeout);
-    }
-    this.monitorInactivity();  // 重新开始监控
-  },
-    monitorInactivity () {
-      if(this.lockDuration > 0){
+      this.monitorInactivity();  // 重新开始监控
+    },
+    monitorInactivity() {
+      if (this.lockDuration > 0) {
         console.log("wucccccccccccccccccc", this.lockDuration);
         const resetTimer = () => {
-        if (this.inactivityTimeout) {
-          for (let i = 0; i < this.inactivityTimeout; i++) {
-        clearTimeout(i);
-      }
-        }
-        this.inactivityTimeout = setTimeout(() => {
-          this.showAdvert = true;
-          // this.lockDuration
-        }, this.lockDuration*1000);
-      };
-      // window.addEventListener("mousemove", resetTimer);
-      window.addEventListener("keydown", resetTimer);
-      // window.addEventListener("touchstart", resetTimer);
-      // window.addEventListener("touchmove", resetTimer);
-      resetTimer();
+          if (this.inactivityTimeout) {
+            for (let i = 0; i < this.inactivityTimeout; i++) {
+              clearTimeout(i);
+            }
+          }
+          this.inactivityTimeout = setTimeout(() => {
+            this.showAdvert = true;
+            // this.lockDuration
+          }, this.lockDuration * 1000);
+        };
+        // window.addEventListener("mousemove", resetTimer);
+        window.addEventListener("keydown", resetTimer);
+        // window.addEventListener("touchstart", resetTimer);
+        // window.addEventListener("touchmove", resetTimer);
+        resetTimer();
       }
     },
-    handResize () {
+    handResize() {
       this.width = window.innerWidth
       this.height = window.innerHeight
       console.log('Resize:', this.width, this.height)
@@ -303,7 +287,7 @@ export default {
         this.isShowPage = false
       }
     },
-    handSelectChange1 (val) {
+    handSelectChange1(val) {
       console.log("handSelectChange1", val);
       getCategoryList({
         "name": "", //类别名称
@@ -315,52 +299,52 @@ export default {
         "pageSize": 10, //每页记录数
         "uid": 1 //记录id
       }).then(res => {
-      console.log("获取类别信息成功", res.data.list);
-      const {list} = res.data
-      this.categoryList2 = list
-      this.isShowSecondType = true
-    })
+        console.log("获取类别信息成功", res.data.list);
+        const { list } = res.data
+        this.categoryList2 = list
+        this.isShowSecondType = true
+      })
     },
-    handSelectChange2 (val) {
+    handSelectChange2(val) {
       console.log("handSelectChange2", val);
       this.categoryId2 = val
     },
-    searchClick () {
+    searchClick() {
       console.log("this.value", this.categoryId2)
       console.log("searchTxt", this.categoryId1);
       // if(!this.searchTxt.trim()){
       //   return Toast("请输入搜索内容");
       // }
       getPosterList({
-      "page": this.currentPage, //页码
-      "pageSize": 6, //每页记录数
-      "category_id": this.categoryId2 !== '' ? this.categoryId2 : (this.categoryId1 !== '' ? this.categoryId1 : 0),//类别id,0全部
-      "status": "已开启", //已开启（前台写死），已关闭
-      "meeting_id": this.meeting_id, //会议id，必填
-      "content": this.searchTxt, //检索框内容
-      "uid": 1
-    }).then(res => {
-      console.log("搜索数据", res);
-      const {list,datacount, pagesum } = res.data
-      this.searchList = list
-      this.totalItems = datacount
-      this.lockDuration =  list&&list[0].lock_duration || 0
-    })
+        "page": this.currentPage, //页码
+        "pageSize": 6, //每页记录数
+        "category_id": this.categoryId2 !== '' ? this.categoryId2 : (this.categoryId1 !== '' ? this.categoryId1 : 0),//类别id,0全部
+        "status": "已开启", //已开启（前台写死），已关闭
+        "meeting_id": this.meeting_id, //会议id，必填
+        "content": this.searchTxt, //检索框内容
+        "uid": 1
+      }).then(res => {
+        console.log("搜索数据", res);
+        const { list, datacount, pagesum } = res.data
+        this.searchList = list
+        this.totalItems = datacount
+        this.lockDuration = list && list[0].lock_duration || 0
+      })
     },
-    goDetail (item) {
+    goDetail(item) {
       console.log("item", item);
-      this.$router.push({name:'details',params:{data:item}})
+      this.$router.push({ name: 'details', params: { data: item } })
     }
   },
   watch: {
-    width (val) {
+    width(val) {
       this.width = val
     },
-    height (val) {
+    height(val) {
       this.height = val
     }
   },
-  beforeDestroy () {
+  beforeDestroy() {
     window.removeEventListener('resize', this.handResize)
     // window.removeEventListener("mousemove", this.resetTimer);
     window.removeEventListener("keydown", this.resetTimer);
@@ -368,7 +352,7 @@ export default {
     // window.removeEventListener("touchmove", this.resetTimer);
 
     if (this.inactivityTimeout) {
-      for (let i = 0; i < this.inactivityTimeout+ 1000; i++) {
+      for (let i = 0; i < this.inactivityTimeout + 1000; i++) {
         clearTimeout(i);
       }
     }
@@ -377,9 +361,10 @@ export default {
 
 </script>
 <style lang="scss" scoped>
-html{
-    font-size:6px;
+html {
+  font-size: 6px;
 }
+
 .container {
   display: flex;
   justify-content: center;
@@ -388,74 +373,91 @@ html{
   width: 100vw;
   background-color: #f5f5f5;
 
-  ::v-deep .van-pagination__item--active{
+  ::v-deep .van-pagination__item--active {
     background-color: #fff;
     color: #1989fa;
     height: 0.3rem;
     font-size: 0.26rem;
   }
+
   ::v-deep .van-pagination__item::after {
     border-width: 0;
   }
-  ::v-deep .van-swipe__track{
-      width: 100% !important;
+
+  ::v-deep .van-swipe__track {
+    width: 100% !important;
   }
-  ::v-deep .van-pagination{
+
+  ::v-deep .van-pagination {
     background-color: #fff;
     height: 0.3rem;
   }
-  ::v-deep .van-pagination__item--disabled, .van-pagination__item--disabled:active{
+
+  ::v-deep .van-pagination__item--disabled,
+  .van-pagination__item--disabled:active {
     background-color: #fff;
     height: 0.3rem;
     font-size: 0.26rem;
   }
-  ::v-deep .el-input{
+
+  ::v-deep .el-input {
     height: 100%;
     font-size: 0.18rem;
   }
-  ::v-deep .el-input__inner{
+
+  ::v-deep .el-input__inner {
     height: 100%;
     // border: 1px solid #797979;
   }
-  ::v-deep .el-input__suffix{
+
+  ::v-deep .el-input__suffix {
     display: flex;
     align-items: center;
   }
-  ::v-deep .el-select .el-input .el-select__caret{
+
+  ::v-deep .el-select .el-input .el-select__caret {
     width: 0.4rem;
     font-size: 0.2rem;
   }
-  ::v-deep .el-select-dropdown.el-popper .el-select-dropdown__empty{
+
+  ::v-deep .el-select-dropdown.el-popper .el-select-dropdown__empty {
     padding: 0.14rem 0;
     font-size: 0.16rem;
   }
-  ::v-deep .dataClass{
+
+  ::v-deep .dataClass {
     // height: 20px !important;
     padding: 0;
     font-size: 6px;
   }
-  ::v-deep .el-select-dropdown__wrap{
+
+  ::v-deep .el-select-dropdown__wrap {
     max-height: 274px;
     overflow-y: auto !important;
   }
+
   ::v-deep .el-input__inner {
     height: 0.58667rem;
     font-size: 10px;
   }
+
   .main {
     position: relative;
     background-color: #fff;
-    .advert{
+
+    .advert {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
       z-index: 99;
-      .swipe{
+
+      .swipe {
         width: 100%;
         height: 100%;
-        z-index:8;
+        z-index: 8;
+
         .advertisingImg {
           img {
             width: 100%;
@@ -464,7 +466,8 @@ html{
           }
         }
       }
-      .advertSwitch{
+
+      .advertSwitch {
         position: absolute;
         top: 7px;
         right: 7px;
@@ -480,13 +483,16 @@ html{
         z-index: 9;
       }
     }
-    .content{
+
+    .content {
       width: 100%;
       height: 100%;
-      .searchContent{
+
+      .searchContent {
         width: 100%;
         height: 80%;
-        .selectType{
+
+        .selectType {
           display: flex;
           flex-direction: column;
           justify-content: space-around;
@@ -494,45 +500,52 @@ html{
           padding: 10px 0;
           max-height: 15%;
           // border: 1px solid #DCDFE6;
-            margin-top: 10px;
-            border-radius: 2%;
-            box-shadow: 0 2px 12px 0 rgba(0, 0, 0, .1);
-            box-sizing: border-box;
-          .Classification{
+          margin-top: 10px;
+          border-radius: 2%;
+          box-shadow: 0 2px 12px 0 rgba(0, 0, 0, .1);
+          box-sizing: border-box;
+
+          .Classification {
             display: flex;
             align-items: center;
             height: 30px;
-            .ClassificationTitle{
+
+            .ClassificationTitle {
               width: 18%;
               text-align: center;
               font-size: 0.2rem;
             }
-            .ClassificationSelect{
+
+            .ClassificationSelect {
               width: 60%;
               height: 80%;
               font-size: 0.17rem;
             }
           }
         }
-        .selectContent{
+
+        .selectContent {
           // height: 78.5%;
           // padding: 5%;
           padding: 0 20px;
           box-sizing: border-box;
-          .search{
+
+          .search {
             display: flex;
             align-items: center;
             height: 25px;
             margin-top: 10px;
+
             // margin-bottom: 15px;
             // border: 1px solid #DCDFE6;
-            .ipt{
+            .ipt {
               width: 80%;
               height: 100%;
               // border: none;
               border: 1px solid #DCDFE6;
             }
-            .searchBtn{
+
+            .searchBtn {
               display: flex;
               justify-content: center;
               align-items: center;
@@ -546,12 +559,14 @@ html{
               border-radius: 7%;
             }
           }
-          .contentList{
+
+          .contentList {
             margin-top: 15px;
             height: 93%;
             max-height: 93%;
+
             // overflow-y: auto;
-            .contentListItems{
+            .contentListItems {
               // margin-top: 2%;
               // margin-bottom: 20px;
               // padding-top: 4%;
@@ -569,23 +584,28 @@ html{
               margin-bottom: 15px;
               width: 100%;
               cursor: pointer;
+
               // 11
-              .public{
+              .public {
                 display: flex;
+
                 div {
                   margin-bottom: 1%;
                 }
               }
             }
-            .contentListItems .public div:first-child{
-                width: 20%;
-                text-align: right;
+
+            .contentListItems .public div:first-child {
+              width: 20%;
+              text-align: right;
             }
-            .contentListItems .public div:last-child{
-                width: 70%;
+
+            .contentListItems .public div:last-child {
+              width: 70%;
             }
           }
-          .current{
+
+          .current {
             display: flex;
             margin-top: 10px;
             height: 17%;
@@ -594,7 +614,7 @@ html{
             align-items: center;
           }
         }
-    }
+      }
     }
   }
 }
