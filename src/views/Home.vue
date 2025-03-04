@@ -21,11 +21,14 @@
               <Select class="ClassificationSelect" :popper-append-to-body="false" popper-class="dataClass"
                 v-model="categoryId1" @change="handSelectChange1" :placeholder="$t('pleaseSelect')">
                 <Option style="height: 34px; line-height: 34px; font-size: 12px;padding: 0 0.13rem;"
+                   label="全部" :value="0">
+                </Option>
+                <Option style="height: 34px; line-height: 34px; font-size: 12px;padding: 0 0.13rem;"
                   v-for="item in categoryList1" :key="item.id" :label="item.name" :value="item.id">
                 </Option>
               </Select>
             </div>
-            <div class="Classification" v-if="isShowSecondType">
+            <div class="Classification" v-show="categoryList2.length > 0&&isShowSecondType">
               <div class="ClassificationTitle">{{ $t("type2") }}</div>
               <!-- <select class="ClassificationSelect">
                 <option value="" disabled selected hidden>请选择</option>
@@ -289,6 +292,12 @@ export default {
     },
     handSelectChange1(val) {
       console.log("handSelectChange1", val);
+      if(val==0){
+        this.categoryId1 = 0
+        this.categoryId2 = ''
+        this.categoryList2 =  []
+        return
+      }
       getCategoryList({
         "name": "", //类别名称
         "level": 2, //默认0全部，1一级类别，2二级类别
@@ -301,7 +310,7 @@ export default {
       }).then(res => {
         console.log("获取类别信息成功", res.data.list);
         const { list } = res.data
-        this.categoryList2 = list
+        this.categoryList2 = list || []
         this.isShowSecondType = true
       })
     },

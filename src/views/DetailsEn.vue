@@ -243,13 +243,16 @@ export default {
   },
   watch: {
     // 监听路由参数变化
-    '$route'(to, from) {
-      if (to.name === 'details' && to.params.data) {
-        console.log('路由参数变化，更新数据', to.params.data)
-        this.updateDetailData()
-        // 重置缩放和平移状态
-        this.resetZoomAndPan()
-      }
+    '$route': {
+      handler(to, from) {
+        if (to.name === 'detailsEn' && to.params.data) {
+          console.log('路由参数变化，更新数据', to.params.data)
+          this.updateDetailData()
+          // 重置缩放和平移状态
+          this.resetZoomAndPan()
+        }
+      },
+      deep: true
     }
   },
   beforeDestroy() {
