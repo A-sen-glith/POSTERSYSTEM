@@ -12,7 +12,7 @@
         <div class="advertSwitch" @click="showAdvert = false">{{ $t("close") }}</div>
       </div>
 
-      <div class="content">
+      <div class="content" v-else>
         <Banner style="width: 100%;height: 20%;" />
         <div class="searchContent">
           <div class="selectType">
@@ -156,6 +156,7 @@ export default {
     if (meeting_id) {
       this.meeting_id = Number(meeting_id);
     }
+    // this.getBannerList()
     getAdvertising({
       'page': 1, // 页码
       'pageSize': 20, // 每页记录数
@@ -172,9 +173,10 @@ export default {
       })
       if (this.advertImages.length > 0) {
         this.showAdvert = true,
-          setTimeout(() => {
+        setTimeout(() => {
+            console.log("广告结束");
             this.showAdvert = false
-          }, this.advertImages[0].stay_duration * 1000)
+          }, list[0].stay_duration * 1000)
       }
       console.log("获取广告信息成功", baseUrl + '/' + res.data.list[0].pic_name)
     }).catch(err => {
@@ -219,6 +221,32 @@ export default {
     this.handResize()
   },
   methods: {
+
+    // async getBannerList() {
+    //   const res = await getAdvertising({
+    //   'page': 1, // 页码
+    //   'pageSize': 20, // 每页记录数
+    //   'type': '广告', // 类型：广告，banner
+    //   'memo': '', // 备注
+    //   'status': '已开启', // 已开启（前台写死），已关闭
+    //   'meeting_id': this.meeting_id, // 会议id
+    //   'uid': 1
+    // })
+    // const { list } = res.data
+    //   this.advertImages = list || []
+    //   this.advertImages.forEach(item => {
+    //     item.pic_name = baseUrl + '/' + item.pic_name
+    //   })
+    //   if (this.advertImages.length > 0) {
+    //     console.log(list[0].stay_duration,"his.advertImages[0].stay_duration");
+
+    //     this.showAdvert = true,
+    //       setTimeout(() => {
+    //         this.showAdvert = false
+    //       }, this.advertImages[0].stay_duration * 1000)
+    //   }
+    //   console.log("获取广告信息成功", baseUrl + '/' + res.data.list[0].pic_name)
+    // },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
       this.currentPage = val; // 改变当前页码
@@ -239,7 +267,7 @@ export default {
     this.monitorInactivity();  // 重新开始监控
   },
     monitorInactivity () {
-      if(this.lockDuration){
+      if(this.lockDuration > 0){
         console.log("wucccccccccccccccccc", this.lockDuration);
         const resetTimer = () => {
         if (this.inactivityTimeout) {
@@ -252,10 +280,10 @@ export default {
           // this.lockDuration
         }, this.lockDuration*1000);
       };
-      window.addEventListener("mousemove", resetTimer);
+      // window.addEventListener("mousemove", resetTimer);
       window.addEventListener("keydown", resetTimer);
-      window.addEventListener("touchstart", resetTimer);
-      window.addEventListener("touchmove", resetTimer);
+      // window.addEventListener("touchstart", resetTimer);
+      // window.addEventListener("touchmove", resetTimer);
       resetTimer();
       }
     },
@@ -334,10 +362,10 @@ export default {
   },
   beforeDestroy () {
     window.removeEventListener('resize', this.handResize)
-    window.removeEventListener("mousemove", this.resetTimer);
+    // window.removeEventListener("mousemove", this.resetTimer);
     window.removeEventListener("keydown", this.resetTimer);
-    window.removeEventListener("touchstart", this.resetTimer);
-    window.removeEventListener("touchmove", this.resetTimer);
+    // window.removeEventListener("touchstart", this.resetTimer);
+    // window.removeEventListener("touchmove", this.resetTimer);
 
     if (this.inactivityTimeout) {
       for (let i = 0; i < this.inactivityTimeout+ 1000; i++) {
