@@ -4,7 +4,7 @@
       <!-- <div class="backBtn" @click="goBack">
         <Icon name="arrow-left" />{{ $t("back") }}
       </div> -->
-      <div class="backBtn" @click="goBack">{{ $t("back") }}</div>
+      <div class="backBtn" @click="goBack">{{ $t("backen") }}</div>
       <div class="content-wrapper">
         <v-touch
           class="content"
@@ -17,7 +17,7 @@
           @panend="onPanEnd"
           :style="contentStyle"
         >
-          <div class="tips">{{ $t("tips") }} <Icon name="expand-o" /></div>
+          <div class="tips">{{ $t("tipsen") }} <Icon name="expand-o" /></div>
           <div class="imgItem" v-for="item in detailImages" :key="item.id">
             <img v-lazy="item.pic_name" alt="">
           </div>
@@ -73,17 +73,8 @@ export default {
     }
   },
   created() {
-    console.log("获取banner信息成功", this.itemData)
-    if (!this.itemData) {
-      console.error("没有传递有效的 itemData");
-      return;
-    }
-    const { pic_list } = this.itemData
-    this.detailImages = pic_list
-    this.detailImages.forEach(item => {
-      item.pic_name = baseUrl + '/' + item.pic_name
-    })
-    console.log("this.detailImages=====", this.detailImages);
+    console.log("获取banner信息成功", this.itemData,this.$route.params.data)
+    this.updateDetailData()
   },
   mounted() {
     window.addEventListener('resize', this.handResize)
@@ -100,6 +91,20 @@ export default {
     }
   },
   methods: {
+    updateDetailData() {
+      this.itemData = this.$route.params.data
+      if (!this.itemData) {
+        console.error("没有传递有效的 itemData");
+        return;
+      }
+      const { pic_list } = this.itemData
+      this.detailImages = pic_list
+      this.detailImages.forEach(item => {
+        item.pic_name =item.pic_name.indexOf('http') !== -1 ? item.pic_name : baseUrl + '/' + item.pic_name
+        // item.pic_name = baseUrl + '/' + item.pic_name
+      })
+      console.log("this.detailImages=====", this.detailImages);
+    },
     handResize() {
       this.width = window.innerWidth
       this.height = window.innerHeight
@@ -234,6 +239,17 @@ export default {
       this.scale = this.minScale
       this.panX = 0
       this.panY = 0
+    }
+  },
+  watch: {
+    // 监听路由参数变化
+    '$route'(to, from) {
+      if (to.name === 'details' && to.params.data) {
+        console.log('路由参数变化，更新数据', to.params.data)
+        this.updateDetailData()
+        // 重置缩放和平移状态
+        this.resetZoomAndPan()
+      }
     }
   },
   beforeDestroy() {
