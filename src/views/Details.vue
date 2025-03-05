@@ -112,10 +112,10 @@ export default {
       this.height = window.innerHeight
       console.log('Resize:', this.width, this.height)
       if (this.width > this.height && this.width >= 768) {
-        this.width = Math.min(window.innerWidth,1070)
-        this.height = this.height
-        // this.width = this.height * (9 / 16)
-        console.log('电脑设备: 9:16比例', this.width, this.height)
+        // 电脑设备，限制最大宽度，允许内容自然延展
+        this.width = Math.min(window.innerWidth, 1070)
+        // this.height = this.height
+        console.log('电脑设备: 允许内容自然延展', this.width, this.height)
       } else {
         this.height = window.innerHeight
         console.log('手机或平板: 全屏展示', this.width, this.height)
@@ -205,36 +205,48 @@ export default {
     },
     // 鼠标滚轮缩放
     handleWheel(e) {
-      e.preventDefault()
-
-      // 确定缩放方向和缩放步长
-      const delta = e.deltaY < 0 ? 0.2 : -0.2
-      let newScale = this.scale + delta
-
-      // 限制缩放范围
-      newScale = Math.max(this.minScale, Math.min(newScale, this.maxScale))
-
-      // 如果缩放值没有变化，不做任何处理
-      if (newScale === this.scale) return
-
-      // 计算鼠标位置为缩放中心
-      const rect = this.$refs.zoomContainer.$el.getBoundingClientRect()
-      const offsetX = e.clientX - rect.left
-      const offsetY = e.clientY - rect.top
-
-      // 计算新的平移值，使鼠标位置成为缩放中心
-      const scaleFactor = newScale / this.scale
-      const newPanX = offsetX - (offsetX - this.panX) * scaleFactor
-      const newPanY = offsetY - (offsetY - this.panY) * scaleFactor
-
-      this.scale = newScale
-      this.panX = newPanX
-      this.panY = newPanY
-
-      // 如果缩放回到原始大小，重置平移
-      if (this.scale === this.minScale) {
-        this.resetZoomAndPan()
+      // 阻止默认滚动行为，允许缩放
+      if (e.ctrlKey) {
+        e.preventDefault()
+        
+        // 计算缩放步长
+        const delta = e.deltaY || e.detail || e.wheelDelta
+        let newScale = this.scale
+        
+        if (delta < 0) {
+          // 向上滚动，缩放
+          newScale = this.scale * 1.1
+        } else {
+          // 向下滚动，缩小
+          newScale = this.scale / 1.1
+        }
+        
+        // 限制缩放范围
+        newScale = Math.max(this.minScale, Math.min(newScale, this.maxScale))
+        
+        // 计算鼠标位置为缩放中心
+        const rect = this.$refs.zoomContainer.$el.getBoundingClientRect()
+        const offsetX = e.clientX - rect.left
+        const offsetY = e.clientY - rect.top
+        
+        // 计算新的平移值，使鼠标位置成为缩放中心
+        if (newScale !== this.scale) {
+          const scaleRatio = newScale / this.scale
+          const newPanX = offsetX - (offsetX - this.panX) * scaleRatio
+          const newPanY = offsetY - (offsetY - this.panY) * scaleRatio
+          
+          this.scale = newScale
+          this.panX = newPanX
+          this.panY = newPanY
+          
+          // 如果缩放回到原始大小，重置平移
+          if (this.scale === this.minScale) {
+            this.panX = 0
+            this.panY = 0
+          }
+        }
       }
+      // 允许默认滚动行为，滚动页面
     },
     // 重置缩放和平移
     resetZoomAndPan() {
@@ -299,14 +311,14 @@ export default {
     .content-wrapper {
       height: 100%;
       width: 100%;
-      overflow: hidden; /* 修改为hidden，防止内容溢出 */
+      overflow: auto; /* 修改为auto，允许内容溢出时显示滚动条 */
       box-sizing: border-box;
       position: relative; /* 添加相对定位 */
 
       .content {
         width: 100%;
-        height: 100%;
-        touch-action: none; /* 防止浏览器默认的触摸行为 */
+        /* 移除固定高度，允许内容自然延展 */
+        touch-action: pan-y pinch-zoom; /* 允许垂直滚动和缩放 */
         will-change: transform; /* 优化性能 */
 
         .imgItem {

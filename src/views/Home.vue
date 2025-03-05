@@ -1,7 +1,8 @@
 <template>
   <div class="container">
     <div class="main" :style="{ width: width + 'px', height: height + 'px' }">
-      <div class="advert" v-if="showAdvert">
+      <div class="advert" v-if="showAdvert" :style="{width: widthBanner + 'px',marginLeft: '50%',
+    transform: 'translate(-50%)'}">
         <Swipe type="mask" class="swipe">
           <SwipeItem class="advertisingImg" v-for="(item, index) in advertImages" :key="index">
             <a :href="item.jump_url" style="text-decoration: none; outline: none;">
@@ -44,7 +45,7 @@
               <div class="searchBtn" @click="searchClick">{{ $t("search") }}</div>
             </div>
             <div class="current" v-show="totalItems != 0 && isShowPage">
-              <Pagination small layout="prev, pager, next, jumper" :current-page.sync="currentPage"
+              <Pagination small layout="prev, pager, next" :current-page.sync="currentPage"
                 @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-size="6"
                 :total="totalItems">
               </Pagination>
@@ -122,7 +123,8 @@ export default {
       categoryId2: '',
       meeting_id: 0,
       isShowPage: false,
-      isShowBanner: true
+      isShowBanner: true,
+      widthBanner: 0
     }
   },
   computed: {},
@@ -275,7 +277,7 @@ export default {
       if (this.width > this.height && this.width >= 768) {
         // this.width = Math.min(this.width,1024)
         this.height = this.height
-        // this.width = this.height * (9 / 16)
+        this.widthBanner = this.height * (9 / 16)
         this.width = Math.min(window.innerWidth, 1070)
         this.isShowPage = true
         console.log('电脑设备: 9:16比例', this.width, this.height)
