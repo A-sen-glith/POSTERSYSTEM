@@ -66,7 +66,7 @@
               </div>
             </div>
             <div class="current" v-show="totalItems != 0 && !isShowPage">
-              <Pagination small layout="prev, pager, next, jumper" :current-page.sync="currentPage"
+              <Pagination small layout="prev, pager, next" :current-page.sync="currentPage"
                 @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-size="6"
                 :total="totalItems">
               </Pagination>
