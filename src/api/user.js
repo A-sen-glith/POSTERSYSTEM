@@ -13,6 +13,14 @@ export function login (data) {
   })
 }
 
+export function getMeetingList (data) {
+  return request({
+    url: '/bb/MeetingList',
+    method: 'post',
+    data
+  })
+}
+
 export function getAdvertising (data) {
   return request({
     url: '/bb/AdBannerList',
