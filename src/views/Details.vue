@@ -311,9 +311,18 @@ export default {
     .content-wrapper {
       height: 100%;
       width: 100%;
-      overflow: auto; /* 修改为auto，允许内容溢出时显示滚动条 */
+      overflow: auto; /* 允许内容溢出时滚动 */
       box-sizing: border-box;
       position: relative; /* 添加相对定位 */
+      
+      /* 隐藏滚动条但保留滚动功能 */
+      &::-webkit-scrollbar {
+        width: 0;
+        height: 0;
+        display: none;
+      }
+      scrollbar-width: none; /* Firefox */
+      -ms-overflow-style: none; /* IE and Edge */
 
       .content {
         width: 100%;
