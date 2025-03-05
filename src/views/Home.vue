@@ -392,6 +392,7 @@ export default {
         console.log("电脑设备: 9:16比例", this.width, this.height);
       } else {
         this.height = window.innerHeight;
+        this.widthBanner = this.width;
         console.log("手机或平板: 全屏展示", this.width, this.height);
         this.isShowPage = false;
       }
