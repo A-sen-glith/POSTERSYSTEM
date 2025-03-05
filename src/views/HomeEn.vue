@@ -9,7 +9,7 @@
             </a>
           </SwipeItem>
         </Swipe>
-        <div class="advertSwitch" @click="showAdvert = false">{{ $t("close") }}</div>
+        <div class="advertSwitch" @click="showAdvert = false">{{ $t("closeen") }}</div>
       </div>
 
       <div class="content" v-else>
@@ -17,11 +17,11 @@
         <div class="searchContent">
           <div class="selectType">
             <div class="Classification">
-              <div class="ClassificationTitle">{{ $t("type1") }}</div>
+              <div class="ClassificationTitle">{{ $t("type1en") }}</div>
               <Select class="ClassificationSelect" :popper-append-to-body="false" popper-class="dataClass"
-                v-model="categoryId1" @change="handSelectChange1" :placeholder="$t('pleaseSelect')">
+                v-model="categoryId1" @change="handSelectChange1" :placeholder="$t('pleaseSelecten')">
                 <Option style="height: 34px; line-height: 34px; font-size: 12px;padding: 0 0.13rem;"
-                   label="全部" :value="0">
+                   label="ALL" :value="0">
                 </Option>
                 <Option style="height: 34px; line-height: 34px; font-size: 12px;padding: 0 0.13rem;"
                   v-for="item in categoryList1" :key="item.id" :label="item.name" :value="item.id">
@@ -29,9 +29,9 @@
               </Select>
             </div>
             <div class="Classification" v-show="categoryList2.length > 0&&isShowSecondType">
-              <div class="ClassificationTitle">{{ $t("type2") }}</div>
+              <div class="ClassificationTitle">{{ $t("type2en") }}</div>
               <Select class="ClassificationSelect" :popper-append-to-body="false" popper-class="dataClass"
-                v-model="categoryId2" @change="handSelectChange2" :placeholder="$t('pleaseSelect')">
+                v-model="categoryId2" @change="handSelectChange2" :placeholder="$t('pleaseSelecten')">
                 <Option style="height: 34px; line-height: 34px; font-size: 12px;padding: 0 0.13rem;"
                   v-for="item in categoryList2" :key="item.id" :label="item.name" :value="item.id">
                 </Option>
@@ -40,8 +40,8 @@
           </div>
           <div class="selectContent">
             <div class="search">
-              <input class="ipt" v-model="searchTxt" :placeholder="$t('placeholder')" />
-              <div class="searchBtn" @click="searchClick">{{ $t("search") }}</div>
+              <input class="ipt" v-model="searchTxt" :placeholder="$t('placeholderen')" />
+              <div class="searchBtn" @click="searchClick">{{ $t("searchen") }}</div>
             </div>
             <div class="current" v-show="totalItems != 0 && isShowPage">
               <Pagination small layout="prev, pager, next, jumper" :current-page.sync="currentPage"
@@ -52,15 +52,15 @@
             <div class="contentList" v-if="searchList">
               <div class="contentListItems" v-for="item in searchList" :key="item.id" @click="goDetail(item)">
                 <div class="serialNumber public">
-                  <div>{{ $t('no') }}：</div>
+                  <div>{{ $t('noen') }}：</div>
                   <div>{{ item.sort_number }}</div>
                 </div>
                 <div class="author public">
-                  <div>{{ $t('author') }}：</div>
+                  <div>{{ $t('authoren') }}：</div>
                   <div>{{ item.author }}</div>
                 </div>
                 <div class="topic public">
-                  <div>{{ $t('title') }}：</div>
+                  <div>{{ $t('titleen') }}：</div>
                   <div>{{ item.title }}</div>
                 </div>
               </div>
@@ -337,7 +337,7 @@ export default {
     },
     goDetail (item) {
       console.log('item', item)
-      this.$router.push({ name: 'details', params: { data: item } })
+      this.$router.push({ name: 'detailsEn', params: { data: item } })
     }
   },
   watch: {

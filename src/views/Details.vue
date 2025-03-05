@@ -112,9 +112,9 @@ export default {
       this.height = window.innerHeight
       console.log('Resize:', this.width, this.height)
       if (this.width > this.height && this.width >= 768) {
-        // this.width = Math.min(this.width,1024)
+        this.width = Math.min(window.innerWidth,1070)
         this.height = this.height
-        this.width = this.height * (9 / 16)
+        // this.width = this.height * (9 / 16)
         console.log('电脑设备: 9:16比例', this.width, this.height)
       } else {
         this.height = window.innerHeight
