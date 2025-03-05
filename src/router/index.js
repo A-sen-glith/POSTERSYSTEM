@@ -41,7 +41,7 @@ let routes = [
     name: 'detailsEn',
     component: DetailsEn,
     meta: {
-      title: '',
+      title: 'eposter',
       keepAlive: true
     }
   },
@@ -50,7 +50,7 @@ let routes = [
     name: 'homeEn',
     component: HomeEn,
     meta: {
-      title: '',
+      title: 'eposter',
       keepAlive: true
     }
   },

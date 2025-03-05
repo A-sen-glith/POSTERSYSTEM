@@ -127,6 +127,7 @@ export default {
   },
   computed: {},
   created () {
+    document.title = "eposter";
     const url = window.location.href
     const fileExtension = url.split('.').pop().split(/[?#]/)
     const fileExtension2 = fileExtension[fileExtension.length - 1].split('=')[1]
