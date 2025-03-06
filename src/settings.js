@@ -1,6 +1,6 @@
 module.exports = {
 
-  title: '壁报展示',
+  title: '',
 
   /**
    * @type {boolean} true | false

@@ -73,6 +73,7 @@ export default {
     }
   },
   created() {
+    document.title = "eposter";
     console.log("获取banner信息成功", this.itemData,this.$route.params.data)
     this.updateDetailData()
     

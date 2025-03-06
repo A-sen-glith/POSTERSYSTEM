@@ -48,7 +48,6 @@
               <div class="ClassificationTitle">{{ $t("type1") }}</div>
               <Select
                 class="ClassificationSelect"
-                :popper-append-to-body="false"
                 popper-class="dataClass"
                 v-model="categoryId1"
                 @change="handSelectChange1"
@@ -227,6 +226,7 @@ export default {
   },
   computed: {},
   created() {
+    document.title = "壁报展示";
     const url = window.location.href;
     const fileExtension = url.split(".").pop().split(/[?#]/);
     const fileExtension2 =
