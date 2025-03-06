@@ -227,7 +227,6 @@ export default {
   },
   computed: {},
   created() {
-    document.title = "壁报展示";
     const url = window.location.href;
     const fileExtension = url.split(".").pop().split(/[?#]/);
     const fileExtension2 =
@@ -458,6 +457,12 @@ export default {
     },
   },
   watch: {
+    '$route': {
+      handler(to, from) {
+        document.title = "eposter";
+      },
+      deep: true
+    },
     width(val) {
       this.width = val;
     },

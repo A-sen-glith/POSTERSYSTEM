@@ -73,7 +73,6 @@ export default {
     }
   },
   created() {
-    document.title = "壁报展示";
     console.log("获取banner信息成功", this.itemData,this.$route.params.data)
     this.updateDetailData()
     
@@ -259,6 +258,7 @@ export default {
     // 监听路由参数变化
     '$route': {
       handler(to, from) {
+        document.title = "壁报展示";
         if (to.name === 'details' && to.params.data) {
           console.log('路由参数变化，更新数据', to.params.data)
           this.updateDetailData()
