@@ -60,7 +60,7 @@
                     font-size: 12px;
                     padding: 0 0.13rem;
                   "
-                  label="全部"
+                  label="ALL"
                   :value="0"
                 >
                 </Option>
