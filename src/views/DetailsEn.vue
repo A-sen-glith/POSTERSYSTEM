@@ -260,7 +260,7 @@ export default {
     '$route': {
       handler(to, from) {
         document.title = "eposter";
-        if (to.name === 'details' && to.params.data) {
+        if (to.name === 'detailsEn' && to.params.data) {
           console.log('路由参数变化，更新数据', to.params.data)
           this.updateDetailData()
           // 重置缩放和平移状态
