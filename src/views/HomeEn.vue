@@ -173,7 +173,7 @@
 
 <script>
 import Vue from "vue";
-import { Swipe, SwipeItem, Lazyload, Icon } from "vant";
+import { Swipe, SwipeItem, Lazyload, Icon, Toast } from "vant";
 import { Select, Option, Pagination } from "element-ui";
 import "element-ui/lib/theme-chalk/index.css";
 import Banner from "components/Banner";
@@ -185,6 +185,7 @@ import {
 } from "@/api/user";
 // const { mapActions } = createNamespacedHelpers('test') // 可使用这种方式直接获得test模板
 Vue.use(Lazyload);
+Vue.use(Toast)
 const baseUrl = "https://eposter.tri-think.cn/uploadFile";
 export default {
   name: "home",
@@ -195,7 +196,7 @@ export default {
     Banner,
     Pagination,
     Select,
-    Option,
+    Option
   },
   data() {
     return {
@@ -454,8 +455,11 @@ export default {
       });
     },
     goDetail(item) {
-      console.log("item", item);
-      this.$router.push({ name: "detailsEn", params: { data: item } });
+      if (!item.pic_list[0].pic_name) {
+        console.log('item111', item.pic_list[0].pic_name)
+        return Toast(this.$t('wallNewspaperTipsen'))
+      }
+      this.$router.push({ name: 'details', params: { data: item } })
     },
   },
   watch: {

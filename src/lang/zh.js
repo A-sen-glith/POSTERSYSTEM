@@ -10,6 +10,7 @@ export default {
     title: '题目',
     back: '返回',
     tips: '提示：页面可滑动放大',
+    wallNewspaperTips: '壁报暂未上传，请稍后重试',
     type1en: 'Category',
     type2en: 'Sub-category',
     pleaseSelecten: 'Please Select',
@@ -21,4 +22,5 @@ export default {
     titleen: 'Title',
     backen: 'Back',
     tipsen: 'Tip: The page can be enlarged by sliding it',
+    wallNewspaperTipsen: 'The poster has not been uploaded yet. Please try again later',
 }
