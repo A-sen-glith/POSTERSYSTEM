@@ -3,7 +3,7 @@
       <Swipe type="card" class="swipe" :style="{width:width}" :autoplay="4000">
         <SwipeItem class="bannerImg" style="width: 100%;" v-for="(item, index) in bannerImages" :key="index">
           <a :href="item.if_jump == 0 ? item.jump_url : 'javascript:void(0)'" style="display: block; width: 100%; height: 100%; text-decoration: none; outline: none;">
-              <img v-lazy="item.pic_name" />
+              <img width="100%" v-lazy="item.pic_name" />
           </a>
         </SwipeItem>
       </Swipe>

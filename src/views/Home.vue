@@ -41,7 +41,7 @@
       </div>
 
       <div class="content" v-else>
-        <Banner v-if="isShowBanner" style="width: 100%; height: 20%" />
+        <Banner v-if="isShowBanner" :style="{ width: '100%', height: calculatedHeight + 'px' }" />
         <div class="searchContent">
           <div class="selectType">
             <div class="Classification">
@@ -222,9 +222,10 @@ export default {
       isShowPage: false,
       isShowBanner: true,
       widthBanner: 0,
+      calculatedHeight: 0
     };
   },
-  computed: {},
+  
   created() {
     document.title = "壁报展示";
     const url = window.location.href;
@@ -395,6 +396,9 @@ export default {
         console.log("手机或平板: 全屏展示", this.width, this.height);
         this.isShowPage = false;
       }
+      setTimeout(() =>{
+        this.calculatedHeight = (document.getElementsByClassName('main').length > 0 &&document.getElementsByClassName('main')[0].offsetWidth * 9) / 16
+      },500)
     },
     handSelectChange1(val) {
       console.log("handSelectChange1", val);
@@ -576,8 +580,7 @@ html {
   .main {
     position: relative;
     background-color: #fff;
-    border: 1px solid #ccc;
-    min-height: 100vh;
+    height: 100%;
     .advert {
       position: absolute;
       top: 0;
@@ -619,11 +622,11 @@ html {
 
     .content {
       width: 100%;
-      height: 100%;
-
+      // height: 100%;
+      border: 1px solid #ccc;
       .searchContent {
         width: 100%;
-        height: 80%;
+        // height: 80%;
 
         .selectType {
           display: flex;
