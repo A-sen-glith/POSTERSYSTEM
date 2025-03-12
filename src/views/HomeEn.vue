@@ -10,7 +10,7 @@
           right: 0;
           bottom: 0;
         "
-        v-if="isShowAdvert"
+        v-if="showAdvert"
       >
         <div
           class="advert"
@@ -381,10 +381,11 @@ export default {
               clearTimeout(i);
             }
           }
-          this.inactivityTimeout = setTimeout(() => {
-            this.isShowAdvert = true;
-            // this.lockDuration
-          }, this.lockDuration * 1000);
+          if(this.meetShowAdvert){
+            this.inactivityTimeout = setTimeout(() => {
+              this.isShowAdvert = true;
+            }, this.lockDuration * 1000);
+          }
         };
         // window.addEventListener("mousemove", resetTimer);
         window.addEventListener("keydown", resetTimer);
