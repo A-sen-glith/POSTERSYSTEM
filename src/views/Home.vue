@@ -332,9 +332,7 @@ export default {
       const { list, datacount, pagesum } = res.data
       this.searchList = list
       this.totalItems = datacount
-      if (this.meetShowAdvert){
-        this.lockDuration = (list && list[0].lock_duration) || 0
-      }
+      this.lockDuration = (list && list[0].lock_duration) || 0
       this.monitorInactivity()
     })
   },
@@ -470,9 +468,7 @@ export default {
         const { list, datacount, pagesum } = res.data
         this.searchList = list
         this.totalItems = datacount
-        if (this.meetShowAdvert){
           this.lockDuration = (list && list[0].lock_duration) || 0
-          }
       })
     },
     goDetail (item) {
