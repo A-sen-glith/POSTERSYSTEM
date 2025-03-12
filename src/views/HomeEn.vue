@@ -10,7 +10,7 @@
           right: 0;
           bottom: 0;
         "
-        v-if="showAdvert"
+        v-if="showAdvert && advertImages.length>0"
       >
         <div
           class="advert"
@@ -34,7 +34,7 @@
               </a>
             </SwipeItem>
           </Swipe>
-          <div class="advertSwitch" @click="closeAdvert">
+          <div class="advertSwitch" @click="showAdvert = false">
             {{ $t("closeen") }}
           </div>
         </div>
@@ -287,7 +287,7 @@ export default {
           // this.showAdvert = true
           setTimeout(() => {
             console.log("广告结束");
-            this.isShowAdvert = false;
+            this.showAdvert = false;
           }, list[0].stay_duration * 1000);
         }
         console.log(
@@ -334,10 +334,10 @@ export default {
       this.monitorInactivity();
     });
   },
-  watch: {
-    showAdvert: "updateAdvertStatus",
-    meetShowAdvert: "updateAdvertStatus"
-  },
+  // watch: {
+  //   showAdvert: "updateAdvertStatus",
+  //   meetShowAdvert: "updateAdvertStatus"
+  // },
   mounted() {
     for (let i = 0; i < 10000; i++) {
       clearTimeout(i);
@@ -346,13 +346,13 @@ export default {
     this.handResize();
   },
   methods: {
-    updateAdvertStatus() {
-      console.log("xxxxx meetShowAdvert",this.showAdvert == this.meetShowAdvert);
-      this.isShowAdvert = this.showAdvert === this.meetShowAdvert;
-    },
-    closeAdvert() {
-      this.isShowAdvert = false;
-    },
+    // updateAdvertStatus() {
+    //   console.log("xxxxx meetShowAdvert",this.showAdvert == this.meetShowAdvert);
+    //   this.isShowAdvert = this.showAdvert === this.meetShowAdvert;
+    // },
+    // closeAdvert() {
+    //   this.isShowAdvert = false;
+    // },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
       this.currentPage = val; // 改变当前页码
@@ -383,7 +383,7 @@ export default {
           }
           if(this.meetShowAdvert){
             this.inactivityTimeout = setTimeout(() => {
-              this.isShowAdvert = true;
+              this.showAdvert = true;
             }, this.lockDuration * 1000);
           }
         };
