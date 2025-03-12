@@ -10,7 +10,7 @@
           right: 0;
           bottom: 0;
         "
-        v-if="showAdvert"
+        v-if="isShowAdvert"
       >
         <div
           class="advert"
@@ -34,7 +34,7 @@
               </a>
             </SwipeItem>
           </Swipe>
-          <div class="advertSwitch" @click="showAdvert = false">
+          <div class="advertSwitch" @click="closeAdvert">
             {{ $t("close") }}
           </div>
         </div>
@@ -206,6 +206,8 @@ export default {
       bannerImages: [],
       searchList: [],
       showAdvert: false,
+      meetShowAdvert: true,
+      isShowAdvert:false,
       isShowSecondType: false,
       searchTxt: '',
       totalItems: '0',
@@ -258,8 +260,10 @@ export default {
       if (meet.ad_status === '已关闭') {
         console.log('广告xxxx')
         this.showAdvert = false
+        this.meetShowAdvert = false
       } else {
         this.showAdvert = true
+        this.meetShowAdvert = false
         console.log('广告开启xxxx')
       }
       if (meet.banner_status === '已关闭') {
@@ -285,7 +289,7 @@ export default {
           // this.showAdvert = true
           setTimeout(() => {
             console.log('广告结束')
-            this.showAdvert = false
+            this.isShowAdvert = false;
           }, list[0].stay_duration * 1000)
         }
         console.log(
@@ -328,9 +332,15 @@ export default {
       const { list, datacount, pagesum } = res.data
       this.searchList = list
       this.totalItems = datacount
-      this.lockDuration = (list && list[0].lock_duration) || 0
+      if (this.meetShowAdvert){
+        this.lockDuration = (list && list[0].lock_duration) || 0
+      }
       this.monitorInactivity()
     })
+  },
+  watch: {
+    showAdvert: "updateAdvertStatus",
+    meetShowAdvert: "updateAdvertStatus"
   },
   mounted () {
     for (let i = 0; i < 10000; i++) {
@@ -340,6 +350,13 @@ export default {
     this.handResize()
   },
   methods: {
+    updateAdvertStatus() {
+      console.log("xxxxx meetShowAdvert",this.showAdvert == this.meetShowAdvert);
+      this.isShowAdvert = this.showAdvert === this.meetShowAdvert;
+    },
+    closeAdvert() {
+      this.isShowAdvert = false;
+    },
     handleCurrentChange (val) {
       console.log(`当前页: ${val}`)
       this.currentPage = val // 改变当前页码
@@ -369,7 +386,7 @@ export default {
             }
           }
           this.inactivityTimeout = setTimeout(() => {
-            this.showAdvert = true
+            this.isShowAdvert = true;
             // this.lockDuration
           }, this.lockDuration * 1000)
         }
@@ -453,7 +470,9 @@ export default {
         const { list, datacount, pagesum } = res.data
         this.searchList = list
         this.totalItems = datacount
-        this.lockDuration = (list && list[0].lock_duration) || 0
+        if (this.meetShowAdvert){
+          this.lockDuration = (list && list[0].lock_duration) || 0
+          }
       })
     },
     goDetail (item) {
