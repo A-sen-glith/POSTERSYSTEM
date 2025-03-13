@@ -126,7 +126,7 @@
                 :current-page.sync="currentPage"
                 @size-change="handleSizeChange"
                 @current-change="handleCurrentChange"
-                :page-size="6"
+                :page-size="5"
                 :total="totalItems"
               >
               </Pagination>
