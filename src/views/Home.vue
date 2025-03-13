@@ -159,7 +159,7 @@
                 :current-page.sync="currentPage"
                 @size-change="handleSizeChange"
                 @current-change="handleCurrentChange"
-                :page-size="6"
+                :page-size="5"
                 :total="totalItems"
               >
               </Pagination>
@@ -448,9 +448,12 @@ export default {
     searchClick () {
       console.log('this.value', this.categoryId2)
       console.log('searchTxt', this.categoryId1)
+      console.log('his.currentPag', this.currentPage)
+
       // if(!this.searchTxt.trim()){
       //   return Toast("请输入搜索内容");
       // }
+      this.currentPage = 1
       getPosterList({
         page: this.currentPage, // 页码
         pageSize: 5, // 每页记录数
