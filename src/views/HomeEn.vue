@@ -446,10 +446,10 @@ export default {
     searchClick () {
       console.log('this.value', this.categoryId2)
       console.log('searchTxt', this.categoryId1)
-      // if(!this.searchTxt.trim()){
-      //   return Toast("请输入搜索内容");
-      // }
-      this.currentPage = 1
+      if (this.searchTxt !== '') {
+        this.currentPage = 1
+      }
+      console.log('his.currentPag', this.currentPage)
       getPosterList({
         page: this.currentPage, // 页码
         pageSize: 5, // 每页记录数

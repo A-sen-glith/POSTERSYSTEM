@@ -207,7 +207,7 @@ export default {
       searchList: [],
       showAdvert: false,
       meetShowAdvert: true,
-      isShowAdvert:false,
+      isShowAdvert: false,
       isShowSecondType: false,
       searchTxt: '',
       totalItems: '0',
@@ -289,7 +289,7 @@ export default {
           // this.showAdvert = true
           setTimeout(() => {
             console.log('广告结束')
-            this.showAdvert = false;
+            this.showAdvert = false
           }, list[0].stay_duration * 1000)
         }
         console.log(
@@ -383,10 +383,10 @@ export default {
               clearTimeout(i)
             }
           }
-          if(this.meetShowAdvert){
+          if (this.meetShowAdvert) {
             this.inactivityTimeout = setTimeout(() => {
-              this.showAdvert = true;
-            }, this.lockDuration * 1000);
+              this.showAdvert = true
+            }, this.lockDuration * 1000)
           }
         }
         // window.addEventListener("mousemove", resetTimer);
@@ -448,12 +448,11 @@ export default {
     searchClick () {
       console.log('this.value', this.categoryId2)
       console.log('searchTxt', this.categoryId1)
+      if (this.searchTxt !== '') {
+        this.currentPage = 1
+      }
       console.log('his.currentPag', this.currentPage)
-
-      // if(!this.searchTxt.trim()){
-      //   return Toast("请输入搜索内容");
-      // }
-      this.currentPage = 1
+      // this.currentPage = 1
       getPosterList({
         page: this.currentPage, // 页码
         pageSize: 5, // 每页记录数
@@ -472,7 +471,7 @@ export default {
         const { list, datacount, pagesum } = res.data
         this.searchList = list
         this.totalItems = datacount
-          this.lockDuration = (list && list[0].lock_duration) || 0
+        this.lockDuration = (list && list[0].lock_duration) || 0
       })
     },
     goDetail (item) {
