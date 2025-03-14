@@ -472,6 +472,9 @@ export default {
       })
     },
     goDetail (item) {
+      if (item.pic_list.length === 0) {
+        return Toast(this.$t('wallNewspaperTipsen'))
+      }
       if (!item.pic_list[0].pic_name) {
         console.log('item111', item.pic_list[0].pic_name)
         return Toast(this.$t('wallNewspaperTipsen'))

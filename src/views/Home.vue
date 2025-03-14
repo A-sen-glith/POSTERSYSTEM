@@ -477,6 +477,9 @@ export default {
     goDetail (item) {
       console.log('item', item)
       console.log('item', item.pic_list[0].pic_name)
+      if (item.pic_list.length === 0) {
+        return Toast(this.$t('wallNewspaperTips'))
+      }
       if (!item.pic_list[0].pic_name) {
         console.log('item111', item.pic_list[0].pic_name)
         return Toast(this.$t('wallNewspaperTips'))
