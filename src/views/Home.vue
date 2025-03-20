@@ -46,7 +46,7 @@
           <div class="selectType">
             <div class="Classification">
               <div class="ClassificationTitle">{{ $t("type1") }}</div>
-              <Select
+              <el-select
                 class="ClassificationSelect"
                 popper-class="dataClass"
                 v-model="categoryId1"
@@ -77,14 +77,15 @@
                   :value="item.id"
                 >
                 </Option>
-              </Select>
+              </el-select>
             </div>
+            <!-- v-show="categoryList2.length > 0 && isShowSecondType" -->
             <div
               class="Classification"
-              v-show="categoryList2.length > 0 && isShowSecondType"
+              
             >
               <div class="ClassificationTitle">{{ $t("type2") }}</div>
-              <Select
+              <el-select
                 class="ClassificationSelect"
                 :popper-append-to-body="false"
                 popper-class="dataClass"
@@ -105,22 +106,17 @@
                   :value="item.id"
                 >
                 </Option>
-              </Select>
+              </el-select>
             </div>
           </div>
           <div class="selectContent">
             <div class="search">
-              <input
-                class="ipt"
-                v-model="searchTxt"
-                :placeholder="$t('placeholder')"
-              />
-              <div class="searchBtn" @click="searchClick">
-                {{ $t("search") }}
-              </div>
+              <el-input class="search-input" v-model="searchTxt" :placeholder="$t('placeholder')">
+                <el-button @click="searchClick" slot="append">{{ $t("search") }}</el-button>
+              </el-input>
             </div>
             <div class="current" v-show="totalItems != 0 && isShowPage">
-              <Pagination
+              <el-pagination
                 small
                 layout="prev, pager, next"
                 :current-page.sync="currentPage"
@@ -128,8 +124,9 @@
                 @current-change="handleCurrentChange"
                 :page-size="5"
                 :total="totalItems"
+                background
               >
-              </Pagination>
+              </el-pagination>
             </div>
             <div class="contentList" v-if="searchList">
               <div
@@ -153,7 +150,7 @@
               </div>
             </div>
             <div class="current" v-show="totalItems != 0 && !isShowPage">
-              <Pagination
+              <el-pagination
                 small
                 layout="prev, pager, next"
                 :current-page.sync="currentPage"
@@ -162,7 +159,7 @@
                 :page-size="5"
                 :total="totalItems"
               >
-              </Pagination>
+              </el-pagination>
             </div>
           </div>
         </div>
@@ -174,8 +171,9 @@
 <script>
 import Vue from 'vue'
 import { Swipe, SwipeItem, Lazyload, Icon, Toast } from 'vant'
-import { Select, Option, Pagination } from 'element-ui'
-import 'element-ui/lib/theme-chalk/index.css'
+// u5df2u5728main.jsu4e2du5168u5c40u6ce8u518cuff0cu8fd9u91ccu4e0du9700u8981u518du5355u72ecu5bfcu5165
+// import { Select, Option, Pagination, Input } from 'element-ui'
+// import 'element-ui/lib/theme-chalk/index.css'
 import Banner from 'components/Banner'
 import {
   getMeetingList,
@@ -183,7 +181,7 @@ import {
   getPosterList,
   getCategoryList
 } from '@/api/user'
-// const { mapActions } = createNamespacedHelpers('test') // 可使用这种方式直接获得test模板
+// const { mapActions } = createNamespacedHelpers('test') // u53efu4f7fu7528u8fd9u79cdu65b9u5f0fu76f4u63a5u83b7u5f97testu6a21u677f
 Vue.use(Lazyload)
 Vue.use(Toast)
 const baseUrl = 'https://eposter.tri-think.cn/uploadFile'
@@ -194,9 +192,11 @@ export default {
     SwipeItem,
     Icon,
     Banner,
-    Pagination,
-    Select,
-    Option
+    // u5df2u5728main.jsu4e2du5168u5c40u6ce8u518cuff0cu8fd9u91ccu4e0du9700u8981u518du5355u72ecu6ce8u518c
+    // Pagination,
+    // Select,
+    // Option,
+    // Input
   },
   data () {
     return {
@@ -517,10 +517,131 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+.current {
+  /* 分页组件样式 */
+  margin-top: 10px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: center;
+  
+::v-deep .el-pagination {
+  background-color: transparent;
+  color: #a1d7ff;
+  height: 22px;
+  line-height: 22px;
+  font-size: 12px;
+}
+
+::v-deep .el-pagination .btn-prev,
+::v-deep .el-pagination .btn-next,
+::v-deep .el-pagination .el-pager li {
+  background-color: rgba(71, 82, 110, 0.5);
+  color: #a1d7ff;
+  height: 20px;
+  line-height: 20px;
+  min-width: 20px;
+}
+
+::v-deep .el-pagination .btn-prev,
+::v-deep .el-pagination .btn-next {
+  min-width: 20px;
+  height: 20px;
+  line-height: 20px;
+  padding: 0;
+}
+
+::v-deep .el-pagination button.btn-prev .el-icon, 
+::v-deep .el-pagination button.btn-next .el-icon {
+  font-size: 12px;
+}
+
+::v-deep .el-pagination .el-pager li:hover {
+  color: #03122cff;
+}
+
+::v-deep .el-pagination .el-pager li.active {
+  background-color: #a1d7ffff;
+  color: #03122cff;
+}
+
+::v-deep .el-pagination .el-select .el-input .el-input__inner {
+  background-color: rgba(71, 82, 110, 0.5);
+  color: #a1d7ff;
+  border-color: rgba(71, 82, 110, 0.7);
+  height: 20px;
+}
+
+::v-deep .el-pagination .el-pagination__total,
+::v-deep .el-pagination .el-pagination__sizes {
+  color: #a1d7ff;
+}
+
+::v-deep .el-pagination .el-pagination__jump {
+  color: #a1d7ff;
+}
+
+::v-deep .el-pagination .el-pagination__editor.el-input .el-input__inner {
+  background-color: rgba(71, 82, 110, 0.5);
+  color: #a1d7ff;
+  border-color: rgba(71, 82, 110, 0.7);
+  height: 20px;
+}
+
+::v-deep .el-pagination.is-background .btn-prev:disabled,
+::v-deep .el-pagination.is-background .btn-next:disabled,
+::v-deep .el-pagination.is-background .el-pager li.disabled {
+  background-color: rgba(71, 82, 110, 0.3);
+  color: rgba(255, 255, 255, 0.5);
+}
+
+::v-deep .el-pagination.is-background .el-pager li:not(.disabled).active {
+  background-color: #a1d7ffff;
+  color: #03122cff;
+  border-color: #a1d7ffff;
+}
+
+::v-deep .el-pagination.is-background .el-pager li:not(.disabled):hover {
+  background-color: #a1d7ffff;
+  color: #03122cff;
+  border-color: #a1d7ffff;
+}
+}
+
 html {
   font-size: 6px;
 }
+.search-input {
+  height: 100% !important;
+        ::v-deep .el-input__inner {
+          background: #47526e;
+          border-color: #47526e;
+          height: 100% !important;
+        }
 
+        ::v-deep .el-input-group__append {
+          background: rgba(161, 215, 255, 1);
+          font-family: Source Han Sans CN;
+          font-weight: 700;
+          color: #03122c;
+          font-size: 16px;
+          border-color: #47526e;
+          cursor: pointer;
+        }
+
+        ::v-deep .el-input__inner:focus {
+          border-color: rgba(161, 215, 255, 1);
+          background: rgba(22, 29, 35, 1);
+          color: rgba(161, 215, 255, 1);
+        }
+
+        ::v-deep .el-input__inner:focus+.el-input-group__append {
+          border-color: rgba(161, 215, 255, 1);
+        }
+
+        ::v-deep .el-input-group__append:hover {
+          background: rgba(1, 147, 255, 1);
+        }
+      }
 .container {
   display: flex;
   justify-content: center;
@@ -588,12 +709,6 @@ html {
     font-size: 0.16rem;
   }
 
-  ::v-deep .dataClass {
-    // height: 20px !important;
-    padding: 0;
-    font-size: 6px;
-  }
-
   ::v-deep .el-select-dropdown__wrap {
     max-height: 274px;
     overflow-y: auto !important;
@@ -603,6 +718,14 @@ html {
     height: 0.58667rem;
     font-size: 10px;
   }
+
+  ::v-deep .el-select {
+        .el-input__inner {
+          background: #47526e;
+          border-color: #47526e;
+          color: #c2e4ff;
+        }
+      }
 
   .main {
     position: relative;
@@ -653,17 +776,19 @@ html {
       border: 1px solid #ccc;
       .searchContent {
         width: 100%;
+        background: url("../assets/bigBG.png") no-repeat center center;
+        background-size: 100% 100%;
         // height: 80%;
 
         .selectType {
           display: flex;
-          flex-direction: column;
-          justify-content: space-around;
-          width: 99.8%;
-          padding: 10px 0;
-          max-height: 15%;
+          flex-direction: row;
+          justify-content: space-between;
+          width:100%;
+          padding: 32px 20px 20px;
+          // max-height: 15%;
           // border: 1px solid #DCDFE6;
-          margin-top: 10px;
+          // margin-top: 10px;
           border-radius: 2%;
           box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
           box-sizing: border-box;
@@ -671,16 +796,22 @@ html {
           .Classification {
             display: flex;
             align-items: center;
-            height: 30px;
-
+            // height: 30px;
+            width: 48%;
+            align-items: start;
             .ClassificationTitle {
-              width: 18%;
+              // width: 18%;
               text-align: center;
-              font-size: 0.2rem;
+              // font-size: 0.2rem;
+              line-height:normal;
+              font-family:Source Han Sans CN;
+              color:#c2e4ff;
+              font-size:12px;
+              margin-bottom: 8px;
             }
 
             .ClassificationSelect {
-              width: 60%;
+              width: 100%;
               height: 80%;
               font-size: 0.17rem;
             }
@@ -727,8 +858,8 @@ html {
             margin-top: 15px;
             height: 93%;
             max-height: 93%;
-
             // overflow-y: auto;
+            padding-bottom: 20px;
             .contentListItems {
               // margin-top: 2%;
               // margin-bottom: 20px;
@@ -756,6 +887,10 @@ html {
                   margin-bottom: 1%;
                 }
               }
+            }
+            
+            .contentListItems:last-child {
+              margin-bottom: 0;
             }
 
             .contentListItems .public div:first-child {

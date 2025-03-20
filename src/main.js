@@ -12,6 +12,10 @@ import defaultSettings from '@/settings'
 import VueCropper from 'vue-cropper'
 import i18n from '@/lang'
 
+// 引入Element UI
+import ElementUI from 'element-ui'
+import 'element-ui/lib/theme-chalk/index.css'
+
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api
@@ -28,6 +32,9 @@ if (process.env.NODE_ENV === 'production') {
 
 // options 为可选参数，无则不传
 Vue.use(Lazyload)
+
+// 全局注册Element UI
+Vue.use(ElementUI)
 
 Vue.component('svg-icon', SvgIcon)
 
