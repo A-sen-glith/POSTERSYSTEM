@@ -798,6 +798,7 @@ html {
             align-items: center;
             // height: 30px;
             width: 48%;
+            flex-direction: column;
             align-items: start;
             .ClassificationTitle {
               // width: 18%;
