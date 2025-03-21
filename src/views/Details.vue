@@ -1,5 +1,7 @@
 <template>
-  <div class="container">
+  <div class="main" :style="{ width: width + 'px' }">
+    <Banner :style="{ width: '100%', height: calculatedHeight + 'px' }"  />
+    <div class="container">
     <div class="detailsPage" :style="{ width: width + 'px', height: height + 'px' }">
       <!-- <div class="backBtn" @click="goBack">
         <Icon name="arrow-left" />{{ $t("back") }}
@@ -26,12 +28,14 @@
       </div>
     </div>
   </div>
+  </div>
 </template>
 
 <script>
 import Vue from 'vue'
 import { Icon, Lazyload } from "vant"
 import VueTouch from 'vue-touch'
+import Banner from 'components/Banner'
 // import { getAdvertising } from "@/api/user"
 // import Banner from "components/Banner"
 Vue.use(Lazyload)
@@ -40,7 +44,7 @@ const baseUrl = 'https://eposter.tri-think.cn/uploadFile'
 export default {
   name: 'details',
   components: {
-    // Banner,
+    Banner,
     Icon,
   },
   data() {
@@ -60,7 +64,8 @@ export default {
       panY: 0,
       lastPanX: 0,
       lastPanY: 0,
-      isPanning: false
+      isPanning: false,
+      calculatedHeight: 0
     }
   },
   computed: {
@@ -76,7 +81,7 @@ export default {
     document.title = "壁报展示";
     console.log("获取banner信息成功", this.itemData,this.$route.params.data)
     this.updateDetailData()
-    
+
   },
   mounted() {
     window.addEventListener('resize', this.handResize)
@@ -120,7 +125,9 @@ export default {
         this.height = window.innerHeight
         console.log('手机或平板: 全屏展示', this.width, this.height)
       }
-
+      setTimeout(() => {
+        this.calculatedHeight = (document.getElementsByClassName('main').length > 0 && document.getElementsByClassName('main')[0].offsetWidth * 9) / 16
+      }, 500)
       // 重置缩放和平移
       this.resetZoomAndPan()
     },
@@ -208,11 +215,11 @@ export default {
       // 阻止默认滚动行为，允许缩放
       if (e.ctrlKey) {
         e.preventDefault()
-        
+
         // 计算缩放步长
         const delta = e.deltaY || e.detail || e.wheelDelta
         let newScale = this.scale
-        
+
         if (delta < 0) {
           // 向上滚动，缩放
           newScale = this.scale * 1.1
@@ -220,25 +227,25 @@ export default {
           // 向下滚动，缩小
           newScale = this.scale / 1.1
         }
-        
+
         // 限制缩放范围
         newScale = Math.max(this.minScale, Math.min(newScale, this.maxScale))
-        
+
         // 计算鼠标位置为缩放中心
         const rect = this.$refs.zoomContainer.$el.getBoundingClientRect()
         const offsetX = e.clientX - rect.left
         const offsetY = e.clientY - rect.top
-        
+
         // 计算新的平移值，使鼠标位置成为缩放中心
         if (newScale !== this.scale) {
           const scaleRatio = newScale / this.scale
           const newPanX = offsetX - (offsetX - this.panX) * scaleRatio
           const newPanY = offsetY - (offsetY - this.panY) * scaleRatio
-          
+
           this.scale = newScale
           this.panX = newPanX
           this.panY = newPanY
-          
+
           // 如果缩放回到原始大小，重置平移
           if (this.scale === this.minScale) {
             this.panX = 0
@@ -315,7 +322,7 @@ export default {
       overflow: auto; /* 允许内容溢出时滚动 */
       box-sizing: border-box;
       position: relative; /* 添加相对定位 */
-      
+
       /* 隐藏滚动条但保留滚动功能 */
       &::-webkit-scrollbar {
         width: 0;
