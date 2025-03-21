@@ -51,8 +51,7 @@
                 </Option>
               </el-select>
             </div>
-            <!-- v-show="categoryList2.length > 0 && isShowSecondType" -->
-            <div class="Classification">
+            <div class="Classification" v-show="categoryList2.length > 0 && isShowSecondType">
               <div class="ClassificationTitle">{{ $t("type2") }}</div>
               <el-select class="ClassificationSelect" :popper-append-to-body="false" popper-class="dataClass"
                 v-model="categoryId2" @change="handSelectChange2" :placeholder="$t('pleaseSelect')">
@@ -81,7 +80,6 @@
             <div class="contentList" v-if="searchList">
               <div class="contentListItems" v-for="item in searchList" :key="item.id" @click="goDetail(item)">
                 <div class="topic public">
-                  <div>{{ $t("title") }}：</div>
                   <div>{{ item.title }}</div>
                 </div>
                 <div class="topic info">
@@ -815,45 +813,57 @@ html {
             padding-bottom: 20px;
 
             .contentListItems {
-              // margin-top: 2%;
-              // margin-bottom: 20px;
-              // padding-top: 4%;
-              // border: 1px solid #797979;
-              // box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
-
               display: flex;
               flex-direction: column;
               justify-content: center;
               height: 60px;
               background: #47526e;
               border-radius: 8px;
-              padding: 5px 10px;
+              padding: 10px 15px;
               box-sizing: border-box;
               margin-bottom: 15px;
               width: 100%;
               cursor: pointer;
+              transition: background-color 0.3s;
 
-              // 11
-              .public {
-                display: flex;
+              &:hover {
+                background: #5a6785;
+              }
 
-                div {
-                  margin-bottom: 1%;
+              .topic {
+                &.public {
+                  display: flex;
+                  margin-bottom: 5px;
+                  align-items: center;
+                  div {
+                    color: #a1d7ff;
+                    font-size: 14px;
+                    font-weight: 500;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                  }
+                }
+
+                &.info {
+                  display: flex;
+                  justify-content: flex-start;
+                  
+                  .serialNumber, .author {
+                    display: flex;
+                    margin-right: 20px;
+                    
+                    div {
+                      color: #c2e4ff;
+                      font-size: 12px;
+                    }
+                  }
                 }
               }
             }
 
             .contentListItems:last-child {
               margin-bottom: 0;
-            }
-
-            .contentListItems .public div:first-child {
-              width: 20%;
-              text-align: right;
-            }
-
-            .contentListItems .public div:last-child {
-              width: 70%;
             }
           }
 

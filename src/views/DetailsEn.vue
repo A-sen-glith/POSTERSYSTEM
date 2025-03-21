@@ -1,12 +1,15 @@
 <template>
-  <div class="main" :style="{ width: width + 'px' }">
+  <div class="main" :style="{ width: width + 'px' }" style="margin: 0 auto">
     <Banner :style="{ width: '100%', height: calculatedHeight + 'px' }"  />
     <div class="container">
-    <div class="detailsPage" :style="{ width: width + 'px', height: height + 'px' }">
+    <div class="detailsPage" :style="{ width: width + 'px' }">
       <!-- <div class="backBtn" @click="goBack">
         <Icon name="arrow-left" />{{ $t("back") }}
       </div> -->
-      <div class="backBtn" @click="goBack">{{ $t("backen") }}</div>
+      <div class="header">
+        <div class="backBtn" @click="goBack"><i style="font-size: 22px;margin-left: -15px;margin-right: 3px;margin-top: 3px;" class="el-icon-arrow-left"></i> {{ $t("backen") }}</div>
+        <div class="tips">{{ $t("tipsen") }}</div>
+      </div>
       <div class="content-wrapper">
         <v-touch
           class="content"
@@ -19,7 +22,6 @@
           @panend="onPanEnd"
           :style="contentStyle"
         >
-          <div class="tips">{{ $t("tipsen") }} <Icon name="expand-o" /></div>
           <div class="imgItem" v-for="item in detailImages" :key="item.id">
             <img v-lazy="item.pic_name" alt="">
           </div>
@@ -35,8 +37,9 @@
 import Vue from 'vue'
 import { Icon, Lazyload } from "vant"
 import VueTouch from 'vue-touch'
+import Banner from 'components/Banner'
 // import { getAdvertising } from "@/api/user"
-import Banner from "components/Banner"
+// import Banner from "components/Banner"
 Vue.use(Lazyload)
 Vue.use(VueTouch, { name: 'v-touch' })
 const baseUrl = 'https://eposter.tri-think.cn/uploadFile'
@@ -124,7 +127,6 @@ export default {
         this.height = window.innerHeight
         console.log('手机或平板: 全屏展示', this.width, this.height)
       }
-
       setTimeout(() => {
         this.calculatedHeight = (document.getElementsByClassName('main').length > 0 && document.getElementsByClassName('main')[0].offsetWidth * 9) / 16
       }, 500)
@@ -294,10 +296,11 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+  background: url("../assets/bigBG.png") no-repeat center center;
+        background-size: 100% 100%;
   // height: 100vh;
-  width: 100vw;
+  // width: 100vw;
   background-color: #fff;
-
   .detailsPage {
     width: 100%;
     height: 100%;
@@ -305,25 +308,28 @@ export default {
     overflow: hidden;
 
     .backBtn {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      color: #3182bd;
-      cursor: pointer;
-      font-size: 14px;
-      z-index: 100;
+      width:66px;
+      height:28px;
+      background:rgba(71, 82, 110, .5);
+      border-radius:4px;
+      font-family:Source Han Sans CN;
+      font-weight:700;
+      color:#a1d7ff;
+      font-size:12px;
       display: flex;
+      justify-content: center;
       align-items: center;
+      cursor: pointer;
     }
 
     .content-wrapper {
       height: 100%;
       width: 100%;
-      overflow: auto; /* 允许内容溢出时显示滚动条 */
+      overflow: auto; /* 允许内容溢出时滚动 */
       box-sizing: border-box;
       position: relative; /* 添加相对定位 */
 
-      /* 隐藏滚动条 */
+      /* 隐藏滚动条但保留滚动功能 */
       &::-webkit-scrollbar {
         width: 0;
         height: 0;
@@ -356,20 +362,28 @@ export default {
   }
 
   .tips {
-    color: red;
+    color: rgba(255, 230, 0, 1);
     text-align: right;
     padding: 10px;
     position: sticky;
     top: 0;
-    background-color: rgba(255, 255, 255, 0.8);
+    // background-color: rgba(255, 255, 255, 0.8);
     z-index: 10;
   }
   .copyright {
     margin-top: 10px;
     font-size: 12px;
     text-align: center;
-    color: #333;
-    padding-bottom: 20px;
+    color: rgba(154, 211, 255, 1);
+    padding-bottom: 10px;
+  }
+  .header {
+    background-color: #03122c;
+    height: 36px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
   }
 }
 </style>
