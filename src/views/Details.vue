@@ -6,23 +6,14 @@
       </div> -->
       <div class="backBtn" @click="goBack">{{ $t("back") }}</div>
       <div class="content-wrapper">
-        <v-touch
-          class="content"
-          ref="zoomContainer"
-          @pinchstart="onPinchStart"
-          @pinch="onPinch"
-          @pinchend="onPinchEnd"
-          @panstart="onPanStart"
-          @pan="onPan"
-          @panend="onPanEnd"
-          :style="contentStyle"
-        >
-          <div class="tips">{{ $t("tips") }} <Icon name="expand-o" /></div>
-          <div class="imgItem" v-for="item in detailImages" :key="item.id">
-            <img v-lazy="item.pic_name" alt="">
-          </div>
-          <div class="copyright">Copyright @ 2018-2025 TRI-THINK All Rights Reserved.</div>
-        </v-touch>
+
+        <div class="tips">{{ $t("tips") }}
+          <Icon name="expand-o" />
+        </div>
+        <div class="imgItem" v-for="item in detailImages" :key="item.id">
+          <img style="width: 100%;" v-lazy="item.pic_name" alt="">
+        </div>
+        <div class="copyright">Copyright @ 2018-2025 TRI-THINK All Rights Reserved.</div>
       </div>
     </div>
   </div>
@@ -30,7 +21,7 @@
 
 <script>
 import Vue from 'vue'
-import { Icon, Lazyload } from "vant"
+import { Icon, Lazyload } from 'vant'
 import VueTouch from 'vue-touch'
 // import { getAdvertising } from "@/api/user"
 // import Banner from "components/Banner"
@@ -41,7 +32,7 @@ export default {
   name: 'details',
   components: {
     // Banner,
-    Icon,
+    Icon
   },
   data() {
     return {
@@ -73,10 +64,9 @@ export default {
     }
   },
   created() {
-    document.title = "壁报展示";
-    console.log("获取banner信息成功", this.itemData,this.$route.params.data)
+    document.title = '壁报展示'
+    console.log('获取banner信息成功', this.itemData, this.$route.params.data)
     this.updateDetailData()
-    
   },
   mounted() {
     window.addEventListener('resize', this.handResize)
@@ -96,16 +86,16 @@ export default {
     updateDetailData() {
       this.itemData = this.$route.params.data
       if (!this.itemData) {
-        console.error("没有传递有效的 itemData");
-        return;
+        console.error('没有传递有效的 itemData')
+        return
       }
       const { pic_list } = this.itemData
       this.detailImages = pic_list
       this.detailImages.forEach(item => {
-        item.pic_name =item.pic_name.indexOf('http') !== -1 ? item.pic_name : baseUrl + '/' + item.pic_name
+        item.pic_name = item.pic_name.indexOf('http') !== -1 ? item.pic_name : baseUrl + '/' + item.pic_name
         // item.pic_name = baseUrl + '/' + item.pic_name
       })
-      console.log("this.detailImages=====", this.detailImages);
+      console.log('this.detailImages=====', this.detailImages)
     },
     handResize() {
       this.width = window.innerWidth
@@ -208,11 +198,11 @@ export default {
       // 阻止默认滚动行为，允许缩放
       if (e.ctrlKey) {
         e.preventDefault()
-        
+
         // 计算缩放步长
         const delta = e.deltaY || e.detail || e.wheelDelta
         let newScale = this.scale
-        
+
         if (delta < 0) {
           // 向上滚动，缩放
           newScale = this.scale * 1.1
@@ -220,25 +210,25 @@ export default {
           // 向下滚动，缩小
           newScale = this.scale / 1.1
         }
-        
+
         // 限制缩放范围
         newScale = Math.max(this.minScale, Math.min(newScale, this.maxScale))
-        
+
         // 计算鼠标位置为缩放中心
         const rect = this.$refs.zoomContainer.$el.getBoundingClientRect()
         const offsetX = e.clientX - rect.left
         const offsetY = e.clientY - rect.top
-        
+
         // 计算新的平移值，使鼠标位置成为缩放中心
         if (newScale !== this.scale) {
           const scaleRatio = newScale / this.scale
           const newPanX = offsetX - (offsetX - this.panX) * scaleRatio
           const newPanY = offsetY - (offsetY - this.panY) * scaleRatio
-          
+
           this.scale = newScale
           this.panX = newPanX
           this.panY = newPanY
-          
+
           // 如果缩放回到原始大小，重置平移
           if (this.scale === this.minScale) {
             this.panX = 0
@@ -259,7 +249,7 @@ export default {
     // 监听路由参数变化
     '$route': {
       handler(to, from) {
-        document.title = "壁报展示";
+        document.title = '壁报展示'
         if (to.name === 'details' && to.params.data) {
           console.log('路由参数变化，更新数据', to.params.data)
           this.updateDetailData()
@@ -312,24 +302,31 @@ export default {
     .content-wrapper {
       height: 100%;
       width: 100%;
-      overflow: auto; /* 允许内容溢出时滚动 */
+      overflow: auto;
+      /* 允许内容溢出时滚动 */
       box-sizing: border-box;
-      position: relative; /* 添加相对定位 */
-      
+      position: relative;
+      /* 添加相对定位 */
+
       /* 隐藏滚动条但保留滚动功能 */
       &::-webkit-scrollbar {
         width: 0;
         height: 0;
         display: none;
       }
-      scrollbar-width: none; /* Firefox */
-      -ms-overflow-style: none; /* IE and Edge */
+
+      scrollbar-width: none;
+      /* Firefox */
+      -ms-overflow-style: none;
+      /* IE and Edge */
 
       .content {
         width: 100%;
         /* 移除固定高度，允许内容自然延展 */
-        touch-action: pan-y pinch-zoom; /* 允许垂直滚动和缩放 */
-        will-change: transform; /* 优化性能 */
+        touch-action: pan-y pinch-zoom;
+        /* 允许垂直滚动和缩放 */
+        will-change: transform;
+        /* 优化性能 */
 
         .imgItem {
           width: 100%;
@@ -357,6 +354,7 @@ export default {
     background-color: rgba(255, 255, 255, 0.8);
     z-index: 10;
   }
+
   .copyright {
     margin-top: 10px;
     font-size: 12px;
