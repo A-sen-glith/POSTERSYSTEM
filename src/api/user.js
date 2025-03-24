@@ -15,7 +15,7 @@ export function login (data) {
 
 export function getMeetingList (data) {
   return request({
-    url: '/bb/MeetingList',
+    url: '/MeetingList',
     method: 'post',
     data
   })
@@ -23,14 +23,14 @@ export function getMeetingList (data) {
 
 export function getAdvertising (data) {
   return request({
-    url: '/bb/AdBannerList',
+    url: '/AdBannerList',
     method: 'post',
     data
   })
 }
 export function getPosterList (data) {
   return request({
-    url: '/bb/PosterList',
+    url: '/PosterList',
     method: 'post',
     data
   })
@@ -38,7 +38,7 @@ export function getPosterList (data) {
 
 export function getCategoryList (data) {
   return request({
-    url: '/bb/CategoryList',
+    url: '/CategoryList',
     method: 'post',
     data
   })
@@ -100,17 +100,17 @@ export function getmatchinfolist (data) {
   })
 }
 
-export function goEmpower(data) {
+export function goEmpower (data) {
   return request({
     url: `/expert/getlogininfomob?code=${data.code}`,
-    method: 'get',
+    method: 'get'
   })
 }
 
-export function wxoauth(data) {
+export function wxoauth (data) {
   return request({
     url: `/aipic/wxoauth?code=${data}`,
-    method: 'get',
+    method: 'get'
   })
 }
 

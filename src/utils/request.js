@@ -6,7 +6,7 @@ import { getToken } from '@/utils/auth'
 // create an axios instance
 const service = axios.create({
   // baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
-  baseURL: 'https://eposter.tri-think.cn',
+  baseURL: 'https://eposter.tri-think.cn/testapi',
   // baseURL: 'https://uat.huanqiujr.com',
   // baseURL: 'https://huanqiu-ai.com',
   // withCredentials: true, // send cookies when cross-domain requests
@@ -17,12 +17,12 @@ const service = axios.create({
 service.interceptors.request.use(
   config => {
     // do something before request is sent
-    config.headers['uid'] = sessionStorage.getItem("uid");
+    config.headers['uid'] = sessionStorage.getItem('uid')
     if (store.getters.token) {
       config.headers['X-Token'] = getToken()
     }
-    if(sessionStorage.getItem("uid")) {
-      config.data['uid'] = Number(sessionStorage.getItem("uid"));
+    if (sessionStorage.getItem('uid')) {
+      config.data['uid'] = Number(sessionStorage.getItem('uid'))
     }
     return config
   },

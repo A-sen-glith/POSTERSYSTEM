@@ -35,33 +35,33 @@
               <div class="ClassificationTitle">{{ $t("type1en") }}</div>
               <el-select class="ClassificationSelect" popper-class="dataClass" v-model="categoryId1"
                 @change="handSelectChange1" :placeholder="$t('pleaseSelect')">
-                <Option style="
+                <el-option style="
                     height: 34px;
                     line-height: 34px;
                     font-size: 12px;
                     padding: 0 0.13rem;
                   " label="全部" :value="0">
-                </Option>
-                <Option style="
+                </el-option>
+                <el-option style="
                     height: 34px;
                     line-height: 34px;
                     font-size: 12px;
                     padding: 0 0.13rem;
                   " v-for="item in categoryList1" :key="item.id" :label="item.name" :value="item.id">
-                </Option>
+                </el-option>
               </el-select>
             </div>
             <div class="Classification" v-show="categoryList2.length > 0 && isShowSecondType">
               <div class="ClassificationTitle">{{ $t("type2en") }}</div>
               <el-select class="ClassificationSelect" :popper-append-to-body="false" popper-class="dataClass"
                 v-model="categoryId2" @change="handSelectChange2" :placeholder="$t('pleaseSelect')">
-                <Option style="
+                <el-option style="
                     height: 34px;
                     line-height: 34px;
                     font-size: 12px;
                     padding: 0 0.13rem;
                   " v-for="item in categoryList2" :key="item.id" :label="item.name" :value="item.id">
-                </Option>
+                </el-option>
               </el-select>
             </div>
           </div>
@@ -111,7 +111,7 @@
 import Vue from 'vue'
 import { Swipe, SwipeItem, Lazyload, Icon, Toast } from 'vant'
 // u5df2u5728main.jsu4e2du5168u5c40u6ce8u518cuff0cu8fd9u91ccu4e0du9700u8981u518du5355u72ecu5bfcu5165
-// import { Select, Option, Pagination, Input } from 'element-ui'
+// import { Select, el-option, Pagination, Input } from 'element-ui'
 // import 'element-ui/lib/theme-chalk/index.css'
 import Banner from 'components/Banner'
 import {
@@ -134,7 +134,7 @@ export default {
     // u5df2u5728main.jsu4e2du5168u5c40u6ce8u518cuff0cu8fd9u91ccu4e0du9700u8981u518du5355u72ecu6ce8u518c
     // Pagination,
     // Select,
-    // Option,
+    // el-option,
     // Input
   },
   data() {
@@ -835,6 +835,7 @@ html {
                   display: flex;
                   margin-bottom: 5px;
                   align-items: center;
+
                   div {
                     color: #a1d7ff;
                     font-size: 14px;
@@ -848,11 +849,12 @@ html {
                 &.info {
                   display: flex;
                   justify-content: flex-start;
-                  
-                  .serialNumber, .author {
+
+                  .serialNumber,
+                  .author {
                     display: flex;
                     margin-right: 20px;
-                    
+
                     div {
                       color: #c2e4ff;
                       font-size: 12px;
