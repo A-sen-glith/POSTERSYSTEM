@@ -1,35 +1,22 @@
 <template>
   <div class="container">
     <div class="main" :style="{ width: width + 'px' }">
-      <div
-        style="
+      <div style="
           position: fixed;
           background-color: #f5f5f5;
           top: 0;
           left: 0;
           right: 0;
           bottom: 0;
-        "
-        v-if="showAdvert && advertImages.length>0"
-      >
-        <div
-          class="advert"
-          :style="{
-            width: widthBanner + 'px',
-            marginLeft: '50%',
-            transform: 'translate(-50%)',
-          }"
-        >
+        " v-if="showAdvert && advertImages.length > 0">
+        <div class="advert" :style="{
+          width: widthBanner + 'px',
+          marginLeft: '50%',
+          transform: 'translate(-50%)',
+        }">
           <Swipe type="mask" class="swipe">
-            <SwipeItem
-              class="advertisingImg"
-              v-for="(item, index) in advertImages"
-              :key="index"
-            >
-              <a
-                :href="item.jump_url"
-                style="text-decoration: none; outline: none"
-              >
+            <SwipeItem class="advertisingImg" v-for="(item, index) in advertImages" :key="index">
+              <a :href="item.jump_url" style="text-decoration: none; outline: none">
                 <img v-lazy="item.pic_name" />
               </a>
             </SwipeItem>
@@ -46,101 +33,56 @@
           <div class="selectType">
             <div class="Classification">
               <div class="ClassificationTitle">{{ $t("type1") }}</div>
-              <Select
-                class="ClassificationSelect"
-                popper-class="dataClass"
-                v-model="categoryId1"
-                @change="handSelectChange1"
-                :placeholder="$t('pleaseSelect')"
-              >
-                <Option
-                  style="
+              <Select class="ClassificationSelect" popper-class="dataClass" v-model="categoryId1"
+                @change="handSelectChange1" :placeholder="$t('pleaseSelect')">
+                <Option style="
                     height: 34px;
                     line-height: 34px;
                     font-size: 12px;
                     padding: 0 0.13rem;
-                  "
-                  label="全部"
-                  :value="0"
-                >
+                  " label="全部" :value="0">
                 </Option>
-                <Option
-                  style="
+                <Option style="
                     height: 34px;
                     line-height: 34px;
                     font-size: 12px;
                     padding: 0 0.13rem;
-                  "
-                  v-for="item in categoryList1"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"
-                >
+                  " v-for="item in categoryList1" :key="item.id" :label="item.name" :value="item.id">
                 </Option>
               </Select>
             </div>
-            <div
-              class="Classification"
-              v-show="categoryList2.length > 0 && isShowSecondType"
-            >
+            <div class="Classification" v-show="categoryList2.length > 0 && isShowSecondType">
               <div class="ClassificationTitle">{{ $t("type2") }}</div>
-              <Select
-                class="ClassificationSelect"
-                :popper-append-to-body="false"
-                popper-class="dataClass"
-                v-model="categoryId2"
-                @change="handSelectChange2"
-                :placeholder="$t('pleaseSelect')"
-              >
-                <Option
-                  style="
+              <Select class="ClassificationSelect" :popper-append-to-body="false" popper-class="dataClass"
+                v-model="categoryId2" @change="handSelectChange2" :placeholder="$t('pleaseSelect')">
+                <Option style="
                     height: 34px;
                     line-height: 34px;
                     font-size: 12px;
                     padding: 0 0.13rem;
-                  "
-                  v-for="item in categoryList2"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"
-                >
+                  " v-for="item in categoryList2" :key="item.id" :label="item.name" :value="item.id">
                 </Option>
               </Select>
             </div>
           </div>
           <div class="selectContent">
             <div class="search">
-              <input
-                class="ipt"
-                v-model="searchTxt"
-                :placeholder="$t('placeholder')"
-              />
+              <input class="ipt" v-model="searchTxt" :placeholder="$t('placeholder')" />
               <div class="searchBtn" @click="searchClick">
                 {{ $t("search") }}
               </div>
             </div>
             <div class="current" v-show="totalItems != 0 && isShowPage">
-              <Pagination
-                small
-                layout="prev, pager, next"
-                :current-page.sync="currentPage"
-                @size-change="handleSizeChange"
-                @current-change="handleCurrentChange"
-                :page-size="5"
-                :total="totalItems"
-              >
+              <Pagination small layout="prev, pager, next" :current-page.sync="currentPage"
+                @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-size="5"
+                :total="totalItems">
               </Pagination>
             </div>
             <div class="contentList" v-if="searchList">
-              <div
-                class="contentListItems"
-                v-for="item in searchList"
-                :key="item.id"
-                @click="goDetail(item)"
-              >
+              <div class="contentListItems" v-for="item in searchList" :key="item.id" @click="goDetail(item)">
                 <div class="serialNumber public">
                   <div>{{ $t("no") }}：</div>
-                  <div>{{ item.sort_number }}</div>
+                  <div style="font-weight: bold;">{{ item.sort_number }}</div>
                 </div>
                 <div class="author public">
                   <div>{{ $t("author") }}：</div>
@@ -148,20 +90,14 @@
                 </div>
                 <div class="topic public">
                   <div>{{ $t("title") }}：</div>
-                  <div>{{ item.title }}</div>
+                  <div style="font-weight: bold;">{{ item.title }}</div>
                 </div>
               </div>
             </div>
             <div class="current" v-show="totalItems != 0 && !isShowPage">
-              <Pagination
-                small
-                layout="prev, pager, next"
-                :current-page.sync="currentPage"
-                @size-change="handleSizeChange"
-                @current-change="handleCurrentChange"
-                :page-size="5"
-                :total="totalItems"
-              >
+              <Pagination small layout="prev, pager, next" :current-page.sync="currentPage"
+                @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-size="5"
+                :total="totalItems">
               </Pagination>
             </div>
           </div>
@@ -198,7 +134,7 @@ export default {
     Select,
     Option
   },
-  data () {
+  data() {
     return {
       width: window.innerWidth,
       height: window.innerHeight,
@@ -229,7 +165,7 @@ export default {
     }
   },
 
-  created () {
+  created() {
     document.title = '壁报展示'
     const url = window.location.href
     const fileExtension = url.split('.').pop().split(/[?#]/)
@@ -340,7 +276,7 @@ export default {
   //   showAdvert: "updateAdvertStatus",
   //   meetShowAdvert: "updateAdvertStatus"
   // },
-  mounted () {
+  mounted() {
     for (let i = 0; i < 10000; i++) {
       clearTimeout(i)
     }
@@ -355,17 +291,17 @@ export default {
     // closeAdvert() {
     //   this.isShowAdvert = false;
     // },
-    handleCurrentChange (val) {
+    handleCurrentChange(val) {
       console.log(`当前页: ${val}`)
       this.currentPage = val // 改变当前页码
       this.searchClick()
     },
-    handleSizeChange (val) {
+    handleSizeChange(val) {
       console.log(`每页 ${val} 条`)
       this.pageSize = val // 改变每页记录数
       this.searchClick()
     },
-    resetTimer () {
+    resetTimer() {
       if (this.inactivityTimeout) {
         for (let i = 0; i < this.inactivityTimeout + 1000; i++) {
           clearTimeout(i)
@@ -374,7 +310,7 @@ export default {
       }
       this.monitorInactivity() // 重新开始监控
     },
-    monitorInactivity () {
+    monitorInactivity() {
       if (this.lockDuration > 0) {
         console.log('wucccccccccccccccccc', this.lockDuration)
         const resetTimer = () => {
@@ -396,7 +332,7 @@ export default {
         resetTimer()
       }
     },
-    handResize () {
+    handResize() {
       this.width = window.innerWidth
       this.height = window.innerHeight
       console.log('Resize:', this.width, this.height)
@@ -417,7 +353,7 @@ export default {
         this.calculatedHeight = (document.getElementsByClassName('main').length > 0 && document.getElementsByClassName('main')[0].offsetWidth * 9) / 16
       }, 500)
     },
-    handSelectChange1 (val) {
+    handSelectChange1(val) {
       console.log('handSelectChange1', val)
       this.categoryId2 = ''
       if (val == 0) {
@@ -441,11 +377,11 @@ export default {
         this.isShowSecondType = true
       })
     },
-    handSelectChange2 (val) {
+    handSelectChange2(val) {
       console.log('handSelectChange2', val)
       this.categoryId2 = val
     },
-    searchClick () {
+    searchClick() {
       console.log('this.value', this.categoryId2)
       console.log('searchTxt', this.categoryId1)
       if (this.searchTxt !== '') {
@@ -474,7 +410,7 @@ export default {
         this.lockDuration = (list && list[0].lock_duration) || 0
       })
     },
-    goDetail (item) {
+    goDetail(item) {
       console.log('item', item)
       console.log('item', item.pic_list[0].pic_name)
       if (item.pic_list.length === 0) {
@@ -489,19 +425,19 @@ export default {
   },
   watch: {
     '$route': {
-      handler (to, from) {
+      handler(to, from) {
         document.title = '壁报展示'
       },
       deep: true
     },
-    width (val) {
+    width(val) {
       this.width = val
     },
-    height (val) {
+    height(val) {
       this.height = val
     }
   },
-  beforeDestroy () {
+  beforeDestroy() {
     window.removeEventListener('resize', this.handResize)
     // window.removeEventListener("mousemove", this.resetTimer);
     window.removeEventListener('keydown', this.resetTimer)
@@ -528,14 +464,19 @@ html {
   // height: 100vh;
   width: 100vw;
   background-color: #fff;
+
   /* 隐藏滚动条但保留滚动功能 */
   &::-webkit-scrollbar {
     width: 0;
     height: 0;
     display: none;
   }
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE and Edge */
+
+  scrollbar-width: none;
+  /* Firefox */
+  -ms-overflow-style: none;
+
+  /* IE and Edge */
   ::v-deep .van-pagination__item--active {
     background-color: #fff;
     color: #1989fa;
@@ -608,6 +549,7 @@ html {
     position: relative;
     background-color: #fff;
     height: 100%;
+
     .advert {
       position: absolute;
       top: 0;
@@ -651,6 +593,7 @@ html {
       width: 100%;
       // height: 100%;
       border: 1px solid #ccc;
+
       .searchContent {
         width: 100%;
         // height: 80%;

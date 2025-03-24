@@ -82,7 +82,7 @@
               <div class="contentListItems" v-for="item in searchList" :key="item.id" @click="goDetail(item)">
                 <div class="serialNumber public">
                   <div>{{ $t("noen") }}：</div>
-                  <div>{{ item.sort_number }}</div>
+                  <div style="font-weight: bold;">{{ item.sort_number }}</div>
                 </div>
                 <div class="author public">
                   <div>{{ $t("authoren") }}：</div>
@@ -90,7 +90,7 @@
                 </div>
                 <div class="topic public">
                   <div>{{ $t("titleen") }}：</div>
-                  <div>{{ item.title }}</div>
+                  <div style="font-weight: bold;">{{ item.title }}</div>
                 </div>
               </div>
             </div>
