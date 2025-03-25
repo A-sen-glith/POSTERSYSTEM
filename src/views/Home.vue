@@ -28,7 +28,8 @@
       </div>
 
       <div class="content" v-else>
-        <Banner v-if="isShowBanner" :style="{ width: '100%', height: calculatedHeight + 'px' }" />
+        <Banner v-if="isShowBanner" :bannerData="bannerData" :meetingId="meetingId" :style="{ width: '100%', height:
+        calculatedHeight + 'px' }" />
         <div class="searchContent">
           <div class="selectType">
             <div class="Classification">
@@ -109,10 +110,7 @@
 
 <script>
 import Vue from 'vue'
-import { Swipe, SwipeItem, Lazyload, Icon, Toast } from 'vant'
-// u5df2u5728main.jsu4e2du5168u5c40u6ce8u518cuff0cu8fd9u91ccu4e0du9700u8981u518du5355u72ecu5bfcu5165
-// import { Select, el-option, Pagination, Input } from 'element-ui'
-// import 'element-ui/lib/theme-chalk/index.css'
+import { Swipe, SwipeItem, Lazyload, Toast } from 'vant'
 import Banner from 'components/Banner'
 import {
   getMeetingList,
@@ -129,13 +127,7 @@ export default {
   components: {
     Swipe,
     SwipeItem,
-    Icon,
     Banner
-    // u5df2u5728main.jsu4e2du5168u5c40u6ce8u518cuff0cu8fd9u91ccu4e0du9700u8981u518du5355u72ecu6ce8u518c
-    // Pagination,
-    // Select,
-    // el-option,
-    // Input
   },
   data() {
     return {
@@ -164,7 +156,9 @@ export default {
       isShowPage: false,
       isShowBanner: true,
       widthBanner: 0,
-      calculatedHeight: 0
+      calculatedHeight: 0,
+      bannerData: {},
+      meetingId: 0
     }
   },
 
@@ -179,6 +173,7 @@ export default {
     const meeting_id = this.$route.query.meeting_id
     if (meeting_id) {
       this.meeting_id = Number(meeting_id)
+      this.meetingId = Number(meeting_id)
     }
     console.log(this.meeting_id, '会议id')
     getMeetingList({
@@ -209,6 +204,20 @@ export default {
         this.isShowBanner = false
       }
     })
+
+    getAdvertising({
+      'page': 1, // 页码
+      'pageSize': 20, // 每页记录数
+      'type': 'banner', // 类型：广告，banner
+      'memo': '', // 备注
+      'status': '已开启', // 已开启（前台写死），已关闭
+      'meeting_id': this.meeting_id, // 会议id
+      'uid': 1
+    }).then(res => {
+      this.bannerData = res.data
+      console.log(this.bannerData, 'banner this.imageList');
+    })
+
     getAdvertising({
       page: 1, // 页码
       pageSize: 20, // 每页记录数
@@ -275,10 +284,7 @@ export default {
       this.monitorInactivity()
     })
   },
-  // watch: {
-  //   showAdvert: "updateAdvertStatus",
-  //   meetShowAdvert: "updateAdvertStatus"
-  // },
+
   mounted() {
     for (let i = 0; i < 10000; i++) {
       clearTimeout(i)
@@ -287,13 +293,6 @@ export default {
     this.handResize()
   },
   methods: {
-    // updateAdvertStatus() {
-    //   console.log("xxxxx meetShowAdvert",this.showAdvert == this.meetShowAdvert);
-    //   this.isShowAdvert = this.showAdvert === this.meetShowAdvert;
-    // },
-    // closeAdvert() {
-    //   this.isShowAdvert = false;
-    // },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`)
       this.currentPage = val // 改变当前页码
@@ -423,7 +422,7 @@ export default {
         console.log('item111', item.pic_list[0].pic_name)
         return Toast(this.$t('wallNewspaperTips'))
       }
-      this.$router.push({ name: 'details', params: { data: item } })
+      this.$router.push({ name: 'details', params: { data: item, meeting_id: this.meeting_id } })
     }
   },
   watch: {
@@ -719,12 +718,15 @@ html {
     }
 
     .content {
+      display: flex;
+      flex-direction: column;
       width: 100%;
-      // height: 100%;
+      height: 100%;
       border: 1px solid #ccc;
 
       .searchContent {
         width: 100%;
+        flex-grow: 1;
         background: url("../assets/bigBG.png") no-repeat center center;
         background-size: 100% 100%;
         // height: 80%;
@@ -880,6 +882,12 @@ html {
         }
       }
     }
+
+  }
+}
+@media (max-width: 768px) {
+  .content {
+    border: none !important; /* 在手机端隐藏边框 */
   }
 }
 </style>

@@ -12,45 +12,49 @@
 
 <script>
 import Vue from 'vue'
-import { Swipe, SwipeItem, Lazyload } from "vant"
-import { getAdvertising } from "@/api/user"
+import { Swipe, SwipeItem, Lazyload } from 'vant'
+// import { getAdvertising } from "@/api/user"
 Vue.use(Lazyload)
 const baseUrl = 'https://eposter.tri-think.cn/uploadFile'
 export default {
   name: 'home',
+  props: {
+    meetingId: {
+      type: Number
+    },
+    bannerData: {
+      type: Object,
+      required: true
+    }
+  },
   components: {
     Swipe,
-    SwipeItem,
+    SwipeItem
   },
   data () {
     return {
       bannerImages: [],
       width: window.innerWidth,
       height: window.innerHeight,
-      meeting_id: 0,
+      meeting_id: 0
     }
   },
   computed: {},
-  created () {
-    const meeting_id = this.$route.query.meeting_id;
-    if (meeting_id) {
-      this.meeting_id = Number(meeting_id);
+  watch: {
+    bannerData (newVal) {
+      if (newVal && newVal.list) {
+        console.log('bannerData updated:', newVal)
+        // 处理 bannerImages 更新等操作
+        this.bannerImages = newVal.list.map(item => {
+          item.pic_name = baseUrl + '/' + item.pic_name
+          return item
+        })
+      }
     }
-    getAdvertising({
-      'page': 1, // 页码
-      'pageSize': 20, // 每页记录数
-      'type': 'banner', // 类型：广告，banner
-      'memo': '', // 备注
-      'status': '已开启', // 已开启（前台写死），已关闭
-      'meeting_id': this.meeting_id, // 会议id
-      'uid': 1
-    }).then(res => {
-      const { list } = res.data
-      this.bannerImages = list || []
-      this.bannerImages.forEach(item => {
-        item.pic_name = baseUrl + '/' + item.pic_name
-      })
-    })
+  },
+  created () {
+    console.log('Banner created====', this.meetingId)
+    console.log('Banner bannerData====', this.bannerData)
   },
   mounted () {
     window.addEventListener('resize', this.handResize)

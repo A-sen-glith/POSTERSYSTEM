@@ -28,7 +28,7 @@
       </div>
 
       <div class="content" v-else>
-        <Banner v-if="isShowBanner" :style="{ width: '100%', height: calculatedHeight + 'px' }" />
+        <Banner v-if="isShowBanner" :bannerData="bannerData" :meetingId="meetingId" :style="{ width: '100%', height: calculatedHeight + 'px' }" />
         <div class="searchContent">
           <div class="selectType">
             <div class="Classification">
@@ -164,7 +164,9 @@ export default {
       isShowPage: false,
       isShowBanner: true,
       widthBanner: 0,
-      calculatedHeight: 0
+      calculatedHeight: 0,
+      bannerData: {},
+      meetingId: 0
     }
   },
 
@@ -179,6 +181,7 @@ export default {
     const meeting_id = this.$route.query.meeting_id
     if (meeting_id) {
       this.meeting_id = Number(meeting_id)
+      this.meetingId = Number(meeting_id)
     }
     console.log(this.meeting_id, '会议id')
     getMeetingList({
@@ -208,6 +211,18 @@ export default {
       if (meet.banner_status === '已关闭') {
         this.isShowBanner = false
       }
+    })
+    getAdvertising({
+      'page': 1, // 页码
+      'pageSize': 20, // 每页记录数
+      'type': 'banner', // 类型：广告，banner
+      'memo': '', // 备注
+      'status': '已开启', // 已开启（前台写死），已关闭
+      'meeting_id': this.meeting_id, // 会议id
+      'uid': 1
+    }).then(res => {
+      this.bannerData = res.data
+      console.log(this.bannerData, 'banner this.imageList');
     })
     getAdvertising({
       page: 1, // 页码
@@ -423,7 +438,7 @@ export default {
         console.log('item111', item.pic_list[0].pic_name)
         return Toast(this.$t('wallNewspaperTipsen'))
       }
-      this.$router.push({ name: 'detailsEn', params: { data: item } })
+      this.$router.push({ name: 'detailsEn', params: { data: item, meeting_id: this.meeting_id } })
     }
   },
   watch: {
@@ -719,11 +734,14 @@ html {
     }
 
     .content {
+      display: flex;
+      flex-direction: column;
       width: 100%;
-      // height: 100%;
+      height: 100%;
       border: 1px solid #ccc;
 
       .searchContent {
+        flex-grow: 1;
         width: 100%;
         background: url("../assets/bigBG.png") no-repeat center center;
         background-size: 100% 100%;
@@ -880,6 +898,11 @@ html {
         }
       }
     }
+  }
+}
+@media (max-width: 768px) {
+  .content {
+    border: none !important; /* 在手机端隐藏边框 */
   }
 }
 </style>

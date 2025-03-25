@@ -1,6 +1,6 @@
 <template>
   <div class="main" :style="{ width: width + 'px' }" style="margin: 0 auto">
-    <Banner :style="{ width: '100%', height: calculatedHeight + 'px' }"  />
+    <Banner :meetingID = "meetingId" :bannerData="bannerData" :style="{ width: '100%', height: calculatedHeight + 'px' }"  />
     <div class="container">
     <div class="detailsPage" :style="{ width: width + 'px' }">
       <!-- <div class="backBtn" @click="goBack">
@@ -38,7 +38,7 @@ import Vue from 'vue'
 import { Icon, Lazyload } from "vant"
 import VueTouch from 'vue-touch'
 import Banner from 'components/Banner'
-// import { getAdvertising } from "@/api/user"
+import { getAdvertising } from "@/api/user"
 // import Banner from "components/Banner"
 Vue.use(Lazyload)
 Vue.use(VueTouch, { name: 'v-touch' })
@@ -67,7 +67,9 @@ export default {
       lastPanX: 0,
       lastPanY: 0,
       isPanning: false,
-      calculatedHeight: 0
+      calculatedHeight: 0,
+      bannerData: {},
+      meetingId: 0
     }
   },
   computed: {
@@ -82,6 +84,21 @@ export default {
   created() {
     document.title = "eposter";
     console.log("获取banner信息成功", this.itemData,this.$route.params.data)
+    if (this.$route.params.data && this.$route.params.data.meeting_id) {
+      this.meetingId = this.$route.params.data.meeting_id
+    }
+    getAdvertising({
+      'page': 1, // 页码
+      'pageSize': 20, // 每页记录数
+      'type': 'banner', // 类型：广告，banner
+      'memo': '', // 备注
+      'status': '已开启', // 已开启（前台写死），已关闭
+      'meeting_id': this.meetingId, // 会议id
+      'uid': 1
+    }).then(res => {
+      this.bannerData = res.data
+      console.log(this.bannerData, 'banner this.imageList');
+    })
     this.updateDetailData()
 
   },
