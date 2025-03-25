@@ -78,7 +78,7 @@
                 background>
               </el-pagination>
             </div>
-            <div class="contentList" v-if="searchList">
+            <div class="contentList" v-if="searchList && searchList.length">
               <div class="contentListItems" v-for="item in searchList" :key="item.id" @click="goDetail(item)">
                 <div class="topic public">
                   <div>{{ item.title }}</div>
@@ -93,6 +93,12 @@
                     <div>{{ item.author }}</div>
                   </div>
                 </div>
+              </div>
+            </div>
+            <div class="no-data" v-else>
+              <div class="no-data-content">
+                <i class="el-icon-warning-outline"></i>
+                <p>{{ $t('noData') || '暂无数据' }}</p>
               </div>
             </div>
             <div class="current" v-show="totalItems != 0 && !isShowPage">
@@ -868,6 +874,26 @@ html {
 
             .contentListItems:last-child {
               margin-bottom: 0;
+            }
+          }
+
+          .no-data {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            font-size: 16px;
+            color: #909399;
+
+            .no-data-content {
+              display: flex;
+              flex-direction: row;
+              align-items: center;
+
+              i {
+                font-size: 24px;
+                margin-right: 10px;
+              }
             }
           }
 
