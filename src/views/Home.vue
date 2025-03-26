@@ -74,7 +74,7 @@
             </div>
             <div class="current" v-show="totalItems != 0 && isShowPage">
               <Pagination small layout="prev, pager, next" :current-page.sync="currentPage"
-                @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-size="5"
+                @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-size="8"
                 :total="totalItems">
               </Pagination>
             </div>
@@ -96,7 +96,7 @@
             </div>
             <div class="current" v-show="totalItems != 0 && !isShowPage">
               <Pagination small layout="prev, pager, next" :current-page.sync="currentPage"
-                @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-size="5"
+                @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-size="8"
                 :total="totalItems">
               </Pagination>
             </div>
@@ -252,7 +252,7 @@ export default {
     })
     getPosterList({
       page: this.currentPage, // 页码
-      pageSize: 5, // 每页记录数
+      pageSize: 8, // 每页记录数
       category_id:
         this.categoryId2 !== ''
           ? this.categoryId2
@@ -391,7 +391,7 @@ export default {
       // this.currentPage = 1
       getPosterList({
         page: this.currentPage, // 页码
-        pageSize: 5, // 每页记录数
+        pageSize: 8, // 每页记录数
         category_id:
           this.categoryId2 !== ''
             ? this.categoryId2
