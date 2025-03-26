@@ -28,7 +28,8 @@
       </div>
 
       <div class="content" v-else>
-        <Banner v-if="isShowBanner" :bannerData="bannerData" :meetingId="meetingId" :style="{ width: '100%', height: calculatedHeight + 'px' }" />
+        <Banner v-if="isShowBanner" :bannerData="bannerData" :meetingId="meetingId"
+          :style="{ width: '100%', height: calculatedHeight + 'px' }" />
         <div class="searchContent">
           <div class="selectType">
             <div class="Classification">
@@ -73,7 +74,7 @@
             </div>
             <div class="current" v-show="totalItems != 0 && isShowPage">
               <el-pagination small layout="prev, pager, next" :current-page.sync="currentPage"
-                @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-size="5" :total="totalItems"
+                @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-size="8" :total="totalItems"
                 background>
               </el-pagination>
             </div>
@@ -102,7 +103,7 @@
             </div>
             <div class="current" v-show="totalItems != 0 && !isShowPage">
               <el-pagination small layout="prev, pager, next" :current-page.sync="currentPage"
-                @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-size="5"
+                @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-size="8"
                 :total="totalItems">
               </el-pagination>
             </div>
@@ -228,7 +229,7 @@ export default {
       'uid': 1
     }).then(res => {
       this.bannerData = res.data
-      console.log(this.bannerData, 'banner this.imageList');
+      console.log(this.bannerData, 'banner this.imageList')
     })
     getAdvertising({
       page: 1, // 页码
@@ -276,7 +277,7 @@ export default {
     })
     getPosterList({
       page: this.currentPage, // 页码
-      pageSize: 5, // 每页记录数
+      pageSize: 8, // 每页记录数
       category_id:
         this.categoryId2 !== ''
           ? this.categoryId2
@@ -415,7 +416,7 @@ export default {
       // this.currentPage = 1
       getPosterList({
         page: this.currentPage, // 页码
-        pageSize: 5, // 每页记录数
+        pageSize: 8, // 每页记录数
         category_id:
           this.categoryId2 !== ''
             ? this.categoryId2
@@ -577,6 +578,7 @@ html {
   ::v-deep .el-input__inner {
     background: #47526e;
     border-color: #47526e;
+    color: rgb(161, 215, 255);
     height: 100% !important;
   }
 
@@ -926,9 +928,11 @@ html {
     }
   }
 }
+
 @media (max-width: 768px) {
   .content {
-    border: none !important; /* 在手机端隐藏边框 */
+    border: none !important;
+    /* 在手机端隐藏边框 */
   }
 }
 </style>

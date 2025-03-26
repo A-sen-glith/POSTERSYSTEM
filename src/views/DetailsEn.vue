@@ -1,44 +1,37 @@
 <template>
   <div class="main" :style="{ width: width + 'px' }" style="margin: 0 auto">
-    <Banner :meetingID = "meetingId" :bannerData="bannerData" :style="{ width: '100%', height: calculatedHeight + 'px' }"  />
+    <Banner :meetingId="meetingId" :bannerData="bannerData"
+      :style="{ width: '100%', height: calculatedHeight + 'px' }" />
     <div class="container">
-    <div class="detailsPage" :style="{ width: width + 'px' }">
-      <!-- <div class="backBtn" @click="goBack">
+      <div class="detailsPage" :style="{ width: width + 'px' }">
+        <!-- <div class="backBtn" @click="goBack">
         <Icon name="arrow-left" />{{ $t("back") }}
       </div> -->
-      <div class="header">
-        <div class="backBtn" @click="goBack"><i style="font-size: 22px;margin-left: -15px;margin-right: 3px;margin-top: 3px;" class="el-icon-arrow-left"></i> {{ $t("backen") }}</div>
-        <div class="tips">{{ $t("tipsen") }}</div>
-      </div>
-      <div class="content-wrapper">
-        <v-touch
-          class="content"
-          ref="zoomContainer"
-          @pinchstart="onPinchStart"
-          @pinch="onPinch"
-          @pinchend="onPinchEnd"
-          @panstart="onPanStart"
-          @pan="onPan"
-          @panend="onPanEnd"
-          :style="contentStyle"
-        >
+        <div class="header">
+          <div class="backBtn" @click="goBack"><i
+              style="font-size: 22px;margin-left: -15px;margin-right: 3px;margin-top: 3px;"
+              class="el-icon-arrow-left"></i> {{ $t("back3n") }}</div>
+          <div class="tips">{{ $t("tipsen") }}</div>
+        </div>
+        <div class="content-wrapper">
           <div class="imgItem" v-for="item in detailImages" :key="item.id">
-            <img v-lazy="item.pic_name" alt="">
+            <img v-lazy="item.pic_name" alt="" @dblclick="toggleImageSize(item)" @touchstart="touchStart($event, item)"
+              @touchmove="touchMove($event, item)" @touchend="touchEnd($event, item)"
+              :style="{ width: item.zoomed ? '200%' : '100%' }">
           </div>
           <div class="copyright">Copyright @ 2018-2025 TRI-THINK All Rights Reserved.</div>
-        </v-touch>
+        </div>
       </div>
     </div>
-  </div>
   </div>
 </template>
 
 <script>
 import Vue from 'vue'
-import { Icon, Lazyload } from "vant"
+import { Icon, Lazyload } from 'vant'
 import VueTouch from 'vue-touch'
 import Banner from 'components/Banner'
-import { getAdvertising } from "@/api/user"
+import { getAdvertising } from '@/api/user'
 // import Banner from "components/Banner"
 Vue.use(Lazyload)
 Vue.use(VueTouch, { name: 'v-touch' })
@@ -47,7 +40,7 @@ export default {
   name: 'details',
   components: {
     Banner,
-    Icon,
+    Icon
   },
   data() {
     return {
@@ -68,8 +61,10 @@ export default {
       lastPanY: 0,
       isPanning: false,
       calculatedHeight: 0,
+      meetingId: 0,
       bannerData: {},
-      meetingId: 0
+      initialPinchDistance: 0,
+      lastZoomState: false
     }
   },
   computed: {
@@ -82,8 +77,9 @@ export default {
     }
   },
   created() {
-    document.title = "eposter";
-    console.log("获取banner信息成功", this.itemData,this.$route.params.data)
+    document.title = '壁报展示'
+    console.log('获取banner信息成功', this.itemData, this.$route.params.data)
+    // this.meetingId = this.$route.params.data.meeting_id
     if (this.$route.params.data && this.$route.params.data.meeting_id) {
       this.meetingId = this.$route.params.data.meeting_id
     }
@@ -97,10 +93,9 @@ export default {
       'uid': 1
     }).then(res => {
       this.bannerData = res.data
-      console.log(this.bannerData, 'banner this.imageList');
+      console.log(this.bannerData, 'banner this.imageList')
     })
     this.updateDetailData()
-
   },
   mounted() {
     window.addEventListener('resize', this.handResize)
@@ -120,16 +115,16 @@ export default {
     updateDetailData() {
       this.itemData = this.$route.params.data
       if (!this.itemData) {
-        console.error("没有传递有效的 itemData");
-        return;
+        console.error('没有传递有效的 itemData')
+        return
       }
       const { pic_list } = this.itemData
-      this.detailImages = pic_list
+      this.detailImages = pic_list.map(item => ({ ...item, zoomed: false }))
       this.detailImages.forEach(item => {
-        item.pic_name =item.pic_name.indexOf('http') !== -1 ? item.pic_name : baseUrl + '/' + item.pic_name
+        item.pic_name = item.pic_name.indexOf('http') !== -1 ? item.pic_name : baseUrl + '/' + item.pic_name
         // item.pic_name = baseUrl + '/' + item.pic_name
       })
-      console.log("this.detailImages=====", this.detailImages);
+      console.log('this.detailImages=====', this.detailImages)
     },
     handResize() {
       this.width = window.innerWidth
@@ -279,13 +274,53 @@ export default {
       this.scale = this.minScale
       this.panX = 0
       this.panY = 0
+      this.detailImages.forEach(item => {
+        item.zoomed = false
+      })
+    },
+    toggleImageSize(item) {
+      item.zoomed = !item.zoomed
+    },
+    touchStart(event, item) {
+      if (event.touches.length === 2) {
+        // 记录两指初始距离
+        this.initialPinchDistance = Math.hypot(
+          event.touches[0].clientX - event.touches[1].clientX,
+          event.touches[0].clientY - event.touches[1].clientY
+        )
+        this.lastZoomState = item.zoomed
+      }
+    },
+    touchMove(event, item) {
+      if (event.touches.length === 2) {
+        // 计算当前两指距离
+        const currentDistance = Math.hypot(
+          event.touches[0].clientX - event.touches[1].clientX,
+          event.touches[0].clientY - event.touches[1].clientY
+        )
+
+        // 计算缩放比例
+        const scale = currentDistance / this.initialPinchDistance
+
+        if (scale > 1.5 && !this.lastZoomState) {
+          // 放大
+          item.zoomed = true
+        } else if (scale < 0.8 && this.lastZoomState) {
+          // 缩小
+          item.zoomed = false
+        }
+      }
+    },
+    touchEnd(event, item) {
+      // 重置状态
+      this.initialPinchDistance = 0
     }
   },
   watch: {
     // 监听路由参数变化
     '$route': {
       handler(to, from) {
-        document.title = "eposter";
+        document.title = 'eposter'
         if (to.name === 'detailsEn' && to.params.data) {
           console.log('路由参数变化，更新数据', to.params.data)
           this.updateDetailData()
@@ -314,10 +349,11 @@ export default {
   justify-content: center;
   align-items: center;
   background: url("../assets/bigBG.png") no-repeat center center;
-        background-size: 100% 100%;
+  background-size: 100% 100%;
   // height: 100vh;
   // width: 100vw;
   background-color: #fff;
+
   .detailsPage {
     width: 100%;
     height: 100%;
@@ -325,14 +361,14 @@ export default {
     overflow: hidden;
 
     .backBtn {
-      width:66px;
-      height:28px;
-      background:rgba(71, 82, 110, .5);
-      border-radius:4px;
-      font-family:Source Han Sans CN;
-      font-weight:700;
-      color:#a1d7ff;
-      font-size:12px;
+      width: 66px;
+      height: 28px;
+      background: rgba(71, 82, 110, .5);
+      border-radius: 4px;
+      font-family: Source Han Sans CN;
+      font-weight: 700;
+      color: #a1d7ff;
+      font-size: 12px;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -342,9 +378,11 @@ export default {
     .content-wrapper {
       height: 100%;
       width: 100%;
-      overflow: auto; /* 允许内容溢出时滚动 */
+      overflow: auto;
+      /* 允许内容溢出时滚动 */
       box-sizing: border-box;
-      position: relative; /* 添加相对定位 */
+      position: relative;
+      /* 添加相对定位 */
 
       /* 隐藏滚动条但保留滚动功能 */
       &::-webkit-scrollbar {
@@ -352,14 +390,19 @@ export default {
         height: 0;
         display: none;
       }
-      scrollbar-width: none; /* Firefox */
-      -ms-overflow-style: none; /* IE and Edge */
+
+      scrollbar-width: none;
+      /* Firefox */
+      -ms-overflow-style: none;
+      /* IE and Edge */
 
       .content {
         width: 100%;
         /* 移除固定高度，允许内容自然延展 */
-        touch-action: pan-y pinch-zoom; /* 允许垂直滚动和缩放 */
-        will-change: transform; /* 优化性能 */
+        touch-action: pan-y pinch-zoom;
+        /* 允许垂直滚动和缩放 */
+        will-change: transform;
+        /* 优化性能 */
 
         .imgItem {
           width: 100%;
@@ -387,6 +430,7 @@ export default {
     // background-color: rgba(255, 255, 255, 0.8);
     z-index: 10;
   }
+
   .copyright {
     margin-top: 10px;
     font-size: 12px;
@@ -394,6 +438,7 @@ export default {
     color: rgba(154, 211, 255, 1);
     padding-bottom: 10px;
   }
+
   .header {
     background-color: #03122c;
     height: 36px;
