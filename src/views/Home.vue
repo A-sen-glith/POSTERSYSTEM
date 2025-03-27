@@ -137,7 +137,7 @@ export default {
     SwipeItem,
     Banner
   },
-  data() {
+  data () {
     return {
       width: window.innerWidth,
       height: window.innerHeight,
@@ -170,7 +170,7 @@ export default {
     }
   },
 
-  created() {
+  created () {
     document.title = '壁报展示'
     const url = window.location.href
     const fileExtension = url.split('.').pop().split(/[?#]/)
@@ -293,56 +293,52 @@ export default {
     })
   },
 
-  mounted() {
+  mounted () {
     for (let i = 0; i < 10000; i++) {
       clearTimeout(i)
     }
     window.addEventListener('resize', this.handResize)
+    window.addEventListener('keydown', this.resetTimer)
     this.handResize()
   },
   methods: {
-    handleCurrentChange(val) {
+    handleCurrentChange (val) {
       console.log(`当前页: ${val}`)
       this.currentPage = val // 改变当前页码
       this.searchClick()
     },
-    handleSizeChange(val) {
+    handleSizeChange (val) {
       console.log(`每页 ${val} 条`)
       this.pageSize = val // 改变每页记录数
       this.searchClick()
     },
-    resetTimer() {
+    resetTimer () {
+      console.log(this.lockDuration, '重置定时器111')
       if (this.inactivityTimeout) {
-        for (let i = 0; i < this.inactivityTimeout + 1000; i++) {
-          clearTimeout(i)
-        }
-        // clearTimeout(this.inactivityTimeout);
+        clearTimeout(this.inactivityTimeout)
       }
       this.monitorInactivity() // 重新开始监控
     },
-    monitorInactivity() {
+    monitorInactivity () {
       if (this.lockDuration > 0) {
         console.log('wucccccccccccccccccc', this.lockDuration)
-        const resetTimer = () => {
-          if (this.inactivityTimeout) {
-            for (let i = 0; i < this.inactivityTimeout; i++) {
-              clearTimeout(i)
-            }
-          }
-          if (this.meetShowAdvert) {
-            this.inactivityTimeout = setTimeout(() => {
-              this.showAdvert = true
-            }, this.lockDuration * 1000)
-          }
+
+        if (this.inactivityTimeout) {
+          clearTimeout(this.inactivityTimeout)
         }
-        // window.addEventListener("mousemove", resetTimer);
-        window.addEventListener('keydown', resetTimer)
-        // window.addEventListener("touchstart", resetTimer);
-        // window.addEventListener("touchmove", resetTimer);
-        resetTimer()
+        console.log('重置定时器', this.showAdvert)
+
+        if (!this.meetShowAdvert) {
+          console.log('开启广告')
+
+          this.inactivityTimeout = setTimeout(() => {
+            this.showAdvert = true
+          }, this.lockDuration * 1000)
+          console.log('定时器开启', this.inactivityTimeout)
+        }
       }
     },
-    handResize() {
+    handResize () {
       this.width = window.innerWidth
       this.height = window.innerHeight
       console.log('Resize:', this.width, this.height)
@@ -363,7 +359,7 @@ export default {
         this.calculatedHeight = (document.getElementsByClassName('main').length > 0 && document.getElementsByClassName('main')[0].offsetWidth * 9) / 16
       }, 500)
     },
-    handSelectChange1(val) {
+    handSelectChange1 (val) {
       console.log('handSelectChange1', val)
       this.categoryId2 = ''
       if (val == 0) {
@@ -387,11 +383,11 @@ export default {
         this.isShowSecondType = true
       })
     },
-    handSelectChange2(val) {
+    handSelectChange2 (val) {
       console.log('handSelectChange2', val)
       this.categoryId2 = val
     },
-    searchClick() {
+    searchClick () {
       console.log('this.value', this.categoryId2)
       console.log('searchTxt', this.categoryId1)
       if (this.searchTxt !== '') {
@@ -420,7 +416,7 @@ export default {
         this.lockDuration = (list && list[0].lock_duration) || 0
       })
     },
-    goDetail(item) {
+    goDetail (item) {
       console.log('item', item)
       console.log('item', item.pic_list[0].pic_name)
       if (item.pic_list.length === 0) {
@@ -435,29 +431,32 @@ export default {
   },
   watch: {
     '$route': {
-      handler(to, from) {
+      handler (to, from) {
         document.title = '壁报展示'
       },
       deep: true
     },
-    width(val) {
-      this.width = val
+    showAdvert (val) {
+      console.log('watch', val)
     },
-    height(val) {
+    width (val) {
+      this.width = val
+      if (!val) {
+        this.monitorInactivity()
+      } else {
+        this.resetTimer()
+      }
+    },
+    height (val) {
       this.height = val
     }
   },
-  beforeDestroy() {
+  beforeDestroy () {
     window.removeEventListener('resize', this.handResize)
     // window.removeEventListener("mousemove", this.resetTimer);
     window.removeEventListener('keydown', this.resetTimer)
-    // window.removeEventListener("touchstart", this.resetTimer);
-    // window.removeEventListener("touchmove", this.resetTimer);
-
     if (this.inactivityTimeout) {
-      for (let i = 0; i < this.inactivityTimeout + 1000; i++) {
-        clearTimeout(i)
-      }
+      clearTimeout(this.inactivityTimeout)
     }
   }
 }

@@ -700,7 +700,7 @@ html {
   .main {
     position: relative;
     background-color: #fff;
-    height: 100%;
+    // height: 100%;
 
     .advert {
       position: absolute;

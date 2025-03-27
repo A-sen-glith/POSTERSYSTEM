@@ -4,9 +4,6 @@
       :style="{ width: '100%', height: calculatedHeight + 'px' }" />
     <div class="container">
       <div class="detailsPage" :style="{ width: width + 'px' }">
-        <!-- <div class="backBtn" @click="goBack">
-        <Icon name="arrow-left" />{{ $t("back") }}
-      </div> -->
         <div class="header">
           <div class="backBtn" @click="goBack"><i
               style="font-size: 22px;margin-left: -15px;margin-right: 3px;margin-top: 3px;"
@@ -344,108 +341,115 @@ export default {
 
 </script>
 <style lang="scss" scoped>
-.container {
+.main {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  background: url("../assets/bigBG.png") no-repeat center center;
-  background-size: 100% 100%;
-  // height: 100vh;
-  // width: 100vw;
-  background-color: #fff;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  .container {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: url("../assets/bigBG.png") no-repeat center center;
+    background-size: 100% 100%;
+    // height: 100vh;
+    // width: 100vw;
+    background-color: #fff;
 
-  .detailsPage {
-    width: 100%;
-    height: 100%;
-    position: relative;
-    overflow: hidden;
-
-    .backBtn {
-      width: 66px;
-      height: 28px;
-      background: rgba(71, 82, 110, .5);
-      border-radius: 4px;
-      font-family: Source Han Sans CN;
-      font-weight: 700;
-      color: #a1d7ff;
-      font-size: 12px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      cursor: pointer;
-    }
-
-    .content-wrapper {
-      height: 100%;
+    .detailsPage {
       width: 100%;
-      overflow: auto;
-      /* 允许内容溢出时滚动 */
-      box-sizing: border-box;
+      height: 100%;
       position: relative;
-      /* 添加相对定位 */
+      overflow: hidden;
 
-      /* 隐藏滚动条但保留滚动功能 */
-      &::-webkit-scrollbar {
-        width: 0;
-        height: 0;
-        display: none;
+      .backBtn {
+        width: 66px;
+        height: 28px;
+        background: rgba(71, 82, 110, .5);
+        border-radius: 4px;
+        font-family: Source Han Sans CN;
+        font-weight: 700;
+        color: #a1d7ff;
+        font-size: 12px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
       }
 
-      scrollbar-width: none;
-      /* Firefox */
-      -ms-overflow-style: none;
-      /* IE and Edge */
-
-      .content {
+      .content-wrapper {
+        height: 100%;
         width: 100%;
-        /* 移除固定高度，允许内容自然延展 */
-        touch-action: pan-y pinch-zoom;
-        /* 允许垂直滚动和缩放 */
-        will-change: transform;
-        /* 优化性能 */
+        overflow: auto;
+        /* 允许内容溢出时滚动 */
+        box-sizing: border-box;
+        position: relative;
+        /* 添加相对定位 */
 
-        .imgItem {
+        /* 隐藏滚动条但保留滚动功能 */
+        &::-webkit-scrollbar {
+          width: 0;
+          height: 0;
+          display: none;
+        }
+
+        scrollbar-width: none;
+        /* Firefox */
+        -ms-overflow-style: none;
+        /* IE and Edge */
+
+        .content {
           width: 100%;
+          /* 移除固定高度，允许内容自然延展 */
+          touch-action: pan-y pinch-zoom;
+          /* 允许垂直滚动和缩放 */
+          will-change: transform;
+          /* 优化性能 */
 
-          img {
+          .imgItem {
             width: 100%;
-            vertical-align: bottom;
+
+            img {
+              width: 100%;
+              vertical-align: bottom;
+            }
           }
         }
       }
+
+      .content-wrapper .content .imgItem:nth-child(2) {
+        width: 100%;
+        margin-top: -1px;
+      }
     }
 
-    .content-wrapper .content .imgItem:nth-child(2) {
-      width: 100%;
-      margin-top: -1px;
+    .tips {
+      color: rgba(255, 230, 0, 1);
+      text-align: right;
+      padding: 10px;
+      position: sticky;
+      top: 0;
+      // background-color: rgba(255, 255, 255, 0.8);
+      z-index: 10;
     }
-  }
 
-  .tips {
-    color: rgba(255, 230, 0, 1);
-    text-align: right;
-    padding: 10px;
-    position: sticky;
-    top: 0;
-    // background-color: rgba(255, 255, 255, 0.8);
-    z-index: 10;
-  }
+    .copyright {
+      margin-top: 10px;
+      font-size: 12px;
+      text-align: center;
+      color: rgba(154, 211, 255, 1);
+      padding-bottom: 10px;
+    }
 
-  .copyright {
-    margin-top: 10px;
-    font-size: 12px;
-    text-align: center;
-    color: rgba(154, 211, 255, 1);
-    padding-bottom: 10px;
-  }
-
-  .header {
-    background-color: #03122c;
-    height: 36px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 20px;
+    .header {
+      background-color: #03122c;
+      height: 36px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+    }
   }
 }
 </style>

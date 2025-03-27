@@ -1,6 +1,6 @@
 <template>
   <div class="banner" :style="{ width: width + 'px', height: height + 'px' }">
-    <Swipe type="card" class="swipe" :style="{ width: width }" :autoplay="4000">
+    <Swipe type="card" class="swipe" :style="{ width: width }" :autoplay="4000" v-if="bannerImages.length > 0">
       <SwipeItem class="bannerImg" style="width: 100%;" v-for="(item, index) in bannerImages" :key="index">
         <a :href="item.if_jump == 0 ? item.jump_url : 'javascript:void(0)'"
           style="display: block; width: 100%; height: 100%; text-decoration: none; outline: none;">
@@ -32,7 +32,7 @@ export default {
     Swipe,
     SwipeItem
   },
-  data() {
+  data () {
     return {
       bannerImages: [],
       width: window.innerWidth,
@@ -42,27 +42,38 @@ export default {
   },
   computed: {},
   watch: {
-    bannerData(newVal) {
+    bannerData (newVal) {
       if (newVal && newVal.list) {
-        console.log('bannerData updated:', newVal)
+        console.log('banner Data updated:', newVal.list)
         // 处理 bannerImages 更新等操作
         this.bannerImages = newVal.list.map(item => {
           item.pic_name = baseUrl + '/' + item.pic_name
           return item
         })
+        console.log('banner Images 11:', this.bannerImages)
       }
     }
   },
-  created() {
+  created () {
     console.log('Banner created====', this.meetingId)
     console.log('Banner bannerData====', this.bannerData)
   },
-  mounted() {
+  mounted () {
+    this.$nextTick(() => {
+      console.log('bannerImages rendered', this.bannerData.list)
+      if (this.bannerData && this.bannerData.list && Array.isArray(this.bannerData.list)) {
+        console.log('bannerImages rendered', this.bannerData.list)
+        this.bannerImages = this.bannerData.list
+        console.log('banner Images 11:', this.bannerImages) // 在这里打印确保是最新的
+      } else {
+        console.error('bannerData or bannerData.list is not available')
+      }
+    })
     window.addEventListener('resize', this.handResize)
     this.handResize()
   },
   methods: {
-    handResize() {
+    handResize () {
       this.width = window.innerWidth
       this.height = window.innerHeight
       console.log('Resize:', this.width, this.height)
@@ -78,7 +89,7 @@ export default {
       }
     }
   },
-  beforeDestroy() {
+  beforeDestroy () {
     window.removeEventListener('resize', this.handResize)
   }
 }
