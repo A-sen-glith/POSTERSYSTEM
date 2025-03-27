@@ -10,7 +10,7 @@
         <div class="header">
           <div class="backBtn" @click="goBack"><i
               style="font-size: 22px;margin-left: -15px;margin-right: 3px;margin-top: 3px;"
-              class="el-icon-arrow-left"></i> {{ $t("back3n") }}</div>
+              class="el-icon-arrow-left"></i> {{ $t("backen") }}</div>
           <div class="tips">{{ $t("tipsen") }}</div>
         </div>
         <div class="content-wrapper">

@@ -438,14 +438,14 @@ export default {
     },
     showAdvert (val) {
       console.log('watch', val)
-    },
-    width (val) {
-      this.width = val
       if (!val) {
         this.monitorInactivity()
       } else {
         this.resetTimer()
       }
+    },
+    width (val) {
+      this.width = val
     },
     height (val) {
       this.height = val

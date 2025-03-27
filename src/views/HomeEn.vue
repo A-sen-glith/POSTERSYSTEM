@@ -306,6 +306,7 @@ export default {
       clearTimeout(i)
     }
     window.addEventListener('resize', this.handResize)
+    window.addEventListener('keydown', this.resetTimer)
     this.handResize()
   },
   methods: {
@@ -327,34 +328,29 @@ export default {
       this.searchClick()
     },
     resetTimer() {
+      console.log(this.lockDuration, '重置定时器111')
       if (this.inactivityTimeout) {
-        for (let i = 0; i < this.inactivityTimeout + 1000; i++) {
-          clearTimeout(i)
-        }
-        // clearTimeout(this.inactivityTimeout);
+        clearTimeout(this.inactivityTimeout)
       }
       this.monitorInactivity() // 重新开始监控
     },
     monitorInactivity() {
       if (this.lockDuration > 0) {
         console.log('wucccccccccccccccccc', this.lockDuration)
-        const resetTimer = () => {
-          if (this.inactivityTimeout) {
-            for (let i = 0; i < this.inactivityTimeout; i++) {
-              clearTimeout(i)
-            }
-          }
-          if (this.meetShowAdvert) {
-            this.inactivityTimeout = setTimeout(() => {
-              this.showAdvert = true
-            }, this.lockDuration * 1000)
-          }
+
+        if (this.inactivityTimeout) {
+          clearTimeout(this.inactivityTimeout)
         }
-        // window.addEventListener("mousemove", resetTimer);
-        window.addEventListener('keydown', resetTimer)
-        // window.addEventListener("touchstart", resetTimer);
-        // window.addEventListener("touchmove", resetTimer);
-        resetTimer()
+        console.log('重置定时器', this.showAdvert)
+
+        if (!this.meetShowAdvert) {
+          console.log('开启广告')
+
+          this.inactivityTimeout = setTimeout(() => {
+            this.showAdvert = true
+          }, this.lockDuration * 1000)
+          console.log('定时器开启', this.inactivityTimeout)
+        }
       }
     },
     handResize() {
@@ -455,6 +451,14 @@ export default {
       },
       deep: true
     },
+    showAdvert (val) {
+      console.log('watch', val)
+      if (!val) {
+        this.monitorInactivity()
+      } else {
+        this.resetTimer()
+      }
+    },
     width(val) {
       this.width = val
     },
@@ -464,15 +468,10 @@ export default {
   },
   beforeDestroy() {
     window.removeEventListener('resize', this.handResize)
-    // window.removeEventListener("mousemove", this.resetTimer);
     window.removeEventListener('keydown', this.resetTimer)
-    // window.removeEventListener("touchstart", this.resetTimer);
-    // window.removeEventListener("touchmove", this.resetTimer);
 
     if (this.inactivityTimeout) {
-      for (let i = 0; i < this.inactivityTimeout + 1000; i++) {
-        clearTimeout(i)
-      }
+      clearTimeout(this.inactivityTimeout)
     }
   }
 }
@@ -700,7 +699,7 @@ html {
   .main {
     position: relative;
     background-color: #fff;
-    // height: 100%;
+    height: 100%;
 
     .advert {
       position: absolute;
