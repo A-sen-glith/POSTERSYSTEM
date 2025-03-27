@@ -35,13 +35,13 @@
             <div class="Classification">
               <div class="ClassificationTitle">{{ $t("type1en") }}</div>
               <el-select class="ClassificationSelect" popper-class="dataClass" v-model="categoryId1"
-                @change="handSelectChange1" :placeholder="$t('pleaseSelect')">
+                @change="handSelectChange1" :placeholder="$t('pleaseSelecten')">
                 <el-option style="
                     height: 34px;
                     line-height: 34px;
                     font-size: 12px;
                     padding: 0 0.13rem;
-                  " label="全部" :value="0">
+                  " label="All" :value="0">
                 </el-option>
                 <el-option style="
                     height: 34px;
@@ -55,7 +55,7 @@
             <div class="Classification" v-show="categoryList2.length > 0 && isShowSecondType">
               <div class="ClassificationTitle">{{ $t("type2en") }}</div>
               <el-select class="ClassificationSelect" :popper-append-to-body="false" popper-class="dataClass"
-                v-model="categoryId2" @change="handSelectChange2" :placeholder="$t('pleaseSelect')">
+                v-model="categoryId2" @change="handSelectChange2" :placeholder="$t('pleaseSelecten')">
                 <el-option style="
                     height: 34px;
                     line-height: 34px;
