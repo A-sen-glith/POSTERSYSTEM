@@ -35,7 +35,7 @@ import { getAdvertising } from '@/api/user'
 // import Banner from "components/Banner"
 Vue.use(Lazyload)
 Vue.use(VueTouch, { name: 'v-touch' })
-const baseUrl = 'https://eposter.tri-think.cn/uploadFile'
+const baseUrl = 'https://eposter.tri-think.cn/test/uploadFile'
 export default {
   name: 'details',
   components: {

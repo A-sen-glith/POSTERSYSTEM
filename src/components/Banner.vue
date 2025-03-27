@@ -1,12 +1,13 @@
 <template>
-    <div class="banner" :style="{ width: width + 'px', height: height + 'px' }">
-      <Swipe type="card" class="swipe" :style="{width:width}" :autoplay="4000">
-        <SwipeItem class="bannerImg" style="width: 100%;" v-for="(item, index) in bannerImages" :key="index">
-          <a :href="item.if_jump == 0 ? item.jump_url : 'javascript:void(0)'" style="display: block; width: 100%; height: 100%; text-decoration: none; outline: none;">
-              <img width="100%" v-lazy="item.pic_name" />
-          </a>
-        </SwipeItem>
-      </Swipe>
+  <div class="banner" :style="{ width: width + 'px', height: height + 'px' }">
+    <Swipe type="card" class="swipe" :style="{ width: width }" :autoplay="4000">
+      <SwipeItem class="bannerImg" style="width: 100%;" v-for="(item, index) in bannerImages" :key="index">
+        <a :href="item.if_jump == 0 ? item.jump_url : 'javascript:void(0)'"
+          style="display: block; width: 100%; height: 100%; text-decoration: none; outline: none;">
+          <img width="100%" v-lazy="item.pic_name" />
+        </a>
+      </SwipeItem>
+    </Swipe>
   </div>
 </template>
 
@@ -15,7 +16,7 @@ import Vue from 'vue'
 import { Swipe, SwipeItem, Lazyload } from 'vant'
 // import { getAdvertising } from "@/api/user"
 Vue.use(Lazyload)
-const baseUrl = 'https://eposter.tri-think.cn/uploadFile'
+const baseUrl = 'https://eposter.tri-think.cn/test/uploadFile'
 export default {
   name: 'home',
   props: {
@@ -31,7 +32,7 @@ export default {
     Swipe,
     SwipeItem
   },
-  data () {
+  data() {
     return {
       bannerImages: [],
       width: window.innerWidth,
@@ -41,7 +42,7 @@ export default {
   },
   computed: {},
   watch: {
-    bannerData (newVal) {
+    bannerData(newVal) {
       if (newVal && newVal.list) {
         console.log('bannerData updated:', newVal)
         // 处理 bannerImages 更新等操作
@@ -52,16 +53,16 @@ export default {
       }
     }
   },
-  created () {
+  created() {
     console.log('Banner created====', this.meetingId)
     console.log('Banner bannerData====', this.bannerData)
   },
-  mounted () {
+  mounted() {
     window.addEventListener('resize', this.handResize)
     this.handResize()
   },
   methods: {
-    handResize () {
+    handResize() {
       this.width = window.innerWidth
       this.height = window.innerHeight
       console.log('Resize:', this.width, this.height)
@@ -77,27 +78,30 @@ export default {
       }
     }
   },
-  beforeDestroy () {
+  beforeDestroy() {
     window.removeEventListener('resize', this.handResize)
   }
 }
 
 </script>
 <style lang="scss" scoped>
-.banner{
+.banner {
+  width: 100%;
+  height: 100%;
+
+  .swipe {
     width: 100%;
     height: 100%;
-    .swipe{
+
+    .bannerImg {
       width: 100%;
       height: 100%;
-      .bannerImg {
+
+      img {
         width: 100%;
         height: 100%;
-        img {
-          width: 100%;
-          height: 100%;
-          }
-        }
       }
+    }
+  }
 }
 </style>
