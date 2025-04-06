@@ -44,72 +44,77 @@
                     font-size: 12px;
                     padding: 0 0.13rem;
                   " label="全部" :value="0">
-                </el-option>
-                <el-option style="
+              </el-option>
+              <el-option style="
                     height: 34px;
                     line-height: 34px;
                     font-size: 12px;
                     padding: 0 0.13rem;
                   " v-for="item in categoryList1" :key="item.id" :label="item.name" :value="item.id">
-                </el-option>
-              </el-select>
-            </div>
-            <div class="Classification" v-show="categoryList2.length > 0 && isShowSecondType">
-              <div class="ClassificationTitle">{{ $t("type2") }}</div>
-              <el-select class="ClassificationSelect" :popper-append-to-body="false" popper-class="dataClass"
-                v-model="categoryId2" @change="handSelectChange2" :placeholder="$t('pleaseSelect')">
-                <el-option style="
+              </el-option>
+            </el-select>
+          </div>
+          <div class="Classification" v-show="categoryList2.length > 0 && isShowSecondType">
+            <div class="ClassificationTitle">{{ $t("type2") }}</div>
+            <el-select class="ClassificationSelect" :popper-append-to-body="false" popper-class="dataClass"
+              v-model="categoryId2" @change="handSelectChange2" :placeholder="$t('pleaseSelect')">
+              <el-option style="
                     height: 34px;
                     line-height: 34px;
                     font-size: 12px;
                     padding: 0 0.13rem;
                   " v-for="item in categoryList2" :key="item.id" :label="item.name" :value="item.id">
-                </el-option>
-              </el-select>
-            </div>
+              </el-option>
+            </el-select>
           </div>
-          <div class="selectContent">
-            <div class="search">
-              <el-input class="search-input" v-model="searchTxt" :placeholder="$t('placeholder')">
-                <el-button @click="searchClick" slot="append">{{ $t("search") }}</el-button>
-              </el-input>
-            </div>
-            <div class="current" v-show="totalItems != 0 && isShowPage">
-              <el-pagination small layout="prev, pager, next" :current-page.sync="currentPage"
-                @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-size="8" :total="totalItems"
-                background>
-              </el-pagination>
-            </div>
-            <div class="contentList" v-if="searchList && searchList.length">
-              <div class="contentListItems" v-for="item in searchList" :key="item.id" @click="goDetail(item)">
+        </div>
+        <div class="selectContent">
+          <div class="search">
+            <el-input class="search-input" v-model="searchTxt" :placeholder="$t('placeholder')">
+              <el-button @click="searchClick" slot="append">{{ $t("search") }}</el-button>
+            </el-input>
+          </div>
+          <div class="current" v-show="totalItems != 0 && isShowPage">
+            <el-pagination small layout="prev, pager, next" :current-page.sync="currentPage"
+              @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-size="8" :total="totalItems"
+              background>
+            </el-pagination>
+          </div>
+          <div class="contentList" v-if="searchList && searchList.length">
+            <div class="contentListItems" v-for="item in searchList" :key="item.id" @click="goDetail(item)">
+              <div class="thumbnail" style="margin-right: 10px;" v-if="thumbnail">
+                <img style="height: 144px;width: 110px;" v-lazy="item.thumbnail_pic" />
+              </div>
+              <div style="display: flex;flex-direction: column;justify-content: center;">
                 <div class="topic public">
                   <div>{{ item.title }}</div>
                 </div>
-                <div class="topic info">
-                  <div class="serialNumber public">
-                    <div>{{ $t("no") }}：</div>
-                    <div>{{ item.sort_number }}</div>
-                  </div>
-                  <div class="author public">
-                    <div>{{ $t("author") }}：</div>
-                    <div>{{ item.author }}</div>
-                  </div>
+              <div class="topic info">
+                <div class="serialNumber public">
+                  <div>{{ $t("no") }}：</div>
+                  <div>{{ item.sort_number }}</div>
+                </div>
+                <div class="author public">
+                  <div>{{ $t("author") }}：</div>
+                  <div>{{ item.author }}</div>
                 </div>
               </div>
-            </div>
-            <div class="no-data" v-else>
-              <div class="no-data-content">
-                <i class="el-icon-warning-outline"></i>
-                <p>{{ $t('noData') || '暂无数据' }}</p>
               </div>
             </div>
-            <div class="current" v-show="totalItems != 0 && !isShowPage">
-              <el-pagination small layout="prev, pager, next" :current-page.sync="currentPage"
-                @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-size="8"
-                :total="totalItems">
-              </el-pagination>
+          </div>
+          <div class="no-data" v-else>
+            <div class="no-data-content">
+              <i class="el-icon-warning-outline"></i>
+              <p>{{ $t('noData') || '暂无数据' }}</p>
             </div>
           </div>
+          <div class="current" v-show="totalItems != 0 && !isShowPage">
+            <el-pagination small layout="prev, pager, next" :current-page.sync="currentPage"
+              @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-size="8"
+              :total="totalItems">
+            </el-pagination>
+          </div>
+        </div>
         </div>
       </div>
     </div>
@@ -166,7 +171,11 @@ export default {
       widthBanner: 0,
       calculatedHeight: 0,
       bannerData: {},
-      meetingId: 0
+      meetingId: 0,
+      thumbnail: false,
+      poster_banner_status: false,
+      like_status: false,
+      watermark: '',
     }
   },
 
@@ -211,6 +220,10 @@ export default {
       if (meet.banner_status === '已关闭') {
         this.isShowBanner = false
       }
+      this.thumbnail = meet.thumbnail === '已开启' ? true : false
+      this.poster_banner_status = meet.poster_banner_status === '已开启' ? true : false
+      this.like_status = meet.like_status === '已开启' ? true : false
+      this.watermark = meet.watermark
     })
 
     getAdvertising({
@@ -418,15 +431,13 @@ export default {
     },
     goDetail (item) {
       console.log('item', item)
-      console.log('item', item.pic_list[0].pic_name)
       if (item.pic_list.length === 0) {
         return Toast(this.$t('wallNewspaperTips'))
       }
       if (!item.pic_list[0].pic_name) {
-        console.log('item111', item.pic_list[0].pic_name)
         return Toast(this.$t('wallNewspaperTips'))
       }
-      this.$router.push({ name: 'details', params: { data: item, meeting_id: this.meeting_id } })
+      this.$router.push({ name: 'details', params: { data: item, meeting_id: this.meeting_id, poster_banner_status: this.poster_banner_status, like_status: this.like_status, watermark: this.watermark } })
     }
   },
   watch: {
@@ -824,9 +835,9 @@ html {
 
             .contentListItems {
               display: flex;
-              flex-direction: column;
-              justify-content: center;
-              height: 60px;
+              flex-direction: row;
+              // justify-content: center;
+              // height: 60px;
               background: #47526e;
               border-radius: 8px;
               padding: 10px 15px;
@@ -850,7 +861,10 @@ html {
                     color: #a1d7ff;
                     font-size: 14px;
                     font-weight: 500;
-                    white-space: nowrap;
+                    display: -webkit-box;
+                    -webkit-line-clamp: 2;
+                    line-clamp: 2;
+                    -webkit-box-orient: vertical;
                     overflow: hidden;
                     text-overflow: ellipsis;
                   }

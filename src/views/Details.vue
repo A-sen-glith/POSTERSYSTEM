@@ -1,6 +1,6 @@
 <template>
   <div class="main" :style="{ width: width + 'px' }" style="margin: 0 auto">
-    <Banner :meetingId="meetingId" :bannerData="bannerData"
+    <Banner :meetingId="meetingId" v-show="poster_banner_status" :bannerData="bannerData"
       :style="{ width: '100%', height: calculatedHeight + 'px' }" />
     <div class="container">
       <div class="detailsPage" :style="{ width: width + 'px' }">
@@ -8,13 +8,51 @@
           <div class="backBtn" @click="goBack"><i
               style="font-size: 22px;margin-left: -15px;margin-right: 3px;margin-top: 3px;"
               class="el-icon-arrow-left"></i> {{ $t("back") }}</div>
-          <div class="tips">{{ $t("tips") }}</div>
+              <div class="backBtn" style="margin-right: auto;margin-left: 20px;" @click="likeFun" v-show="like_status && !liked" ><img style="width: 24px; height: 24px;margin-right: 5px;" src="@/assets/like.png" alt="">{{ $t("like") }}</div>
+              <div class="backBtn" style="background:#db8a10;color: #fff;margin-right: auto;margin-left: 20px;" v-show="like_status&& liked" ><img style="width: 24px; height: 24px;margin-right: 5px;" src="@/assets/like1.png" alt="">{{ $t("like") }}</div>
+              <div class="tips" >{{ $t("tips") }}</div>
         </div>
         <div class="content-wrapper">
           <div class="imgItem" v-for="item in detailImages" :key="item.id">
-            <img v-lazy="item.pic_name" alt="" @dblclick="toggleImageSize(item)" @touchstart="touchStart($event, item)"
-              @touchmove="touchMove($event, item)" @touchend="touchEnd($event, item)"
-              :style="{ width: item.zoomed ? '200%' : '100%' }">
+            <div class="image-container" :style="{ position: 'relative'}">
+              <img v-lazy="item.pic_name" alt="" @dblclick="toggleImageSize(item)" @touchstart="touchStart($event, item)"
+                @touchmove="touchMove($event, item)" @touchend="touchEnd($event, item)"
+                :style="{ width: item.zoomed ? '200%' : '100%' }">
+              <div v-if="watermark" class="watermark-overlay" :style="{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: item.zoomed ? '200%' : '100%',
+                height: '100%',
+                pointerEvents: 'none',
+                zIndex: 10,
+                opacity: 0.3,
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                overflow: 'hidden'
+              }">
+                <div :style="{
+                  position: 'absolute',
+                  top: '-50%',
+                  left: '-50%',
+                  width: '200%',
+                  height: '200%',
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                  pointerEvents: 'none'
+                }">
+                  <span v-for="n in 200" :key="n" :style="{
+                    padding: '20px',
+                    fontSize: '18px',
+                    color: 'rgba(0, 0, 0, 0.7)',
+                    whiteSpace: 'nowrap',
+                    transform: 'rotate(-30deg)',
+                    pointerEvents: 'none'
+                  }">{{ watermark }}</span>
+                </div>
+              </div>
+            </div>
           </div>
           <div class="copyright">Copyright @ 2018-2025 TRI-THINK All Rights Reserved.</div>
         </div>
@@ -28,11 +66,11 @@ import Vue from 'vue'
 import { Icon, Lazyload } from 'vant'
 import VueTouch from 'vue-touch'
 import Banner from 'components/Banner'
-import { getAdvertising } from '@/api/user'
+import { getAdvertising, getPosterLikeAdd } from '@/api/user'
 // import Banner from "components/Banner"
 Vue.use(Lazyload)
 Vue.use(VueTouch, { name: 'v-touch' })
-const baseUrl = 'https://eposter.tri-think.cn/test/uploadFile'
+const baseUrl = 'https://eposter.tri-think.cn/uploadFile'
 export default {
   name: 'details',
   components: {
@@ -59,9 +97,13 @@ export default {
       isPanning: false,
       calculatedHeight: 0,
       meetingId: 0,
-      bannerData: {},
+      bannerData: {list: []},
       initialPinchDistance: 0,
-      lastZoomState: false
+      lastZoomState: false,
+      poster_banner_status: false,
+      like_status: false,
+      watermark: '',
+      liked: false,
     }
   },
   computed: {
@@ -80,6 +122,10 @@ export default {
     if (this.$route.params.data && this.$route.params.data.meeting_id) {
       this.meetingId = this.$route.params.data.meeting_id
     }
+    
+    this.updateDetailData()
+  },
+  mounted() {
     getAdvertising({
       'page': 1, // 页码
       'pageSize': 20, // 每页记录数
@@ -89,12 +135,12 @@ export default {
       'meeting_id': this.meetingId, // 会议id
       'uid': 1
     }).then(res => {
-      this.bannerData = res.data
+      this.bannerData = res.data || {list: []}
       console.log(this.bannerData, 'banner this.imageList')
     })
-    this.updateDetailData()
-  },
-  mounted() {
+    this.poster_banner_status = this.$route.params.poster_banner_status
+    this.like_status = this.$route.params.like_status
+    this.watermark = this.$route.params.watermark
     window.addEventListener('resize', this.handResize)
     this.handResize()
 
@@ -109,6 +155,13 @@ export default {
     }
   },
   methods: {
+    likeFun() {
+      getPosterLikeAdd({
+        "id": 2
+      }).then(res => {
+        this.liked = !this.liked
+      })
+    },
     updateDetailData() {
       this.itemData = this.$route.params.data
       if (!this.itemData) {
@@ -131,10 +184,8 @@ export default {
         // 电脑设备，限制最大宽度，允许内容自然延展
         this.width = Math.min(window.innerWidth, 1070)
         // this.height = this.height
-        console.log('电脑设备: 允许内容自然延展', this.width, this.height)
       } else {
         this.height = window.innerHeight
-        console.log('手机或平板: 全屏展示', this.width, this.height)
       }
       setTimeout(() => {
         this.calculatedHeight = (document.getElementsByClassName('main').length > 0 && document.getElementsByClassName('main')[0].offsetWidth * 9) / 16
@@ -317,13 +368,17 @@ export default {
     // 监听路由参数变化
     '$route': {
       handler(to, from) {
-        document.title = '壁报展示'
-        if (to.name === 'details' && to.params.data) {
-          console.log('路由参数变化，更新数据', to.params.data)
-          this.updateDetailData()
-          // 重置缩放和平移状态
-          this.resetZoomAndPan()
-        }
+  document.title = '壁报展示'
+  if (to.name === 'details' && to.params.data) {
+    console.log('路由参数变化，更新数据', to.params)
+    this.poster_banner_status = to.params.poster_banner_status
+    this.like_status = to.params.like_status
+    this.watermark = to.params.watermark
+    this.liked = false
+    this.updateDetailData()
+    // 重置缩放和平移状态
+    this.resetZoomAndPan()
+  }
       },
       deep: true
     }
@@ -409,46 +464,66 @@ export default {
 
           .imgItem {
             width: 100%;
-
-            img {
+            
+            .image-container {
+              position: relative;
               width: 100%;
-              vertical-align: bottom;
+              overflow: hidden;
+              
+              img {
+                width: 100%;
+                vertical-align: bottom;
+              }
+              
+              .watermark-overlay {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                pointer-events: none;
+                z-index: 10;
+                opacity: 0.3;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                overflow: hidden;
+              }
+            }
+
+            &.watermarked {
+              position: relative;
             }
           }
         }
       }
 
-      .content-wrapper .content .imgItem:nth-child(2) {
-        width: 100%;
-        margin-top: -1px;
+      .tips {
+        color: rgba(255, 230, 0, 1);
+        text-align: right;
+        padding: 10px;
+        position: sticky;
+        top: 0;
+        // background-color: rgba(255, 255, 255, 0.8);
+        z-index: 10;
       }
-    }
 
-    .tips {
-      color: rgba(255, 230, 0, 1);
-      text-align: right;
-      padding: 10px;
-      position: sticky;
-      top: 0;
-      // background-color: rgba(255, 255, 255, 0.8);
-      z-index: 10;
-    }
+      .copyright {
+        margin-top: 10px;
+        font-size: 12px;
+        text-align: center;
+        color: rgba(154, 211, 255, 1);
+        padding-bottom: 10px;
+      }
 
-    .copyright {
-      margin-top: 10px;
-      font-size: 12px;
-      text-align: center;
-      color: rgba(154, 211, 255, 1);
-      padding-bottom: 10px;
-    }
-
-    .header {
-      background-color: #03122c;
-      height: 36px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0 20px;
+      .header {
+        background-color: #03122c;
+        height: 36px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 20px;
+      }
     }
   }
 }

@@ -28,8 +28,10 @@
       </div>
 
       <div class="content" v-else>
-        <Banner v-if="isShowBanner" :bannerData="bannerData" :meetingId="meetingId"
-          :style="{ width: '100%', height: calculatedHeight + 'px' }" />
+        <Banner v-if="isShowBanner" :bannerData="bannerData" :meetingId="meetingId" :style="{
+          width: '100%', height:
+            calculatedHeight + 'px'
+        }" />
         <div class="searchContent">
           <div class="selectType">
             <div class="Classification">
@@ -41,73 +43,78 @@
                     line-height: 34px;
                     font-size: 12px;
                     padding: 0 0.13rem;
-                  " label="All" :value="0">
-                </el-option>
-                <el-option style="
+                  " label="全部" :value="0">
+              </el-option>
+              <el-option style="
                     height: 34px;
                     line-height: 34px;
                     font-size: 12px;
                     padding: 0 0.13rem;
                   " v-for="item in categoryList1" :key="item.id" :label="item.name" :value="item.id">
-                </el-option>
-              </el-select>
-            </div>
-            <div class="Classification" v-show="categoryList2.length > 0 && isShowSecondType">
-              <div class="ClassificationTitle">{{ $t("type2en") }}</div>
-              <el-select class="ClassificationSelect" :popper-append-to-body="false" popper-class="dataClass"
-                v-model="categoryId2" @change="handSelectChange2" :placeholder="$t('pleaseSelecten')">
-                <el-option style="
+              </el-option>
+            </el-select>
+          </div>
+          <div class="Classification" v-show="categoryList2.length > 0 && isShowSecondType">
+            <div class="ClassificationTitle">{{ $t("type2en") }}</div>
+            <el-select class="ClassificationSelect" :popper-append-to-body="false" popper-class="dataClass"
+              v-model="categoryId2" @change="handSelectChange2" :placeholder="$t('pleaseSelecten')">
+              <el-option style="
                     height: 34px;
                     line-height: 34px;
                     font-size: 12px;
                     padding: 0 0.13rem;
                   " v-for="item in categoryList2" :key="item.id" :label="item.name" :value="item.id">
-                </el-option>
-              </el-select>
-            </div>
+              </el-option>
+            </el-select>
           </div>
-          <div class="selectContent">
-            <div class="search">
-              <el-input class="search-input" v-model="searchTxt" :placeholder="$t('placeholderen')">
-                <el-button @click="searchClick" slot="append">{{ $t("searchen") }}</el-button>
-              </el-input>
-            </div>
-            <div class="current" v-show="totalItems != 0 && isShowPage">
-              <el-pagination small layout="prev, pager, next" :current-page.sync="currentPage"
-                @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-size="8" :total="totalItems"
-                background>
-              </el-pagination>
-            </div>
-            <div class="contentList" v-if="searchList && searchList.length">
-              <div class="contentListItems" v-for="item in searchList" :key="item.id" @click="goDetail(item)">
+        </div>
+        <div class="selectContent">
+          <div class="search">
+            <el-input class="search-input" v-model="searchTxt" :placeholder="$t('placeholderen')">
+              <el-button @click="searchClick" slot="append">{{ $t("searchen") }}</el-button>
+            </el-input>
+          </div>
+          <div class="current" v-show="totalItems != 0 && isShowPage">
+            <el-pagination small layout="prev, pager, next" :current-page.sync="currentPage"
+              @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-size="8" :total="totalItems"
+              background>
+            </el-pagination>
+          </div>
+          <div class="contentList" v-if="searchList && searchList.length">
+            <div class="contentListItems" v-for="item in searchList" :key="item.id" @click="goDetail(item)">
+              <div class="thumbnail" style="margin-right: 10px;" v-if="thumbnail">
+                <img style="height: 144px;width: 110px;" v-lazy="item.thumbnail_pic" />
+              </div>
+              <div style="display: flex;flex-direction: column;justify-content: center;">
                 <div class="topic public">
                   <div>{{ item.title }}</div>
                 </div>
-                <div class="topic info">
-                  <div class="serialNumber public">
-                    <div>{{ $t("noen") }}：</div>
-                    <div>{{ item.sort_number }}</div>
-                  </div>
-                  <div class="author public">
-                    <div>{{ $t("authoren") }}：</div>
-                    <div>{{ item.author }}</div>
-                  </div>
+              <div class="topic info">
+                <div class="serialNumber public">
+                  <div>{{ $t("noen") }}：</div>
+                  <div>{{ item.sort_number }}</div>
+                </div>
+                <div class="author public">
+                  <div>{{ $t("authoren") }}：</div>
+                  <div>{{ item.author }}</div>
                 </div>
               </div>
-            </div>
-            <div class="no-data" v-else>
-              <div class="no-data-content">
-                <i class="el-icon-warning-outline"></i>
-                <p>{{ $t('noDataen') || 'No data' }}</p>
               </div>
             </div>
-            <div class="current" v-show="totalItems != 0 && !isShowPage">
-              <el-pagination small layout="prev, pager, next" :current-page.sync="currentPage"
-                @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-size="8"
-                :total="totalItems">
-              </el-pagination>
+          </div>
+          <div class="no-data" v-else>
+            <div class="no-data-content">
+              <i class="el-icon-warning-outline"></i>
+              <p>{{ $t('noDataen') || '暂无数据' }}</p>
             </div>
           </div>
+          <div class="current" v-show="totalItems != 0 && !isShowPage">
+            <el-pagination small layout="prev, pager, next" :current-page.sync="currentPage"
+              @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-size="8"
+              :total="totalItems">
+            </el-pagination>
+          </div>
+        </div>
         </div>
       </div>
     </div>
@@ -116,10 +123,7 @@
 
 <script>
 import Vue from 'vue'
-import { Swipe, SwipeItem, Lazyload, Icon, Toast } from 'vant'
-// u5df2u5728main.jsu4e2du5168u5c40u6ce8u518cuff0cu8fd9u91ccu4e0du9700u8981u518du5355u72ecu5bfcu5165
-// import { Select, el-option, Pagination, Input } from 'element-ui'
-// import 'element-ui/lib/theme-chalk/index.css'
+import { Swipe, SwipeItem, Lazyload, Toast } from 'vant'
 import Banner from 'components/Banner'
 import {
   getMeetingList,
@@ -136,15 +140,9 @@ export default {
   components: {
     Swipe,
     SwipeItem,
-    Icon,
     Banner
-    // u5df2u5728main.jsu4e2du5168u5c40u6ce8u518cuff0cu8fd9u91ccu4e0du9700u8981u518du5355u72ecu6ce8u518c
-    // Pagination,
-    // Select,
-    // el-option,
-    // Input
   },
-  data() {
+  data () {
     return {
       width: window.innerWidth,
       height: window.innerHeight,
@@ -173,11 +171,15 @@ export default {
       widthBanner: 0,
       calculatedHeight: 0,
       bannerData: {},
-      meetingId: 0
+      meetingId: 0,
+      thumbnail: false,
+      poster_banner_status: false,
+      like_status: false,
+      watermark: '',
     }
   },
 
-  created() {
+  created () {
     document.title = 'eposter'
     const url = window.location.href
     const fileExtension = url.split('.').pop().split(/[?#]/)
@@ -218,7 +220,12 @@ export default {
       if (meet.banner_status === '已关闭') {
         this.isShowBanner = false
       }
+      this.thumbnail = meet.thumbnail === '已开启' ? true : false
+      this.poster_banner_status = meet.poster_banner_status === '已开启' ? true : false
+      this.like_status = meet.like_status === '已开启' ? true : false
+      this.watermark = meet.watermark
     })
+
     getAdvertising({
       'page': 1, // 页码
       'pageSize': 20, // 每页记录数
@@ -231,6 +238,7 @@ export default {
       this.bannerData = res.data
       console.log(this.bannerData, 'banner this.imageList')
     })
+
     getAdvertising({
       page: 1, // 页码
       pageSize: 20, // 每页记录数
@@ -297,11 +305,8 @@ export default {
       this.monitorInactivity()
     })
   },
-  // watch: {
-  //   showAdvert: "updateAdvertStatus",
-  //   meetShowAdvert: "updateAdvertStatus"
-  // },
-  mounted() {
+
+  mounted () {
     for (let i = 0; i < 10000; i++) {
       clearTimeout(i)
     }
@@ -310,31 +315,24 @@ export default {
     this.handResize()
   },
   methods: {
-    // updateAdvertStatus() {
-    //   console.log("xxxxx meetShowAdvert",this.showAdvert == this.meetShowAdvert);
-    //   this.isShowAdvert = this.showAdvert === this.meetShowAdvert;
-    // },
-    // closeAdvert() {
-    //   this.isShowAdvert = false;
-    // },
-    handleCurrentChange(val) {
+    handleCurrentChange (val) {
       console.log(`当前页: ${val}`)
       this.currentPage = val // 改变当前页码
       this.searchClick()
     },
-    handleSizeChange(val) {
+    handleSizeChange (val) {
       console.log(`每页 ${val} 条`)
       this.pageSize = val // 改变每页记录数
       this.searchClick()
     },
-    resetTimer() {
+    resetTimer () {
       console.log(this.lockDuration, '重置定时器111')
       if (this.inactivityTimeout) {
         clearTimeout(this.inactivityTimeout)
       }
       this.monitorInactivity() // 重新开始监控
     },
-    monitorInactivity() {
+    monitorInactivity () {
       if (this.lockDuration > 0) {
         console.log('wucccccccccccccccccc', this.lockDuration)
 
@@ -353,7 +351,7 @@ export default {
         }
       }
     },
-    handResize() {
+    handResize () {
       this.width = window.innerWidth
       this.height = window.innerHeight
       console.log('Resize:', this.width, this.height)
@@ -374,7 +372,7 @@ export default {
         this.calculatedHeight = (document.getElementsByClassName('main').length > 0 && document.getElementsByClassName('main')[0].offsetWidth * 9) / 16
       }, 500)
     },
-    handSelectChange1(val) {
+    handSelectChange1 (val) {
       console.log('handSelectChange1', val)
       this.categoryId2 = ''
       if (val == 0) {
@@ -398,11 +396,11 @@ export default {
         this.isShowSecondType = true
       })
     },
-    handSelectChange2(val) {
+    handSelectChange2 (val) {
       console.log('handSelectChange2', val)
       this.categoryId2 = val
     },
-    searchClick() {
+    searchClick () {
       console.log('this.value', this.categoryId2)
       console.log('searchTxt', this.categoryId1)
       if (this.searchTxt !== '') {
@@ -431,22 +429,20 @@ export default {
         this.lockDuration = (list && list[0].lock_duration) || 0
       })
     },
-    goDetail(item) {
+    goDetail (item) {
       console.log('item', item)
-      console.log('item', item.pic_list[0].pic_name)
       if (item.pic_list.length === 0) {
         return Toast(this.$t('wallNewspaperTipsen'))
       }
       if (!item.pic_list[0].pic_name) {
-        console.log('item111', item.pic_list[0].pic_name)
         return Toast(this.$t('wallNewspaperTipsen'))
       }
-      this.$router.push({ name: 'detailsEn', params: { data: item, meeting_id: this.meeting_id } })
+      this.$router.push({ name: 'detailsEn', params: { data: item, meeting_id: this.meeting_id, poster_banner_status: this.poster_banner_status, like_status: this.like_status, watermark: this.watermark } })
     }
   },
   watch: {
     '$route': {
-      handler(to, from) {
+      handler (to, from) {
         document.title = 'eposter'
       },
       deep: true
@@ -459,17 +455,17 @@ export default {
         this.resetTimer()
       }
     },
-    width(val) {
+    width (val) {
       this.width = val
     },
-    height(val) {
+    height (val) {
       this.height = val
     }
   },
-  beforeDestroy() {
+  beforeDestroy () {
     window.removeEventListener('resize', this.handResize)
+    // window.removeEventListener("mousemove", this.resetTimer);
     window.removeEventListener('keydown', this.resetTimer)
-
     if (this.inactivityTimeout) {
       clearTimeout(this.inactivityTimeout)
     }
@@ -748,8 +744,8 @@ html {
       border: 1px solid #ccc;
 
       .searchContent {
-        flex-grow: 1;
         width: 100%;
+        flex-grow: 1;
         background: url("../assets/bigBG.png") no-repeat center center;
         background-size: 100% 100%;
         // height: 80%;
@@ -839,9 +835,9 @@ html {
 
             .contentListItems {
               display: flex;
-              flex-direction: column;
-              justify-content: center;
-              height: 60px;
+              flex-direction: row;
+              // justify-content: center;
+              // height: 60px;
               background: #47526e;
               border-radius: 8px;
               padding: 10px 15px;
@@ -865,7 +861,10 @@ html {
                     color: #a1d7ff;
                     font-size: 14px;
                     font-weight: 500;
-                    white-space: nowrap;
+                    display: -webkit-box;
+                    -webkit-line-clamp: 2;
+                    line-clamp: 2;
+                    -webkit-box-orient: vertical;
                     overflow: hidden;
                     text-overflow: ellipsis;
                   }
@@ -925,6 +924,7 @@ html {
         }
       }
     }
+
   }
 }
 

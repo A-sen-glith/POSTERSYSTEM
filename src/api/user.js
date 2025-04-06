@@ -44,6 +44,14 @@ export function getCategoryList (data) {
   })
 }
 
+export function getPosterLikeAdd (data) {
+  return request({
+    url: '/PosterLikeAdd',
+    method: 'post',
+    data
+  })
+}
+
 export function playerstatusupd (data) {
   return request({
     url: '/aipic/playerstatusupd',
