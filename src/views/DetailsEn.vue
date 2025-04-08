@@ -8,16 +8,20 @@
           <div class="backBtn" @click="goBack"><i
               style="font-size: 22px;margin-left: -15px;margin-right: 3px;margin-top: 3px;"
               class="el-icon-arrow-left"></i> {{ $t("backen") }}</div>
-              <div class="backBtn" style="margin-right: auto;margin-left: 20px;" @click="likeFun" v-show="like_status && !liked" ><img style="width: 24px; height: 24px;margin-right: 5px;" src="@/assets/like.png" alt="">{{ $t("likeen") }}</div>
-              <div class="backBtn" style="background:#db8a10;color: #fff;margin-right: auto;margin-left: 20px;" v-show="like_status&& liked" ><img style="width: 24px; height: 24px;margin-right: 5px;" src="@/assets/like1.png" alt="">{{ $t("likeen") }}</div>
-              <div class="tips" >{{ $t("tipsen") }}</div>
+          <div class="backBtn" style="margin-right: auto;margin-left: 20px;" @click="likeFun"
+            v-show="like_status && !liked"><img style="width: 24px; height: 24px;margin-right: 5px;"
+              src="@/assets/like.png" alt="">{{ $t("likeen") }}</div>
+          <div class="backBtn" style="background:#db8a10;color: #fff;margin-right: auto;margin-left: 20px;"
+            v-show="like_status && liked"><img style="width: 24px; height: 24px;margin-right: 5px;"
+              src="@/assets/like1.png" alt="">{{ $t("likeen") }}</div>
+          <div class="tips">{{ $t("tipsen") }}</div>
         </div>
         <div class="content-wrapper">
           <div class="imgItem" v-for="item in detailImages" :key="item.id">
-            <div class="image-container" :style="{ position: 'relative'}">
-              <img v-lazy="item.pic_name" alt="" @dblclick="toggleImageSize(item)" @touchstart="touchStart($event, item)"
-                @touchmove="touchMove($event, item)" @touchend="touchEnd($event, item)"
-                :style="{ width: item.zoomed ? '200%' : '100%' }">
+            <div class="image-container" :style="{ position: 'relative' }">
+              <img v-lazy="item.pic_name" alt="" @dblclick="toggleImageSize(item)"
+                @touchstart="touchStart($event, item)" @touchmove="touchMove($event, item)"
+                @touchend="touchEnd($event, item)" :style="{ width: item.zoomed ? '200%' : '100%' }">
               <div v-if="watermark" class="watermark-overlay" :style="{
                 position: 'absolute',
                 top: 0,
@@ -97,13 +101,13 @@ export default {
       isPanning: false,
       calculatedHeight: 0,
       meetingId: 0,
-      bannerData: {list: []},
+      bannerData: { list: [] },
       initialPinchDistance: 0,
       lastZoomState: false,
       poster_banner_status: false,
       like_status: false,
       watermark: '',
-      liked: false,
+      liked: false
     }
   },
   computed: {
@@ -122,7 +126,7 @@ export default {
     if (this.$route.params.data && this.$route.params.data.meeting_id) {
       this.meetingId = this.$route.params.data.meeting_id
     }
-    
+
     this.updateDetailData()
   },
   mounted() {
@@ -135,7 +139,7 @@ export default {
       'meeting_id': this.meetingId, // 会议id
       'uid': 1
     }).then(res => {
-      this.bannerData = res.data || {list: []}
+      this.bannerData = res.data || { list: [] }
       console.log(this.bannerData, 'banner this.imageList')
     })
     this.poster_banner_status = this.$route.params.poster_banner_status
@@ -157,7 +161,7 @@ export default {
   methods: {
     likeFun() {
       getPosterLikeAdd({
-        "id": 2
+        'id': this.meetingId
       }).then(res => {
         this.liked = !this.liked
       })
@@ -368,17 +372,17 @@ export default {
     // 监听路由参数变化
     '$route': {
       handler(to, from) {
-  document.title = 'eposter'
-  if (to.name === 'detailsEn' && to.params.data) {
-    console.log('路由参数变化，更新数据', to.params)
-    this.poster_banner_status = to.params.poster_banner_status
-    this.like_status = to.params.like_status
-    this.watermark = to.params.watermark
-    this.liked = false
-    this.updateDetailData()
-    // 重置缩放和平移状态
-    this.resetZoomAndPan()
-  }
+        document.title = 'eposter'
+        if (to.name === 'detailsEn' && to.params.data) {
+          console.log('路由参数变化，更新数据', to.params)
+          this.poster_banner_status = to.params.poster_banner_status
+          this.like_status = to.params.like_status
+          this.watermark = to.params.watermark
+          this.liked = false
+          this.updateDetailData()
+          // 重置缩放和平移状态
+          this.resetZoomAndPan()
+        }
       },
       deep: true
     }
@@ -401,6 +405,7 @@ export default {
   flex-direction: column;
   width: 100%;
   height: 100%;
+
   .container {
     flex-grow: 1;
     display: flex;
@@ -464,17 +469,17 @@ export default {
 
           .imgItem {
             width: 100%;
-            
+
             .image-container {
               position: relative;
               width: 100%;
               overflow: hidden;
-              
+
               img {
                 width: 100%;
                 vertical-align: bottom;
               }
-              
+
               .watermark-overlay {
                 position: absolute;
                 top: 0;
