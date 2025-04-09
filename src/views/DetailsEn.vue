@@ -19,43 +19,15 @@
         <div class="content-wrapper">
           <div class="imgItem" v-for="item in detailImages" :key="item.id">
             <div class="image-container" :style="{ position: 'relative' }">
-              <img v-lazy="item.pic_name" alt="" @dblclick="toggleImageSize(item)"
+              <!-- 显示加载指示器，当图片正在处理时 -->
+              <div v-if="item.processing" class="loading-indicator">
+                <div class="spinner"></div>
+                <div>处理图片中...</div>
+              </div>
+              <!-- 处理完成后显示图片 -->
+              <img v-else v-lazy="item.pic_name" alt="" @dblclick="toggleImageSize(item)"
                 @touchstart="touchStart($event, item)" @touchmove="touchMove($event, item)"
                 @touchend="touchEnd($event, item)" :style="{ width: item.zoomed ? '200%' : '100%' }">
-              <div v-if="watermark" class="watermark-overlay" :style="{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                width: item.zoomed ? '200%' : '100%',
-                height: '100%',
-                pointerEvents: 'none',
-                zIndex: 10,
-                opacity: 0.3,
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                overflow: 'hidden'
-              }">
-                <div :style="{
-                  position: 'absolute',
-                  top: '-50%',
-                  left: '-50%',
-                  width: '200%',
-                  height: '200%',
-                  display: 'flex',
-                  flexWrap: 'wrap',
-                  pointerEvents: 'none'
-                }">
-                  <span v-for="n in 200" :key="n" :style="{
-                    padding: '20px',
-                    fontSize: '18px',
-                    color: 'rgba(0, 0, 0, 0.7)',
-                    whiteSpace: 'nowrap',
-                    transform: 'rotate(-30deg)',
-                    pointerEvents: 'none'
-                  }">{{ watermark }}</span>
-                </div>
-              </div>
             </div>
           </div>
           <div class="copyright">Copyright @ 2018-2025 TRI-THINK All Rights Reserved.</div>
@@ -70,7 +42,7 @@ import Vue from 'vue'
 import { Icon, Lazyload } from 'vant'
 import VueTouch from 'vue-touch'
 import Banner from 'components/Banner'
-import { getAdvertising, getPosterLikeAdd } from '@/api/user'
+import { getAdvertising, getPosterLikeAdd, getBase64Image } from '@/api/user'
 // import Banner from "components/Banner"
 Vue.use(Lazyload)
 Vue.use(VueTouch, { name: 'v-touch' })
@@ -120,7 +92,7 @@ export default {
     }
   },
   created() {
-    document.title = 'eposter'
+    document.title = '壁报展示'
     console.log('获取banner信息成功', this.itemData, this.$route.params.data)
     // this.meetingId = this.$route.params.data.meeting_id
     if (this.$route.params.data && this.$route.params.data.meeting_id) {
@@ -159,6 +131,124 @@ export default {
     }
   },
   methods: {
+    getBaseImage(item, index) {
+      // 设置处理状态
+      this.$set(this.detailImages[index], 'processing', true)
+
+      // 存储原始图片路径
+      const originalPath = item.pic_name
+      let fileName = originalPath
+
+      // 从URL中提取文件名
+      if (originalPath.indexOf('http') !== -1) {
+        fileName = originalPath.split('/').pop() // 获取文件名部分
+      }
+
+      console.log('获取Base64图片，文件名:', fileName)
+
+      // 调用API获取Base64图片
+      getBase64Image({
+        'fileName': fileName
+      }).then(res => {
+        if (res.code === 0 && res.data) {
+          // 成功获取到Base64图片
+          console.log('成功获取Base64图片')
+          // 添加水印并设置到detailImages中
+          this.addWatermarkToBase64(res.data, index)
+        } else {
+          console.error('获取Base64图片失败:', res)
+          // 失败时使用原图
+          this.$set(this.detailImages[index], 'processing', false)
+        }
+      }).catch(err => {
+        console.error('获取Base64图片异常:', err)
+        // 异常时使用原图
+        this.$set(this.detailImages[index], 'processing', false)
+      })
+    },
+
+    // 为Base64图片添加水印
+    addWatermarkToBase64(base64Data, index) {
+      if (!this.watermark) {
+        // 如果没有水印文本，则直接使用原图
+        console.log('无水印文本，使用原始图片')
+        this.$set(this.detailImages[index], 'processing', false)
+        return
+      }
+
+      // 创建图片对象加载Base64数据
+      const img = new Image()
+
+      // 设置加载事件处理
+      img.onload = () => {
+        try {
+          // 创建Canvas
+          const canvas = document.createElement('canvas')
+          const ctx = canvas.getContext('2d')
+
+          // 设置Canvas尺寸匹配图片
+          canvas.width = img.width
+          canvas.height = img.height
+
+          // 在Canvas上绘制原图
+          ctx.drawImage(img, 0, 0, img.width, img.height)
+
+          // 在画布上绘制斜向水印
+          const watermarkText = this.watermark
+
+          // 设置透明度和字体
+          ctx.globalAlpha = 0.2 // 设置水印整体透明度
+          ctx.font = 'bold 70px Arial' // 增大字体大小
+          ctx.fillStyle = '#000000'
+
+          // 计算水印文本大小以适当间隔
+          const metrics = ctx.measureText(watermarkText)
+          const textWidth = metrics.width
+          const spacing = textWidth * 2.5 // 增大文本之间的间距
+
+          // 实现对角线交错水印
+          ctx.save() // 保存当前状态
+          ctx.translate(0, 0)
+          ctx.rotate(-Math.PI / 6) // 旋转 -30 度
+
+          // 计算需要绘制的水印行数和列数 - 减少水印密度
+          const rowCount = Math.ceil(img.width * 2 / spacing)
+          const colCount = Math.ceil(img.height * 2 / spacing)
+
+          // 绘制水印网格
+          for (let i = -rowCount; i < rowCount * 2; i++) {
+            for (let j = -colCount; j < colCount * 2; j++) {
+              ctx.fillText(watermarkText, i * spacing, j * spacing)
+            }
+          }
+
+          ctx.restore() // 恢复旋转前的状态
+          ctx.globalAlpha = 1.0 // 恢复透明度
+
+          // 将Canvas转换为base64图片URL
+          const watermarkedImageUrl = canvas.toDataURL('image/jpeg', 0.8) // 0.8质量以减小大小
+
+          // 更新detailImages数组中的图片
+          console.log('水印图片生成成功')
+          this.$set(this.detailImages[index], 'pic_name', watermarkedImageUrl)
+          this.$set(this.detailImages[index], 'processing', false)
+        } catch (err) {
+          console.error('Canvas操作失败:', err)
+          // 使用原图
+          this.$set(this.detailImages[index], 'processing', false)
+        }
+      }
+
+      // 处理加载错误
+      img.onerror = () => {
+        console.error('图片加载失败')
+        // 加载失败时使用原图
+        this.$set(this.detailImages[index], 'processing', false)
+      }
+
+      // 加载Base64图片
+      img.src = 'data:image/jpeg;base64,' + base64Data
+    },
     likeFun() {
       getPosterLikeAdd({
         'id': this.meetingId
@@ -173,11 +263,17 @@ export default {
         return
       }
       const { pic_list } = this.itemData
-      this.detailImages = pic_list.map(item => ({ ...item, zoomed: false }))
-      this.detailImages.forEach(item => {
-        item.pic_name = item.pic_name.indexOf('http') !== -1 ? item.pic_name : baseUrl + '/' + item.pic_name
-        // item.pic_name = baseUrl + '/' + item.pic_name
+      this.detailImages = pic_list.map(item => ({
+        ...item,
+        zoomed: false,
+        processing: true // 标记为正在处理中
+      }))
+
+      // 处理每张图片添加水印
+      this.detailImages.forEach((item, index) => {
+        this.getBaseImage(item, index)
       })
+
       console.log('this.detailImages=====', this.detailImages)
     },
     handResize() {
@@ -478,6 +574,33 @@ export default {
               img {
                 width: 100%;
                 vertical-align: bottom;
+              }
+
+              .loading-indicator {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                height: 200px;
+                color: #a1d7ff;
+                font-size: 14px;
+                background-color: rgba(0, 0, 0, 0.05);
+
+                .spinner {
+                  width: 40px;
+                  height: 40px;
+                  border: 4px solid rgba(161, 215, 255, 0.3);
+                  border-radius: 50%;
+                  border-top-color: #a1d7ff;
+                  animation: spin 1s ease-in-out infinite;
+                  margin-bottom: 10px;
+                }
+
+                @keyframes spin {
+                  to {
+                    transform: rotate(360deg)
+                  }
+                }
               }
 
               .watermark-overlay {

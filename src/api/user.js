@@ -52,6 +52,14 @@ export function getPosterLikeAdd (data) {
   })
 }
 
+export function getBase64Image (data) {
+  return request({
+    url: '/GetBase64Image',
+    method: 'post',
+    data
+  })
+}
+
 export function playerstatusupd (data) {
   return request({
     url: '/aipic/playerstatusupd',

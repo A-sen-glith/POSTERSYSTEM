@@ -44,77 +44,78 @@
                     font-size: 12px;
                     padding: 0 0.13rem;
                   " label="全部" :value="0">
-              </el-option>
-              <el-option style="
+                </el-option>
+                <el-option style="
                     height: 34px;
                     line-height: 34px;
                     font-size: 12px;
                     padding: 0 0.13rem;
                   " v-for="item in categoryList1" :key="item.id" :label="item.name" :value="item.id">
-              </el-option>
-            </el-select>
-          </div>
-          <div class="Classification" v-show="categoryList2.length > 0 && isShowSecondType">
-            <div class="ClassificationTitle">{{ $t("type2") }}</div>
-            <el-select class="ClassificationSelect" :popper-append-to-body="false" popper-class="dataClass"
-              v-model="categoryId2" @change="handSelectChange2" :placeholder="$t('pleaseSelect')">
-              <el-option style="
+                </el-option>
+              </el-select>
+            </div>
+            <div class="Classification" v-show="categoryList2.length > 0 && isShowSecondType">
+              <div class="ClassificationTitle">{{ $t("type2") }}</div>
+              <el-select class="ClassificationSelect" :popper-append-to-body="false" popper-class="dataClass"
+                v-model="categoryId2" @change="handSelectChange2" :placeholder="$t('pleaseSelect')">
+                <el-option style="
                     height: 34px;
                     line-height: 34px;
                     font-size: 12px;
                     padding: 0 0.13rem;
                   " v-for="item in categoryList2" :key="item.id" :label="item.name" :value="item.id">
-              </el-option>
-            </el-select>
-          </div>
-        </div>
-        <div class="selectContent">
-          <div class="search">
-            <el-input class="search-input" v-model="searchTxt" :placeholder="$t('placeholder')">
-              <el-button @click="searchClick" slot="append">{{ $t("search") }}</el-button>
-            </el-input>
-          </div>
-          <div class="current" v-show="totalItems != 0 && isShowPage">
-            <el-pagination small layout="prev, pager, next" :current-page.sync="currentPage"
-              @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-size="8" :total="totalItems"
-              background>
-            </el-pagination>
-          </div>
-          <div class="contentList" v-if="searchList && searchList.length">
-            <div class="contentListItems" v-for="item in searchList" :key="item.id" @click="goDetail(item)">
-              <div class="thumbnail" style="margin-right: 10px;" v-if="thumbnail">
-                <img style="height: 144px;width: 110px;" v-lazy="item.thumbnail_pic" />
-              </div>
-              <div style="display: flex;flex-direction: column;justify-content: center;">
-                <div class="topic public">
-                  <div>{{ item.title }}</div>
-                </div>
-              <div class="topic info">
-                <div class="serialNumber public">
-                  <div>{{ $t("no") }}：</div>
-                  <div>{{ item.sort_number }}</div>
-                </div>
-                <div class="author public">
-                  <div>{{ $t("author") }}：</div>
-                  <div>{{ item.author }}</div>
-                </div>
-              </div>
-              </div>
+                </el-option>
+              </el-select>
             </div>
           </div>
-          <div class="no-data" v-else>
-            <div class="no-data-content">
-              <i class="el-icon-warning-outline"></i>
-              <p>{{ $t('noData') || '暂无数据' }}</p>
+          <div class="selectContent">
+            <div class="search">
+              <el-input class="search-input" v-model="searchTxt" :placeholder="$t('placeholder')">
+                <el-button @click="searchClick" slot="append">{{ $t("search") }}</el-button>
+              </el-input>
+            </div>
+            <div class="current" v-show="totalItems != 0 && isShowPage">
+              <el-pagination small layout="prev, pager, next" :current-page.sync="currentPage"
+                @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-size="8" :total="totalItems"
+                background>
+              </el-pagination>
+            </div>
+            <div class="contentList" v-if="searchList && searchList.length">
+              <div class="contentListItems" v-for="item in searchList" :key="item.id" @click="goDetail(item)">
+                <div class="thumbnail" style="margin-right: 10px;" v-if="thumbnail">
+                  <img style="height: 144px;width: 110px;"
+                    v-lazy="item.pic_list[0].pic_name.indexOf('http') !== -1 ? item.pic_list[0].pic_name : baseUrl + '/' + item.pic_list[0].pic_name" />
+                </div>
+                <div style="display: flex;flex-direction: column;justify-content: center;">
+                  <div class="topic public">
+                    <div>{{ item.title }}</div>
+                  </div>
+                  <div class="topic info">
+                    <div class="serialNumber public">
+                      <div>{{ $t("no") }}：</div>
+                      <div>{{ item.sort_number }}</div>
+                    </div>
+                    <div class="author public">
+                      <div>{{ $t("author") }}：</div>
+                      <div>{{ item.author }}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="no-data" v-else>
+              <div class="no-data-content">
+                <i class="el-icon-warning-outline"></i>
+                <p>{{ $t('noData') || '暂无数据' }}</p>
+              </div>
+            </div>
+            <div class="current" v-show="totalItems != 0 && !isShowPage">
+              <el-pagination small layout="prev, pager, next" :current-page.sync="currentPage"
+                @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-size="8"
+                :total="totalItems">
+              </el-pagination>
             </div>
           </div>
-          <div class="current" v-show="totalItems != 0 && !isShowPage">
-            <el-pagination small layout="prev, pager, next" :current-page.sync="currentPage"
-              @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-size="8"
-              :total="totalItems">
-            </el-pagination>
-          </div>
-        </div>
         </div>
       </div>
     </div>
@@ -142,8 +143,9 @@ export default {
     SwipeItem,
     Banner
   },
-  data () {
+  data() {
     return {
+      baseUrl: 'https://eposter.tri-think.cn/test/uploadFile',
       width: window.innerWidth,
       height: window.innerHeight,
       advertImages: [],
@@ -175,11 +177,11 @@ export default {
       thumbnail: false,
       poster_banner_status: false,
       like_status: false,
-      watermark: '',
+      watermark: ''
     }
   },
 
-  created () {
+  created() {
     document.title = '壁报展示'
     const url = window.location.href
     const fileExtension = url.split('.').pop().split(/[?#]/)
@@ -220,9 +222,9 @@ export default {
       if (meet.banner_status === '已关闭') {
         this.isShowBanner = false
       }
-      this.thumbnail = meet.thumbnail === '已开启' ? true : false
-      this.poster_banner_status = meet.poster_banner_status === '已开启' ? true : false
-      this.like_status = meet.like_status === '已开启' ? true : false
+      this.thumbnail = meet.thumbnail === '已开启'
+      this.poster_banner_status = meet.poster_banner_status === '已开启'
+      this.like_status = meet.like_status === '已开启'
       this.watermark = meet.watermark
     })
 
@@ -306,7 +308,7 @@ export default {
     })
   },
 
-  mounted () {
+  mounted() {
     for (let i = 0; i < 10000; i++) {
       clearTimeout(i)
     }
@@ -315,24 +317,24 @@ export default {
     this.handResize()
   },
   methods: {
-    handleCurrentChange (val) {
+    handleCurrentChange(val) {
       console.log(`当前页: ${val}`)
       this.currentPage = val // 改变当前页码
       this.searchClick()
     },
-    handleSizeChange (val) {
+    handleSizeChange(val) {
       console.log(`每页 ${val} 条`)
       this.pageSize = val // 改变每页记录数
       this.searchClick()
     },
-    resetTimer () {
+    resetTimer() {
       console.log(this.lockDuration, '重置定时器111')
       if (this.inactivityTimeout) {
         clearTimeout(this.inactivityTimeout)
       }
       this.monitorInactivity() // 重新开始监控
     },
-    monitorInactivity () {
+    monitorInactivity() {
       if (this.lockDuration > 0) {
         console.log('wucccccccccccccccccc', this.lockDuration)
 
@@ -351,7 +353,7 @@ export default {
         }
       }
     },
-    handResize () {
+    handResize() {
       this.width = window.innerWidth
       this.height = window.innerHeight
       console.log('Resize:', this.width, this.height)
@@ -372,7 +374,7 @@ export default {
         this.calculatedHeight = (document.getElementsByClassName('main').length > 0 && document.getElementsByClassName('main')[0].offsetWidth * 9) / 16
       }, 500)
     },
-    handSelectChange1 (val) {
+    handSelectChange1(val) {
       console.log('handSelectChange1', val)
       this.categoryId2 = ''
       if (val == 0) {
@@ -396,11 +398,11 @@ export default {
         this.isShowSecondType = true
       })
     },
-    handSelectChange2 (val) {
+    handSelectChange2(val) {
       console.log('handSelectChange2', val)
       this.categoryId2 = val
     },
-    searchClick () {
+    searchClick() {
       console.log('this.value', this.categoryId2)
       console.log('searchTxt', this.categoryId1)
       if (this.searchTxt !== '') {
@@ -429,7 +431,7 @@ export default {
         this.lockDuration = (list && list[0].lock_duration) || 0
       })
     },
-    goDetail (item) {
+    goDetail(item) {
       console.log('item', item)
       if (item.pic_list.length === 0) {
         return Toast(this.$t('wallNewspaperTips'))
@@ -442,12 +444,12 @@ export default {
   },
   watch: {
     '$route': {
-      handler (to, from) {
+      handler(to, from) {
         document.title = '壁报展示'
       },
       deep: true
     },
-    showAdvert (val) {
+    showAdvert(val) {
       console.log('watch', val)
       if (!val) {
         this.monitorInactivity()
@@ -455,14 +457,14 @@ export default {
         this.resetTimer()
       }
     },
-    width (val) {
+    width(val) {
       this.width = val
     },
-    height (val) {
+    height(val) {
       this.height = val
     }
   },
-  beforeDestroy () {
+  beforeDestroy() {
     window.removeEventListener('resize', this.handResize)
     // window.removeEventListener("mousemove", this.resetTimer);
     window.removeEventListener('keydown', this.resetTimer)
