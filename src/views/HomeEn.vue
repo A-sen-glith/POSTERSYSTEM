@@ -83,8 +83,10 @@
             <div class="contentList" v-if="searchList && searchList.length">
               <div class="contentListItems" v-for="item in searchList" :key="item.id" @click="goDetail(item)">
                 <div class="thumbnail" style="margin-right: 10px;" v-if="thumbnail">
-                  <img style="height: 144px;width: 110px;"
+                  <img v-show="item.pic_list[0].pic_name !== ''" style="height: 144px;width: 110px;"
                     v-lazy="item.pic_list[0].pic_name.indexOf('http') !== -1 ? item.pic_list[0].pic_name : baseUrl + '/' + item.pic_list[0].pic_name" />
+                  <img v-show="item.pic_list[0].pic_name === ''" style="height: 144px;width: 110px;"
+                    v-lazy="thumbnail_pic.indexOf('http') !== -1 ? thumbnail_pic : baseUrl + '/' + thumbnail_pic" />
                 </div>
                 <div style="display: flex;flex-direction: column;justify-content: center;">
                   <div class="topic public">
@@ -177,7 +179,8 @@ export default {
       thumbnail: false,
       poster_banner_status: false,
       like_status: false,
-      watermark: ''
+      watermark: '',
+      thumbnail_pic: ''
     }
   },
 
@@ -226,6 +229,7 @@ export default {
       this.poster_banner_status = meet.poster_banner_status === '已开启'
       this.like_status = meet.like_status === '已开启'
       this.watermark = meet.watermark
+      this.thumbnail_pic = meet.thumbnail_pic
     })
 
     getAdvertising({
