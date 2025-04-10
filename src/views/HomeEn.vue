@@ -43,7 +43,7 @@
                     line-height: 34px;
                     font-size: 12px;
                     padding: 0 0.13rem;
-                  " label="全部" :value="0">
+                  " label="ALL" :value="0">
                 </el-option>
                 <el-option style="
                     height: 34px;

@@ -139,10 +139,10 @@ export default {
       const originalPath = item.pic_name
       let fileName = originalPath
 
-      // 从URL中提取文件名
-      if (originalPath.indexOf('http') !== -1) {
-        fileName = originalPath.split('/').pop() // 获取文件名部分
-      }
+      // // 从URL中提取文件名
+      // if (originalPath.indexOf('http') !== -1) {
+      //   fileName = originalPath.split('/').pop() // 获取文件名部分
+      // }
 
       console.log('获取Base64图片，文件名:', fileName)
 
@@ -198,13 +198,13 @@ export default {
 
           // 设置透明度和字体
           ctx.globalAlpha = 0.2 // 设置水印整体透明度
-          ctx.font = 'bold 70px Arial' // 增大字体大小
+          ctx.font = 'bold 35px Arial' // 调整字体大小到35px
           ctx.fillStyle = '#000000'
 
           // 计算水印文本大小以适当间隔
           const metrics = ctx.measureText(watermarkText)
           const textWidth = metrics.width
-          const spacing = textWidth * 2.5 // 增大文本之间的间距
+          const spacing = textWidth * 1.5 // 减小文本间距
 
           // 实现对角线交错水印
           ctx.save() // 保存当前状态
@@ -212,12 +212,12 @@ export default {
           ctx.rotate(-Math.PI / 6) // 旋转 -30 度
 
           // 计算需要绘制的水印行数和列数 - 减少水印密度
-          const rowCount = Math.ceil(img.width * 2 / spacing)
-          const colCount = Math.ceil(img.height * 2 / spacing)
+          const rowCount = Math.ceil(img.width * 1 / spacing)
+          const colCount = Math.ceil(img.height * 1 / spacing)
 
           // 绘制水印网格
-          for (let i = -rowCount; i < rowCount * 2; i++) {
-            for (let j = -colCount; j < colCount * 2; j++) {
+          for (let i = -rowCount; i < rowCount * 5; i++) {
+            for (let j = -colCount; j < colCount * 5; j++) {
               ctx.fillText(watermarkText, i * spacing, j * spacing)
             }
           }
