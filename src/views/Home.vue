@@ -137,7 +137,7 @@ import {
 // const { mapActions } = createNamespacedHelpers('test') // u53efu4f7fu7528u8fd9u79cdu65b9u5f0fu76f4u63a5u83b7u5f97testu6a21u677f
 Vue.use(Lazyload)
 Vue.use(Toast)
-const baseUrl = 'https://eposter.tri-think.cn/test/uploadFile'
+const baseUrl = 'https://eposter.tri-think.cn/uploadFile'
 export default {
   name: 'home',
   components: {
@@ -147,7 +147,7 @@ export default {
   },
   data() {
     return {
-      baseUrl: 'https://eposter.tri-think.cn/test/uploadFile',
+      baseUrl: 'https://eposter.tri-think.cn/uploadFile',
       width: window.innerWidth,
       height: window.innerHeight,
       advertImages: [],

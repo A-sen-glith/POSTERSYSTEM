@@ -16,7 +16,7 @@ import Vue from 'vue'
 import { Swipe, SwipeItem, Lazyload } from 'vant'
 // import { getAdvertising } from "@/api/user"
 Vue.use(Lazyload)
-const baseUrl = 'https://eposter.tri-think.cn/test/uploadFile'
+const baseUrl = 'https://eposter.tri-think.cn/uploadFile'
 export default {
   name: 'home',
   props: {
