@@ -95,7 +95,7 @@
                   <div class="topic info">
                     <div class="serialNumber public">
                       <div>{{ $t("no") }}：</div>
-                      <div>{{ item.sort_number }}</div>
+                      <div style="position: relative;top: 1px;">{{ item.sort_number }}</div>
                     </div>
                     <div class="author public">
                       <div>{{ $t("author") }}：</div>
