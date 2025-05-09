@@ -305,7 +305,7 @@ export default {
     }).then((res) => {
       console.log('搜索数据', res)
       const { list, datacount, pagesum } = res.data
-      this.searchList = list
+      this.searchList = list.map(item => ({ ...item, pic_list: item.pic_list === null ? [{pic_name: ''}] : item.pic_list }));
       this.totalItems = datacount
       this.lockDuration = (list && list[0].lock_duration) || 0
       this.monitorInactivity()
@@ -430,7 +430,7 @@ export default {
       }).then((res) => {
         console.log('搜索数据', res)
         const { list, datacount, pagesum } = res.data
-        this.searchList = list
+        this.searchList = list.map(item => ({ ...item, pic_list: item.pic_list === null ? [{pic_name: ''}] : item.pic_list }));
         this.totalItems = datacount
         this.lockDuration = (list && list[0].lock_duration) || 0
       })
@@ -884,7 +884,7 @@ html {
                   .author {
                     display: flex;
                     margin-right: 20px;
-
+                    align-items: center;
                     div {
                       color: #c2e4ff;
                       font-size: 12px;

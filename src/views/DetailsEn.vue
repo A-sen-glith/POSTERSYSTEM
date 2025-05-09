@@ -20,12 +20,12 @@
           <div class="imgItem" v-for="item in detailImages" :key="item.id">
             <div class="image-container" :style="{ position: 'relative' }">
               <!-- 显示加载指示器，当图片正在处理时 -->
-              <div v-if="item.processing" class="loading-indicator">
+              <!-- <div v-if="item.processing" class="loading-indicator">
                 <div class="spinner"></div>
                 <div>处理图片中...</div>
-              </div>
+              </div> -->
               <!-- 处理完成后显示图片 -->
-              <img v-else v-lazy="item.pic_name" alt="" @dblclick="toggleImageSize(item)"
+              <img v-lazy="item.pic_name" alt="" @dblclick="toggleImageSize(item)"
                 @touchstart="touchStart($event, item)" @touchmove="touchMove($event, item)"
                 @touchend="touchEnd($event, item)" :style="{ width: item.zoomed ? '200%' : '100%' }">
             </div>
@@ -55,6 +55,7 @@ export default {
   },
   data() {
     return {
+      baseUrl: 'https://eposter.tri-think.cn/uploadFile',
       width: window.innerWidth,
       height: window.innerHeight,
       bannerHeight: 0,
@@ -169,13 +170,6 @@ export default {
 
     // 为Base64图片添加水印
     addWatermarkToBase64(base64Data, index) {
-      if (!this.watermark) {
-        // 如果没有水印文本，则直接使用原图
-        console.log('无水印文本，使用原始图片')
-        this.$set(this.detailImages[index], 'processing', false)
-        return
-      }
-
       // 创建图片对象加载Base64数据
       const img = new Image()
 
@@ -193,37 +187,39 @@ export default {
           // 在Canvas上绘制原图
           ctx.drawImage(img, 0, 0, img.width, img.height)
 
-          // 在画布上绘制斜向水印
-          const watermarkText = this.watermark
+          if(this.watermark !== '') {
+            // 在画布上绘制斜向水印
+            const watermarkText = this.watermark
 
-          // 设置透明度和字体
-          ctx.globalAlpha = 0.2 // 设置水印整体透明度
-          ctx.font = 'bold 35px Arial' // 调整字体大小到35px
-          ctx.fillStyle = '#000000'
+            // 设置透明度和字体
+            ctx.globalAlpha = 0.2 // 设置水印整体透明度
+            ctx.font = 'bold 35px Arial' // 调整字体大小到35px
+            ctx.fillStyle = '#000000'
 
-          // 计算水印文本大小以适当间隔
-          const metrics = ctx.measureText(watermarkText)
-          const textWidth = metrics.width
-          const spacing = textWidth * 1.5 // 减小文本间距
+            // 计算水印文本大小以适当间隔
+            const metrics = ctx.measureText(watermarkText)
+            const textWidth = metrics.width
+            const spacing = textWidth * 1.5 // 减小文本间距
 
-          // 实现对角线交错水印
-          ctx.save() // 保存当前状态
-          ctx.translate(0, 0)
-          ctx.rotate(-Math.PI / 6) // 旋转 -30 度
+            // 实现对角线交错水印
+            ctx.save() // 保存当前状态
+            ctx.translate(0, 0)
+            ctx.rotate(-Math.PI / 6) // 旋转 -30 度
 
-          // 计算需要绘制的水印行数和列数 - 减少水印密度
-          const rowCount = Math.ceil(img.width * 1 / spacing)
-          const colCount = Math.ceil(img.height * 1 / spacing)
+            // 计算需要绘制的水印行数和列数 - 减少水印密度
+            const rowCount = Math.ceil(img.width * 1 / spacing)
+            const colCount = Math.ceil(img.height * 1 / spacing)
 
-          // 绘制水印网格
-          for (let i = -rowCount; i < rowCount * 5; i++) {
-            for (let j = -colCount; j < colCount * 5; j++) {
-              ctx.fillText(watermarkText, i * spacing, j * spacing)
+            // 绘制水印网格
+            for (let i = -rowCount; i < rowCount * 5; i++) {
+              for (let j = -colCount; j < colCount * 5; j++) {
+                ctx.fillText(watermarkText, i * spacing, j * spacing)
+              }
             }
-          }
 
-          ctx.restore() // 恢复旋转前的状态
-          ctx.globalAlpha = 1.0 // 恢复透明度
+            ctx.restore() // 恢复旋转前的状态
+            ctx.globalAlpha = 1.0 // 恢复透明度
+          }
 
           // 将Canvas转换为base64图片URL
           const watermarkedImageUrl = canvas.toDataURL('image/jpeg', 0.8) // 0.8质量以减小大小
