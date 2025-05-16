@@ -16,7 +16,7 @@
         }">
           <Swipe type="mask" class="swipe">
             <SwipeItem class="advertisingImg" v-for="(item, index) in advertImages" :key="index">
-              <a :href="item.jump_url" style="text-decoration: none; outline: none">
+              <a :href="item.if_jump === 0 ? item.jump_url : 'javascript:void(0)'" style="text-decoration: none; outline: none">
                 <img v-lazy="item.pic_name" />
               </a>
             </SwipeItem>
