@@ -2,7 +2,7 @@
   <div class="banner" :style="{ width: width + 'px', height: height + 'px' }">
     <Swipe type="card" class="swipe" :style="{ width: width }" :autoplay="4000" v-if="bannerImages.length > 0">
       <SwipeItem class="bannerImg" style="width: 100%;" v-for="(item, index) in bannerImages" :key="index">
-        <a :href="item.if_jump == 0 ? item.jump_url : 'javascript:void(0)'"
+        <a :href="item.if_jump == 0 ? item.jump_url : 'javascript:void(0)'" target="_blank"
           style="display: block; width: 100%; height: 100%; text-decoration: none; outline: none;">
           <img width="100%" v-lazy="item.pic_name" />
         </a>
