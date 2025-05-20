@@ -2,7 +2,7 @@
     <div class="banner" :style="{ width: width + 'px', height: height + 'px' }">
       <Swipe type="card" class="swipe" :style="{width:width}" :autoplay="4000">
         <SwipeItem class="bannerImg" style="width: 100%;" v-for="(item, index) in bannerImages" :key="index">
-          <a :href="item.if_jump == 0 ? item.jump_url : 'javascript:void(0)'" style="display: block; width: 100%; height: 100%; text-decoration: none; outline: none;">
+          <a :href="item.if_jump == 0 ? item.jump_url : 'javascript:void(0)'" target="_blank" style="display: block; width: 100%; height: 100%; text-decoration: none; outline: none;">
               <img width="100%" v-lazy="item.pic_name" />
           </a>
         </SwipeItem>
@@ -12,29 +12,29 @@
 
 <script>
 import Vue from 'vue'
-import { Swipe, SwipeItem, Lazyload } from "vant"
-import { getAdvertising } from "@/api/user"
+import { Swipe, SwipeItem, Lazyload } from 'vant'
+import { getAdvertising } from '@/api/user'
 Vue.use(Lazyload)
 const baseUrl = 'https://eposter.tri-think.cn/uploadFile'
 export default {
   name: 'home',
   components: {
     Swipe,
-    SwipeItem,
+    SwipeItem
   },
   data () {
     return {
       bannerImages: [],
       width: window.innerWidth,
       height: window.innerHeight,
-      meeting_id: 0,
+      meeting_id: 0
     }
   },
   computed: {},
   created () {
-    const meeting_id = this.$route.query.meeting_id;
+    const meeting_id = this.$route.query.meeting_id
     if (meeting_id) {
-      this.meeting_id = Number(meeting_id);
+      this.meeting_id = Number(meeting_id)
     }
     getAdvertising({
       'page': 1, // 页码

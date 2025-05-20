@@ -16,7 +16,7 @@
         }">
           <Swipe type="mask" class="swipe">
             <SwipeItem class="advertisingImg" v-for="(item, index) in advertImages" :key="index">
-              <a :href="item.if_jump === 0 ? item.jump_url : 'javascript:void(0)'" style="text-decoration: none; outline: none">
+              <a :href="item.if_jump === 0 ? item.jump_url : 'javascript:void(0)'" target="_blank" style="text-decoration: none; outline: none">
                 <img v-lazy="item.pic_name" />
               </a>
             </SwipeItem>
@@ -134,7 +134,7 @@ export default {
     Select,
     Option
   },
-  data() {
+  data () {
     return {
       width: window.innerWidth,
       height: window.innerHeight,
@@ -165,7 +165,7 @@ export default {
     }
   },
 
-  created() {
+  created () {
     document.title = '壁报展示'
     const url = window.location.href
     const fileExtension = url.split('.').pop().split(/[?#]/)
@@ -276,7 +276,7 @@ export default {
   //   showAdvert: "updateAdvertStatus",
   //   meetShowAdvert: "updateAdvertStatus"
   // },
-  mounted() {
+  mounted () {
     for (let i = 0; i < 10000; i++) {
       clearTimeout(i)
     }
@@ -291,17 +291,17 @@ export default {
     // closeAdvert() {
     //   this.isShowAdvert = false;
     // },
-    handleCurrentChange(val) {
+    handleCurrentChange (val) {
       console.log(`当前页: ${val}`)
       this.currentPage = val // 改变当前页码
       this.searchClick()
     },
-    handleSizeChange(val) {
+    handleSizeChange (val) {
       console.log(`每页 ${val} 条`)
       this.pageSize = val // 改变每页记录数
       this.searchClick()
     },
-    resetTimer() {
+    resetTimer () {
       if (this.inactivityTimeout) {
         for (let i = 0; i < this.inactivityTimeout + 1000; i++) {
           clearTimeout(i)
@@ -310,7 +310,7 @@ export default {
       }
       this.monitorInactivity() // 重新开始监控
     },
-    monitorInactivity() {
+    monitorInactivity () {
       if (this.lockDuration > 0) {
         console.log('wucccccccccccccccccc', this.lockDuration)
         const resetTimer = () => {
@@ -332,7 +332,7 @@ export default {
         resetTimer()
       }
     },
-    handResize() {
+    handResize () {
       this.width = window.innerWidth
       this.height = window.innerHeight
       console.log('Resize:', this.width, this.height)
@@ -353,7 +353,7 @@ export default {
         this.calculatedHeight = (document.getElementsByClassName('main').length > 0 && document.getElementsByClassName('main')[0].offsetWidth * 9) / 16
       }, 500)
     },
-    handSelectChange1(val) {
+    handSelectChange1 (val) {
       console.log('handSelectChange1', val)
       this.categoryId2 = ''
       if (val == 0) {
@@ -377,11 +377,11 @@ export default {
         this.isShowSecondType = true
       })
     },
-    handSelectChange2(val) {
+    handSelectChange2 (val) {
       console.log('handSelectChange2', val)
       this.categoryId2 = val
     },
-    searchClick() {
+    searchClick () {
       console.log('this.value', this.categoryId2)
       console.log('searchTxt', this.categoryId1)
       if (this.searchTxt !== '') {
@@ -410,7 +410,7 @@ export default {
         this.lockDuration = (list && list[0].lock_duration) || 0
       })
     },
-    goDetail(item) {
+    goDetail (item) {
       console.log('item', item)
       console.log('item', item.pic_list[0].pic_name)
       if (item.pic_list.length === 0) {
@@ -425,19 +425,19 @@ export default {
   },
   watch: {
     '$route': {
-      handler(to, from) {
+      handler (to, from) {
         document.title = '壁报展示'
       },
       deep: true
     },
-    width(val) {
+    width (val) {
       this.width = val
     },
-    height(val) {
+    height (val) {
       this.height = val
     }
   },
-  beforeDestroy() {
+  beforeDestroy () {
     window.removeEventListener('resize', this.handResize)
     // window.removeEventListener("mousemove", this.resetTimer);
     window.removeEventListener('keydown', this.resetTimer)
