@@ -17,18 +17,8 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 
 /**
- * If you don't want to use mock-server
- * you want to use MockJs for mock api
- * you can execute: mockXHR()
- *
- * Currently MockJs will be used in the production environment,
- * please remove it before going online! ! !
+ * Mock 功能已被移除
  */
-import { mockXHR } from '../mock'
-
-if (process.env.NODE_ENV === 'production') {
-  mockXHR()
-}
 
 // options 为可选参数，无则不传
 Vue.use(Lazyload)

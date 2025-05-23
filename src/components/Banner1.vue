@@ -1,12 +1,12 @@
 <template>
-  <div class="banner" :style="{ width: width + 'px', height: height + 'px' }">
-    <Swipe type="card" class="swipe" :style="{ width: width }" :autoplay="4000" v-if="bannerImages.length > 0">
+  <div class="banner" :style="{ width: '100%', height: height + 'px' }">
+    <Swipe type="card" class="swipe"  :autoplay="4000" v-if="bannerImages.length > 0">
       <SwipeItem class="bannerImg" style="width: 100%;" v-for="(item, index) in bannerImages" :key="index">
         <a v-if="item.if_jump === 0" :href="item.jump_url" target="_blank"
-          style="display: block; width: 100%; height: 100%; text-decoration: none; outline: none;">
-          <img width="100%" v-lazy="item.pic_name" style="object-fit: cover; width: 100%; height: 100%;" />
+          :style="{ display: 'block', width: imgWidth + 'px', height: imgHeight + 'px', 'text-decoration': 'none', outline: 'none' }">
+          <img v-lazy="item.pic_name" style="object-fit: cover; width: 100%; height: 100%;" />
         </a>
-        <div v-else style="display: block; width: 100%; height: 100%;">
+        <div v-else :style="{ display: 'block', width: imgWidth + 'px', height: imgHeight + 'px' }">
           <img v-lazy="item.pic_name" style="object-fit: cover; width: 100%; height: 100%;" />
         </div>
       </SwipeItem>
@@ -40,7 +40,9 @@ export default {
       bannerImages: [],
       width: window.innerWidth,
       height: window.innerHeight,
-      meeting_id: 0
+      meeting_id: 0,
+      imgHeight: 0,
+      imgWidth: 0
     }
   },
   computed: {},
@@ -79,10 +81,12 @@ export default {
     handResize () {
       this.width = window.innerWidth
       this.height = window.innerHeight
-      console.log('Resize:', this.width, this.height)
+      console.log('11111111', (document.getElementsByClassName('main').length > 0 && document.getElementsByClassName('main')[0].offsetWidth * 9) / 16)
       if (this.width > this.height && this.width >= 768) {
         // this.width = Math.min(this.width,1024)
         this.height = this.height
+        this.imgHeight = (document.getElementsByClassName('main').length > 0 && document.getElementsByClassName('main')[0].offsetWidth * 9) / 16
+        this.imgWidth = (document.getElementsByClassName('main').length > 0 && document.getElementsByClassName('main')[0].offsetWidth)
         // this.width = this.height * (9 / 16)
         this.width = Math.min(window.innerWidth, 1070)
         console.log('电脑设备: 9:16比例', this.width, this.height)

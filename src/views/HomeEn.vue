@@ -16,9 +16,12 @@
         }">
           <Swipe type="mask" class="swipe">
             <SwipeItem class="advertisingImg" v-for="(item, index) in advertImages" :key="index">
-              <a :href="item.if_jump === 0 ? item.jump_url : 'javascript:void(0)'" target="_blank" style="text-decoration: none; outline: none">
+              <a v-if="item.if_jump === 0" :href="item.jump_url" target="_blank" style="text-decoration: none; outline: none">
                 <img v-lazy="item.pic_name" />
               </a>
+              <div v-else style="display: block; width: 100%; height: 100%;">
+                <img v-lazy="item.pic_name" />
+              </div>
             </SwipeItem>
           </Swipe>
           <div class="advertSwitch" @click="showAdvert = false">
@@ -133,6 +136,7 @@ import {
   getPosterList,
   getCategoryList
 } from '@/api/user'
+import { wxShare } from '@/utils/index'
 // const { mapActions } = createNamespacedHelpers('test') // u53efu4f7fu7528u8fd9u79cdu65b9u5f0fu76f4u63a5u83b7u5f97testu6a21u677f
 Vue.use(Lazyload)
 Vue.use(Toast)
@@ -179,7 +183,8 @@ export default {
       poster_banner_status: false,
       like_status: false,
       watermark: '',
-      thumbnail_pic: ''
+      thumbnail_pic: '',
+      meetObject: {}
     }
   },
 
@@ -211,6 +216,8 @@ export default {
       const { list } = res.data
       console.log(list, '获取会议列表成功')
       const meet = list.find((item) => item.id == this.meeting_id)
+      this.meetObject = meet
+      this.wxShare(this.meetObject)
       console.log(meet, 'xxxxxxxxx')
       if (meet.ad_status === '已关闭') {
         console.log('广告xxxx')
@@ -320,6 +327,7 @@ export default {
     this.handResize()
   },
   methods: {
+    wxShare,
     handleCurrentChange (val) {
       console.log(`当前页: ${val}`)
       this.currentPage = val // 改变当前页码
@@ -442,7 +450,16 @@ export default {
       if (!item.pic_list[0].pic_name) {
         return Toast(this.$t('wallNewspaperTipsen'))
       }
-      this.$router.push({ name: 'detailsEn', params: { data: item, meeting_id: this.meeting_id, poster_banner_status: this.poster_banner_status, like_status: this.like_status, watermark: this.watermark } })
+      this.$router.push({
+        name: 'details',
+        query: {
+          data: item,
+          meeting_id: this.meeting_id,
+          poster_banner_status: this.poster_banner_status,
+          like_status: this.like_status,
+          watermark: this.watermark || ''
+        }
+      })
     }
   },
   watch: {

@@ -60,6 +60,22 @@ export function getBase64Image (data) {
   })
 }
 
+export function getPosterDetail (data) {
+  return request({
+    url: '/PosterDetail',
+    method: 'post',
+    data
+  })
+}
+
+export function JssdkConfig (data) {
+  return request({
+    url: '/JssdkConfig',
+    method: 'post',
+    data
+  })
+}
+
 export function playerstatusupd (data) {
   return request({
     url: '/aipic/playerstatusupd',

@@ -1,5 +1,10 @@
 <template>
-  <div class="main" :style="{ width: width + 'px' }" style="margin: 0 auto">
+  <div style="display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  background-color: #fff;">
+    <div class="main" :style="{ width: width + 'px' }" style="margin: 0 auto">
     <Banner :meetingId="meetingId" v-show="poster_banner_status" :bannerData="bannerData"
       :style="{ width: '100%', height: calculatedHeight + 'px' }" />
     <div class="container">
@@ -35,14 +40,16 @@
       </div>
     </div>
   </div>
+  </div>
 </template>
 
 <script>
 import Vue from 'vue'
 import { Icon, Lazyload } from 'vant'
 import VueTouch from 'vue-touch'
-import Banner from 'components/Banner'
-import { getAdvertising, getPosterLikeAdd, getBase64Image } from '@/api/user'
+import Banner from 'components/Banner1'
+import { wxShare } from '@/utils/index'
+import { getAdvertising, getPosterLikeAdd, getBase64Image, getMeetingList } from '@/api/user'
 // import Banner from "components/Banner"
 Vue.use(Lazyload)
 Vue.use(VueTouch, { name: 'v-touch' })
@@ -53,7 +60,7 @@ export default {
     Banner,
     Icon
   },
-  data() {
+  data () {
     return {
       baseUrl: 'https://eposter.tri-think.cn/uploadFile',
       width: window.innerWidth,
@@ -80,11 +87,12 @@ export default {
       poster_banner_status: false,
       like_status: false,
       watermark: '',
-      liked: false
+      liked: false,
+      meetObject: {}
     }
   },
   computed: {
-    contentStyle() {
+    contentStyle () {
       return {
         transform: `translate(${this.panX}px, ${this.panY}px) scale(${this.scale})`,
         transformOrigin: 'center center',
@@ -92,7 +100,7 @@ export default {
       }
     }
   },
-  created() {
+  created () {
     document.title = '壁报展示'
     console.log('获取banner信息成功', this.itemData, this.$route.params.data)
     // this.meetingId = this.$route.params.data.meeting_id
@@ -102,7 +110,7 @@ export default {
 
     this.updateDetailData()
   },
-  mounted() {
+  mounted () {
     getAdvertising({
       'page': 1, // 页码
       'pageSize': 20, // 每页记录数
@@ -115,12 +123,28 @@ export default {
       this.bannerData = res.data || { list: [] }
       console.log(this.bannerData, 'banner this.imageList')
     })
-    this.poster_banner_status = this.$route.params.poster_banner_status
-    this.like_status = this.$route.params.like_status
-    this.watermark = this.$route.params.watermark
+    this.poster_banner_status = this.$route.query.poster_banner_status
+    this.like_status = this.$route.query.like_status
+    this.watermark = this.$route.query.watermark
     window.addEventListener('resize', this.handResize)
     this.handResize()
+    getMeetingList({
+      id: undefined,
+      meeting_name: '', // 会议名称
+      address: '', // 地点
+      username: '', // 用户名（登录类型为会议，需要传这个）
+      customerid: 0,
+      type: '管理员',
+      page: 1, // 会议id，必填
+      pageSize: 1000, // 搜索框内容
+      uid: 1
+    }).then((res) => {
+      const { list } = res.data
+      const meet = list.find((item) => item.id == this.meeting_id)
 
+      this.meetObject = meet
+      this.wxShare(this.meetObject)
+    })
     // 添加双击缩放事件
     if (this.$refs.zoomContainer && this.$refs.zoomContainer.$el) {
       this.$refs.zoomContainer.$el.addEventListener('dblclick', this.handleDoubleClick)
@@ -132,7 +156,8 @@ export default {
     }
   },
   methods: {
-    getBaseImage(item, index) {
+    wxShare,
+    getBaseImage (item, index) {
       // 设置处理状态
       this.$set(this.detailImages[index], 'processing', true)
 
@@ -169,7 +194,7 @@ export default {
     },
 
     // 为Base64图片添加水印
-    addWatermarkToBase64(base64Data, index) {
+    addWatermarkToBase64 (base64Data, index) {
       // 创建图片对象加载Base64数据
       const img = new Image()
 
@@ -187,7 +212,7 @@ export default {
           // 在Canvas上绘制原图
           ctx.drawImage(img, 0, 0, img.width, img.height)
 
-          if(this.watermark !== '') {
+          if (this.watermark !== '') {
             // 在画布上绘制斜向水印
             const watermarkText = this.watermark
 
@@ -245,19 +270,27 @@ export default {
       // 加载Base64图片
       img.src = 'data:image/jpeg;base64,' + base64Data
     },
-    likeFun() {
+    likeFun () {
       getPosterLikeAdd({
         'id': this.meetingId
       }).then(res => {
         this.liked = !this.liked
       })
     },
-    updateDetailData() {
-      this.itemData = this.$route.params.data
+    updateDetailData () {
+      // 优先从 params 中获取数据
+      this.itemData = this.$route.query.data
+
+      // 从 URL 查询参数中获取参数
+      this.meetingId = parseInt(this.$route.query.meeting_id) || 0
+      this.poster_banner_status = this.$route.query.poster_banner_status
+      this.like_status = this.$route.query.like_status
+      this.watermark = this.$route.query.watermark || ''
       if (!this.itemData) {
         console.error('没有传递有效的 itemData')
         return
       }
+
       const { pic_list } = this.itemData
       this.detailImages = pic_list.map(item => ({
         ...item,
@@ -272,7 +305,7 @@ export default {
 
       console.log('this.detailImages=====', this.detailImages)
     },
-    handResize() {
+    handResize () {
       this.width = window.innerWidth
       this.height = window.innerHeight
       console.log('Resize:', this.width, this.height)
@@ -289,14 +322,14 @@ export default {
       // 重置缩放和平移
       this.resetZoomAndPan()
     },
-    goBack() {
+    goBack () {
       this.$router.go(-1)
     },
     // 缩放相关方法
-    onPinchStart() {
+    onPinchStart () {
       this.lastScale = this.scale
     },
-    onPinch(e) {
+    onPinch (e) {
       // 计算新的缩放值
       let newScale = this.lastScale * e.scale
 
@@ -305,7 +338,7 @@ export default {
 
       this.scale = newScale
     },
-    onPinchEnd() {
+    onPinchEnd () {
       // 如果缩放小于最小值，重置为最小值
       if (this.scale < this.minScale) {
         this.scale = this.minScale
@@ -318,12 +351,12 @@ export default {
       }
     },
     // 平移相关方法
-    onPanStart() {
+    onPanStart () {
       this.isPanning = true
       this.lastPanX = this.panX
       this.lastPanY = this.panY
     },
-    onPan(e) {
+    onPan (e) {
       // 只有在放大状态下才允许平移
       if (this.scale > this.minScale) {
         // 计算新的平移值
@@ -331,7 +364,7 @@ export default {
         this.panY = this.lastPanY + e.deltaY
       }
     },
-    onPanEnd() {
+    onPanEnd () {
       this.isPanning = false
 
       // 限制平移范围，防止内容被拖出视图太远
@@ -348,7 +381,7 @@ export default {
       }
     },
     // 双击缩放
-    handleDoubleClick(e) {
+    handleDoubleClick (e) {
       e.preventDefault()
 
       if (this.scale > this.minScale) {
@@ -369,7 +402,7 @@ export default {
       }
     },
     // 鼠标滚轮缩放
-    handleWheel(e) {
+    handleWheel (e) {
       // 阻止默认滚动行为，允许缩放
       if (e.ctrlKey) {
         e.preventDefault()
@@ -414,7 +447,7 @@ export default {
       // 允许默认滚动行为，滚动页面
     },
     // 重置缩放和平移
-    resetZoomAndPan() {
+    resetZoomAndPan () {
       this.scale = this.minScale
       this.panX = 0
       this.panY = 0
@@ -422,10 +455,10 @@ export default {
         item.zoomed = false
       })
     },
-    toggleImageSize(item) {
+    toggleImageSize (item) {
       item.zoomed = !item.zoomed
     },
-    touchStart(event, item) {
+    touchStart (event, item) {
       if (event.touches.length === 2) {
         // 记录两指初始距离
         this.initialPinchDistance = Math.hypot(
@@ -435,7 +468,7 @@ export default {
         this.lastZoomState = item.zoomed
       }
     },
-    touchMove(event, item) {
+    touchMove (event, item) {
       if (event.touches.length === 2) {
         // 计算当前两指距离
         const currentDistance = Math.hypot(
@@ -455,7 +488,7 @@ export default {
         }
       }
     },
-    touchEnd(event, item) {
+    touchEnd (event, item) {
       // 重置状态
       this.initialPinchDistance = 0
     }
@@ -463,7 +496,7 @@ export default {
   watch: {
     // 监听路由参数变化
     '$route': {
-      handler(to, from) {
+      handler (to, from) {
         document.title = '壁报展示'
         if (to.name === 'details' && to.params.data) {
           console.log('路由参数变化，更新数据', to.params)
@@ -479,7 +512,7 @@ export default {
       deep: true
     }
   },
-  beforeDestroy() {
+  beforeDestroy () {
     window.removeEventListener('resize', this.handResize)
 
     // 移除事件监听器
@@ -492,6 +525,9 @@ export default {
 
 </script>
 <style lang="scss" scoped>
+::v-deep .van-swipe__track {
+    width: 100% !important;
+  }
 .main {
   display: flex;
   flex-direction: column;

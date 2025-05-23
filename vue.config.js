@@ -77,8 +77,9 @@ module.exports = {
           '^/testapi': ''  //请求的时候使用这个api就可以
         }
       }
-    },
-    after: require('./mock/mock-server.js')
+    }
+    // mock 服务器已被移除
+    // after: require('./mock/mock-server.js')
   },
   configureWebpack: smp.wrap({
     // provide the app's title in webpack's name field, so that
