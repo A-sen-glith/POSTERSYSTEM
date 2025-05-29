@@ -102,7 +102,7 @@ export default {
         uid: 1
       }).then((res) => {
         const { list } = res.data
-        const meet = list.find((item) => item.id == this.meeting_id)
+        const meet = list.find((item) => item.id == this.itemData.meeting_id)
         this.wxShare(meet, sessionStorage.getItem('pageHref'))
       })
       if (!this.itemData) {
