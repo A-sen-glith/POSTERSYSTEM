@@ -106,19 +106,19 @@ export default {
     // this.meetingId = this.$route.params.data.meeting_id
     if (this.$route.params.data && this.$route.params.data.meeting_id) {
       this.meetingId = this.$route.params.data.meeting_id
-      getAdvertising({
-        'page': 1, // 页码
-        'pageSize': 20, // 每页记录数
-        'type': 'banner', // 类型：广告，banner
-        'memo': '', // 备注
-        'status': '已开启', // 已开启（前台写死），已关闭
-        'meeting_id': this.meetingId, // 会议id
-        'uid': 1
-      }).then(res => {
-        this.bannerData = res.data || { list: [] }
-        console.log(this.bannerData, 'banner this.imageList')
-      })
     }
+    getAdvertising({
+      'page': 1, // 页码
+      'pageSize': 20, // 每页记录数
+      'type': 'banner', // 类型：广告，banner
+      'memo': '', // 备注
+      'status': '已开启', // 已开启（前台写死），已关闭
+      'meeting_id': parseInt(this.$route.query.meeting_id) || 0, // 会议id
+      'uid': 1
+    }).then(res => {
+      this.bannerData = res.data || { list: [] }
+      console.log(this.bannerData, 'banner this.imageList')
+    })
     this.updateDetailData()
   },
   mounted () {
