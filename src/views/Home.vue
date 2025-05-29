@@ -16,10 +16,10 @@
         }">
           <Swipe type="mask" class="swipe" :autoplay="autoplay">
             <SwipeItem class="advertisingImg" v-for="(item, index) in advertImages" :key="index">
-              <a v-if="item.if_jump === 0" :href="item.jump_url" target="_blank" style="text-decoration: none; outline: none">
+              <a v-if="item.if_jump === 0" :href="item.jump_url" target="_blank" style="text-decoration: none; outline: none;height: 100%;">
                 <img v-lazy="item.pic_name" />
               </a>
-              <div v-else style="text-decoration: none; outline: none">
+              <div v-else style="text-decoration: none; outline: none;height: 100%;">
                 <img v-lazy="item.pic_name" />
               </div>
             </SwipeItem>
@@ -421,7 +421,10 @@ export default {
     },
     goDetail (item) {
       console.log('item', item)
-      console.log('item', item.pic_list[0].pic_name)
+      // 首先判断pic_list是否为null或undefined
+      if (!item.pic_list || item.pic_list === null) {
+        return Toast(this.$t('wallNewspaperTips'))
+      }
       if (item.pic_list.length === 0) {
         return Toast(this.$t('wallNewspaperTips'))
       }
