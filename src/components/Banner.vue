@@ -1,10 +1,13 @@
 <template>
     <div class="banner" :style="{ width: width + 'px', height: height + 'px' }">
-      <Swipe type="card" class="swipe" :style="{width:width}" :autoplay="4000">
+      <Swipe type="card" class="swipe" :style="{width:width}" :autoplay="autoplay">
         <SwipeItem class="bannerImg" style="width: 100%;" v-for="(item, index) in bannerImages" :key="index">
-          <a :href="item.if_jump == 0 ? item.jump_url : 'javascript:void(0)'" target="_blank" style="display: block; width: 100%; height: 100%; text-decoration: none; outline: none;">
+          <a v-if="item.if_jump == 0" :href="item.jump_url" target="_blank" style="display: block; width: 100%; height: 100%; text-decoration: none; outline: none;">
               <img width="100%" v-lazy="item.pic_name" />
           </a>
+          <div v-else style="display: block; width: 100%; height: 100%;">
+              <img width="100%" v-lazy="item.pic_name" />
+          </div>
         </SwipeItem>
       </Swipe>
   </div>
@@ -27,7 +30,8 @@ export default {
       bannerImages: [],
       width: window.innerWidth,
       height: window.innerHeight,
-      meeting_id: 0
+      meeting_id: 0,
+      autoplay: 3000
     }
   },
   computed: {},
@@ -47,6 +51,7 @@ export default {
     }).then(res => {
       const { list } = res.data
       this.bannerImages = list || []
+      this.autoplay = this.bannerImages[0].stay_duration * 1000
       this.bannerImages.forEach(item => {
         item.pic_name = baseUrl + '/' + item.pic_name
       })

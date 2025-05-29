@@ -43,6 +43,13 @@ export function getCategoryList (data) {
     data
   })
 }
+export function JssdkConfig (data) {
+  return request({
+    url: '/bb/JssdkConfig',
+    method: 'post',
+    data
+  })
+}
 
 export function playerstatusupd (data) {
   return request({
@@ -100,17 +107,17 @@ export function getmatchinfolist (data) {
   })
 }
 
-export function goEmpower(data) {
+export function goEmpower (data) {
   return request({
     url: `/expert/getlogininfomob?code=${data.code}`,
-    method: 'get',
+    method: 'get'
   })
 }
 
-export function wxoauth(data) {
+export function wxoauth (data) {
   return request({
     url: `/aipic/wxoauth?code=${data}`,
-    method: 'get',
+    method: 'get'
   })
 }
 

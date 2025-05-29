@@ -14,11 +14,14 @@
           marginLeft: '50%',
           transform: 'translate(-50%)',
         }">
-          <Swipe type="mask" class="swipe">
+          <Swipe type="mask" class="swipe" :autoplay="autoplay">
             <SwipeItem class="advertisingImg" v-for="(item, index) in advertImages" :key="index">
-              <a :href="item.if_jump === 0 ? item.jump_url : 'javascript:void(0)'" target="_blank" style="text-decoration: none; outline: none">
+              <a v-if="item.if_jump === 0" :href="item.jump_url" target="_blank" style="text-decoration: none; outline: none">
                 <img v-lazy="item.pic_name" />
               </a>
+              <div v-else style="text-decoration: none; outline: none">
+                <img v-lazy="item.pic_name" />
+              </div>
             </SwipeItem>
           </Swipe>
           <div class="advertSwitch" @click="showAdvert = false">
@@ -113,6 +116,7 @@ import { Swipe, SwipeItem, Lazyload, Icon, Toast } from 'vant'
 import { Select, Option, Pagination } from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import Banner from 'components/Banner'
+import { wxShare } from '@/utils/index'
 import {
   getMeetingList,
   getAdvertising,
@@ -161,7 +165,8 @@ export default {
       isShowPage: false,
       isShowBanner: true,
       widthBanner: 0,
-      calculatedHeight: 0
+      calculatedHeight: 0,
+      autoplay: 3000
     }
   },
 
@@ -192,6 +197,8 @@ export default {
       const { list } = res.data
       console.log(list, '获取会议列表成功')
       const meet = list.find((item) => item.id == this.meeting_id)
+      this.wxShare(meet, window.location.href)
+      sessionStorage.setItem('pageHref', window.location.href)
       console.log(meet, 'xxxxxxxxx')
       if (meet.ad_status === '已关闭') {
         console.log('广告xxxx')
@@ -222,11 +229,12 @@ export default {
           item.pic_name = baseUrl + '/' + item.pic_name
         })
         if (this.advertImages.length > 0) {
+          this.autoplay = this.advertImages[0].stay_duration * 1000
           // this.showAdvert = true
-          setTimeout(() => {
-            console.log('广告结束')
-            this.showAdvert = false
-          }, list[0].stay_duration * 1000)
+          // setTimeout(() => {
+          //   console.log('广告结束')
+          //   this.showAdvert = false
+          // }, list[0].stay_duration * 1000)
         }
         console.log(
           '获取广告信息成功',
@@ -284,6 +292,7 @@ export default {
     this.handResize()
   },
   methods: {
+    wxShare,
     // updateAdvertStatus() {
     //   console.log("xxxxx meetShowAdvert",this.showAdvert == this.meetShowAdvert);
     //   this.isShowAdvert = this.showAdvert === this.meetShowAdvert;

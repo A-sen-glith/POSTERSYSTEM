@@ -23,6 +23,10 @@
 import Vue from 'vue'
 import { Icon, Lazyload } from 'vant'
 import VueTouch from 'vue-touch'
+import { wxShare } from '@/utils/index'
+import {
+  getMeetingList
+} from '@/api/user'
 // import { getAdvertising } from "@/api/user"
 // import Banner from "components/Banner"
 Vue.use(Lazyload)
@@ -34,7 +38,7 @@ export default {
     // Banner,
     Icon
   },
-  data() {
+  data () {
     return {
       width: window.innerWidth,
       height: window.innerHeight,
@@ -55,7 +59,7 @@ export default {
     }
   },
   computed: {
-    contentStyle() {
+    contentStyle () {
       return {
         transform: `translate(${this.panX}px, ${this.panY}px) scale(${this.scale})`,
         transformOrigin: 'center center',
@@ -63,12 +67,12 @@ export default {
       }
     }
   },
-  created() {
+  created () {
     document.title = '壁报展示'
     console.log('获取banner信息成功', this.itemData, this.$route.params.data)
     this.updateDetailData()
   },
-  mounted() {
+  mounted () {
     window.addEventListener('resize', this.handResize)
     this.handResize()
 
@@ -83,8 +87,24 @@ export default {
     }
   },
   methods: {
-    updateDetailData() {
+    wxShare,
+    updateDetailData () {
       this.itemData = this.$route.params.data
+      getMeetingList({
+        id: undefined,
+        meeting_name: '', // 会议名称
+        address: '', // 地点
+        username: '', // 用户名（登录类型为会议，需要传这个）
+        customerid: 0,
+        type: '管理员',
+        page: 1, // 会议id，必填
+        pageSize: 1000, // 搜索框内容
+        uid: 1
+      }).then((res) => {
+        const { list } = res.data
+        const meet = list.find((item) => item.id == this.meeting_id)
+        this.wxShare(meet, sessionStorage.getItem('pageHref'))
+      })
       if (!this.itemData) {
         console.error('没有传递有效的 itemData')
         return
@@ -97,7 +117,7 @@ export default {
       })
       console.log('this.detailImages=====', this.detailImages)
     },
-    handResize() {
+    handResize () {
       this.width = window.innerWidth
       this.height = window.innerHeight
       console.log('Resize:', this.width, this.height)
@@ -114,14 +134,14 @@ export default {
       // 重置缩放和平移
       this.resetZoomAndPan()
     },
-    goBack() {
+    goBack () {
       this.$router.go(-1)
     },
     // 缩放相关方法
-    onPinchStart() {
+    onPinchStart () {
       this.lastScale = this.scale
     },
-    onPinch(e) {
+    onPinch (e) {
       // 计算新的缩放值
       let newScale = this.lastScale * e.scale
 
@@ -130,7 +150,7 @@ export default {
 
       this.scale = newScale
     },
-    onPinchEnd() {
+    onPinchEnd () {
       // 如果缩放小于最小值，重置为最小值
       if (this.scale < this.minScale) {
         this.scale = this.minScale
@@ -143,12 +163,12 @@ export default {
       }
     },
     // 平移相关方法
-    onPanStart() {
+    onPanStart () {
       this.isPanning = true
       this.lastPanX = this.panX
       this.lastPanY = this.panY
     },
-    onPan(e) {
+    onPan (e) {
       // 只有在放大状态下才允许平移
       if (this.scale > this.minScale) {
         // 计算新的平移值
@@ -156,7 +176,7 @@ export default {
         this.panY = this.lastPanY + e.deltaY
       }
     },
-    onPanEnd() {
+    onPanEnd () {
       this.isPanning = false
 
       // 限制平移范围，防止内容被拖出视图太远
@@ -173,7 +193,7 @@ export default {
       }
     },
     // 双击缩放
-    handleDoubleClick(e) {
+    handleDoubleClick (e) {
       e.preventDefault()
 
       if (this.scale > this.minScale) {
@@ -194,7 +214,7 @@ export default {
       }
     },
     // 鼠标滚轮缩放
-    handleWheel(e) {
+    handleWheel (e) {
       // 阻止默认滚动行为，允许缩放
       if (e.ctrlKey) {
         e.preventDefault()
@@ -239,7 +259,7 @@ export default {
       // 允许默认滚动行为，滚动页面
     },
     // 重置缩放和平移
-    resetZoomAndPan() {
+    resetZoomAndPan () {
       this.scale = this.minScale
       this.panX = 0
       this.panY = 0
@@ -248,7 +268,7 @@ export default {
   watch: {
     // 监听路由参数变化
     '$route': {
-      handler(to, from) {
+      handler (to, from) {
         document.title = '壁报展示'
         if (to.name === 'details' && to.params.data) {
           console.log('路由参数变化，更新数据', to.params.data)
@@ -260,7 +280,7 @@ export default {
       deep: true
     }
   },
-  beforeDestroy() {
+  beforeDestroy () {
     window.removeEventListener('resize', this.handResize)
 
     // 移除事件监听器

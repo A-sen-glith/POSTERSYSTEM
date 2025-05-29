@@ -24,10 +24,15 @@
 import Vue from 'vue'
 import { Icon, Lazyload } from 'vant'
 import VueTouch from 'vue-touch'
+import { wxShare } from '@/utils/index'
+import {
+  getMeetingList
+} from '@/api/user'
 // import { getAdvertising } from "@/api/user"
 // import Banner from "components/Banner"
 Vue.use(Lazyload)
 Vue.use(VueTouch, { name: 'v-touch' })
+
 const baseUrl = 'https://eposter.tri-think.cn/uploadFile'
 export default {
   name: 'details',
@@ -84,8 +89,24 @@ export default {
     }
   },
   methods: {
+    wxShare,
     updateDetailData() {
       this.itemData = this.$route.params.data
+      getMeetingList({
+        id: undefined,
+        meeting_name: '', // 会议名称
+        address: '', // 地点
+        username: '', // 用户名（登录类型为会议，需要传这个）
+        customerid: 0,
+        type: '管理员',
+        page: 1, // 会议id，必填
+        pageSize: 1000, // 搜索框内容
+        uid: 1
+      }).then((res) => {
+        const { list } = res.data
+        const meet = list.find((item) => item.id == this.meeting_id)
+        this.wxShare(meet, sessionStorage.getItem('pageHref'))
+      })
       if (!this.itemData) {
         console.error('没有传递有效的 itemData')
         return

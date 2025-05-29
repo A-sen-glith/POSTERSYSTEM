@@ -71,14 +71,14 @@ module.exports = {
     // },
     proxy: {
       '/bb': {
-        target: 'https://eposter.tri-think.cn/bb',  //这里后台的地址模拟的;应该填写你们真实的后台接口
+        target: 'https://eposter.tri-think.cn/bb', // 这里后台的地址模拟的;应该填写你们真实的后台接口
         // target: 'http://192.168.2.104:16500/gkzy-web-service',  //这里后台的地址模拟的;应该填写你们真实的后台接口
         pathRewrite: {
-          '^/bb': ''  //请求的时候使用这个api就可以
+          '^/bb': '' // 请求的时候使用这个api就可以
         }
       }
-    },
-    after: require('./mock/mock-server.js')
+    }
+    // after: require('./mock/mock-server.js')
   },
   configureWebpack: smp.wrap({
     // provide the app's title in webpack's name field, so that
