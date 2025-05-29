@@ -140,7 +140,7 @@ export default {
       uid: 1
     }).then((res) => {
       const { list } = res.data
-      const meet = list.find((item) => item.id == this.meeting_id)
+      const meet = list.find((item) => item.id == this.meetingId)
 
       this.meetObject = meet
       this.wxShare(this.meetObject)

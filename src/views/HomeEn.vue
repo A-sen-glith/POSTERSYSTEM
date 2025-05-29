@@ -267,11 +267,12 @@ export default {
           item.pic_name = baseUrl + '/' + item.pic_name
         })
         if (this.advertImages.length > 0) {
+          this.autoplay = this.advertImages[0].stay_duration * 1000
           // this.showAdvert = true
-          setTimeout(() => {
-            console.log('广告结束')
-            this.showAdvert = false
-          }, list[0].stay_duration * 1000)
+          // setTimeout(() => {
+          //   console.log('广告结束')
+          //   this.showAdvert = false
+          // }, list[0].stay_duration * 1000)
         }
         console.log(
           '获取广告信息成功',

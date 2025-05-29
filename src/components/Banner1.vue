@@ -1,6 +1,6 @@
 <template>
   <div class="banner" :style="{ width: '100%', height: height + 'px' }">
-    <Swipe type="card" class="swipe"  :autoplay="4000" v-if="bannerImages.length > 0">
+    <Swipe type="card" class="swipe"  :autoplay="autoplay" v-if="bannerImages.length > 0">
       <SwipeItem class="bannerImg" style="width: 100%;" v-for="(item, index) in bannerImages" :key="index">
         <a v-if="item.if_jump === 0" :href="item.jump_url" target="_blank"
           :style="{ display: 'block', width: imgWidth + 'px', height: imgHeight + 'px', 'text-decoration': 'none', outline: 'none' }">
@@ -42,7 +42,8 @@ export default {
       height: window.innerHeight,
       meeting_id: 0,
       imgHeight: 0,
-      imgWidth: 0
+      imgWidth: 0,
+      autoplay: 3000
     }
   },
   computed: {},
@@ -52,9 +53,10 @@ export default {
         console.log('banner Data updated:', newVal.list)
         // 处理 bannerImages 更新等操作
         this.bannerImages = newVal.list.map(item => {
-          item.pic_name = baseUrl + '/' + item.pic_name
+          item.pic_name = item.pic_name.startsWith('https://') ? item.pic_name : baseUrl + '/' + item.pic_name
           return item
         })
+        this.autoplay = this.bannerImages[0].stay_duration * 1000
         console.log('banner Images 11:', this.bannerImages)
       }
     }
@@ -68,7 +70,11 @@ export default {
       console.log('bannerImages rendered', this.bannerData.list)
       if (this.bannerData && this.bannerData.list && Array.isArray(this.bannerData.list)) {
         console.log('bannerImages rendered', this.bannerData.list)
-        this.bannerImages = this.bannerData.list
+        this.bannerImages = this.bannerData.list.map(item => {
+          item.pic_name = item.pic_name.startsWith('https://') ? item.pic_name : baseUrl + '/' + item.pic_name
+          return item
+        })
+        this.autoplay = this.bannerImages[0].stay_duration * 1000
         console.log('banner Images 11:', this.bannerImages) // 在这里打印确保是最新的
       } else {
         console.error('bannerData or bannerData.list is not available')
