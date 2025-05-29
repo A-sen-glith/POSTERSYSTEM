@@ -15,7 +15,7 @@ export function login (data) {
 
 export function getMeetingList (data) {
   return request({
-    url: '/bb/MeetingList',
+    url: '/testapi/MeetingList',
     method: 'post',
     data
   })
@@ -23,14 +23,14 @@ export function getMeetingList (data) {
 
 export function getAdvertising (data) {
   return request({
-    url: '/bb/AdBannerList',
+    url: '/testapi/AdBannerList',
     method: 'post',
     data
   })
 }
 export function getPosterList (data) {
   return request({
-    url: '/bb/PosterList',
+    url: '/testapi/PosterList',
     method: 'post',
     data
   })
@@ -38,14 +38,14 @@ export function getPosterList (data) {
 
 export function getCategoryList (data) {
   return request({
-    url: '/bb/CategoryList',
+    url: '/testapi/CategoryList',
     method: 'post',
     data
   })
 }
 export function JssdkConfig (data) {
   return request({
-    url: '/bb/JssdkConfig',
+    url: '/testapi/JssdkConfig',
     method: 'post',
     data
   })
