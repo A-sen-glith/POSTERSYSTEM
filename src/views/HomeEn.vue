@@ -217,7 +217,7 @@ export default {
       console.log(list, '获取会议列表成功')
       const meet = list.find((item) => item.id == this.meeting_id)
       this.meetObject = meet
-      this.wxShare(this.meetObject)
+      this.wxShare(this.meetObject, window.location.href)
       console.log(meet, 'xxxxxxxxx')
       if (meet.ad_status === '已关闭') {
         console.log('广告xxxx')
@@ -458,7 +458,8 @@ export default {
           meeting_id: this.meeting_id,
           poster_banner_status: this.poster_banner_status,
           like_status: this.like_status,
-          watermark: this.watermark || ''
+          watermark: this.watermark || '',
+          pageUrl: window.location.href
         }
       })
     }

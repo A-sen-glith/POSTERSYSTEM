@@ -35,7 +35,7 @@ export function deepClone (source) {
   return targetObj
 }
 
-export function wxShare (meetObject) {
+export function wxShare (meetObject, pageUrl) {
   // 添加默认值，防止 meetObject 为空
   meetObject = meetObject || {}
   let share_abstract = meetObject.share_abstract || '海报系统'
@@ -44,7 +44,7 @@ export function wxShare (meetObject) {
   console.log('微信分享参数:', meetObject, share_abstract, share_logo, share_title)
   // 获取当前URL，处理hash符号和参数
   // 微信JS SDK在验证时会自动去除hash部分，所以我们需要使用相同的URL来获取签名
-  let currentUrl = window.location.href
+  let currentUrl = pageUrl || window.location.href
   let signUrl = currentUrl.split('#')[0] // 去除hash部分，用于获取签名
   let baseUrl = currentUrl.split('?')[0] // 去除参数部分，用于分享链接
   console.log('准备配置微信分享:')
@@ -70,7 +70,7 @@ export function wxShare (meetObject) {
       // alert(data.data.appId);
       console.log('配置微信SDK，appId:', data.data.appId)
       wx.config({
-        debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来
+        // debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来
         appId: data.data.appId, // 必填，公众号的唯一标识
         timestamp: data.data.timestamp, // 必填，生成签名的时间戳
         nonceStr: data.data.nonceStr, // 必填，生成签名的随机串

@@ -106,23 +106,23 @@ export default {
     // this.meetingId = this.$route.params.data.meeting_id
     if (this.$route.params.data && this.$route.params.data.meeting_id) {
       this.meetingId = this.$route.params.data.meeting_id
+      getAdvertising({
+        'page': 1, // 页码
+        'pageSize': 20, // 每页记录数
+        'type': 'banner', // 类型：广告，banner
+        'memo': '', // 备注
+        'status': '已开启', // 已开启（前台写死），已关闭
+        'meeting_id': this.meetingId, // 会议id
+        'uid': 1
+      }).then(res => {
+        this.bannerData = res.data || { list: [] }
+        console.log(this.bannerData, 'banner this.imageList')
+      })
     }
 
     this.updateDetailData()
   },
   mounted () {
-    getAdvertising({
-      'page': 1, // 页码
-      'pageSize': 20, // 每页记录数
-      'type': 'banner', // 类型：广告，banner
-      'memo': '', // 备注
-      'status': '已开启', // 已开启（前台写死），已关闭
-      'meeting_id': this.meetingId, // 会议id
-      'uid': 1
-    }).then(res => {
-      this.bannerData = res.data || { list: [] }
-      console.log(this.bannerData, 'banner this.imageList')
-    })
     this.poster_banner_status = this.$route.query.poster_banner_status
     this.like_status = this.$route.query.like_status
     this.watermark = this.$route.query.watermark
@@ -140,10 +140,11 @@ export default {
       uid: 1
     }).then((res) => {
       const { list } = res.data
-      const meet = list.find((item) => item.id == this.meetingId)
+      const meet = list.find((item) => item.id === this.meetingId)
 
       this.meetObject = meet
-      this.wxShare(this.meetObject)
+      console.log(this.$route.query.pageUrl, 'this.$route.query.pageUrl')
+      this.wxShare(this.meetObject, this.$route.query.pageUrl)
     })
     // 添加双击缩放事件
     if (this.$refs.zoomContainer && this.$refs.zoomContainer.$el) {
