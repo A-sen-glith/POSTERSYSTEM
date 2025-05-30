@@ -452,7 +452,7 @@ export default {
         return Toast(this.$t('wallNewspaperTipsen'))
       }
       this.$router.push({
-        name: 'details',
+        name: 'detailsEn',
         query: {
           data: item,
           meeting_id: this.meeting_id,
