@@ -17,10 +17,10 @@
           <Swipe type="mask" class="swipe" :autoplay="autoplay">
             <SwipeItem class="advertisingImg" v-for="(item, index) in advertImages" :key="index">
               <a v-if="item.if_jump === 0" :href="item.jump_url" target="_blank" style="text-decoration: none; outline: none;height: 100%;">
-                <img v-lazy="item.pic_name" />
+                <img :src="item.pic_name" />
               </a>
               <div v-else style="text-decoration: none; outline: none;height: 100%;">
-                <img v-lazy="item.pic_name" />
+                <img :src="item.pic_name" />
               </div>
             </SwipeItem>
           </Swipe>
@@ -289,6 +289,18 @@ export default {
       clearTimeout(i)
     }
     window.addEventListener('resize', this.handResize)
+    window.addEventListener('keydown', this.resetTimer)
+    window.addEventListener('mousemove', this.resetTimer)
+    window.addEventListener('touchstart', this.resetTimer)
+    window.addEventListener('touchmove', this.resetTimer)
+
+    // 添加对.container元素滚动的监听
+    this.$nextTick(() => {
+      const container = document.querySelector('.container')
+      if (container) {
+        container.addEventListener('scroll', this.resetTimer)
+      }
+    })
     this.handResize()
   },
   methods: {
@@ -322,23 +334,20 @@ export default {
     monitorInactivity () {
       if (this.lockDuration > 0) {
         console.log('wucccccccccccccccccc', this.lockDuration)
-        const resetTimer = () => {
-          if (this.inactivityTimeout) {
-            for (let i = 0; i < this.inactivityTimeout; i++) {
-              clearTimeout(i)
-            }
-          }
-          if (this.meetShowAdvert) {
-            this.inactivityTimeout = setTimeout(() => {
-              this.showAdvert = true
-            }, this.lockDuration * 1000)
-          }
+
+        if (this.inactivityTimeout) {
+          clearTimeout(this.inactivityTimeout)
         }
-        // window.addEventListener("mousemove", resetTimer);
-        window.addEventListener('keydown', resetTimer)
-        // window.addEventListener("touchstart", resetTimer);
-        // window.addEventListener("touchmove", resetTimer);
-        resetTimer()
+        console.log('重置定时器', this.showAdvert)
+
+        if (!this.meetShowAdvert) {
+          console.log('开启广告')
+
+          this.inactivityTimeout = setTimeout(() => {
+            this.showAdvert = true
+          }, this.lockDuration * 1000)
+          console.log('定时器开启', this.inactivityTimeout)
+        }
       }
     },
     handResize () {
@@ -459,6 +468,14 @@ export default {
       },
       deep: true
     },
+    showAdvert (val) {
+      console.log('watch', val)
+      if (!val) {
+        this.monitorInactivity()
+      } else {
+        this.resetTimer()
+      }
+    },
     width (val) {
       this.width = val
     },
@@ -468,10 +485,16 @@ export default {
   },
   beforeDestroy () {
     window.removeEventListener('resize', this.handResize)
-    // window.removeEventListener("mousemove", this.resetTimer);
+    window.removeEventListener('mousemove', this.resetTimer)
     window.removeEventListener('keydown', this.resetTimer)
-    // window.removeEventListener("touchstart", this.resetTimer);
-    // window.removeEventListener("touchmove", this.resetTimer);
+    window.removeEventListener('touchstart', this.resetTimer)
+    window.removeEventListener('touchmove', this.resetTimer)
+
+    // 移除.container元素滚动监听
+    const container = document.querySelector('.container')
+    if (container) {
+      container.removeEventListener('scroll', this.resetTimer)
+    }
 
     if (this.inactivityTimeout) {
       for (let i = 0; i < this.inactivityTimeout + 1000; i++) {

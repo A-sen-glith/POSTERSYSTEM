@@ -3,10 +3,10 @@
       <Swipe type="card" class="swipe" :style="{width:width}" :autoplay="autoplay">
         <SwipeItem class="bannerImg" style="width: 100%;" v-for="(item, index) in bannerImages" :key="index">
           <a v-if="item.if_jump == 0" :href="item.jump_url" target="_blank" style="display: block; width: 100%; height: 100%; text-decoration: none; outline: none;">
-              <img width="100%" v-lazy="item.pic_name" />
+              <img width="100%" :src="item.pic_name" />
           </a>
           <div v-else style="display: block; width: 100%; height: 100%;">
-              <img width="100%" v-lazy="item.pic_name" />
+              <img width="100%" :src="item.pic_name" />
           </div>
         </SwipeItem>
       </Swipe>
