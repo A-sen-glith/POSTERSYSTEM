@@ -14,7 +14,7 @@
           marginLeft: '50%',
           transform: 'translate(-50%)',
         }">
-          <Swipe type="mask" class="swipe">
+          <Swipe type="mask" class="swipe"  :autoplay="autoplay">
             <SwipeItem class="advertisingImg" v-for="(item, index) in advertImages" :key="index">
               <a v-if="item.if_jump === 0" :href="item.jump_url" target="_blank" style="text-decoration: none; outline: none">
                 <img v-lazy="item.pic_name" />
@@ -184,7 +184,8 @@ export default {
       like_status: false,
       watermark: '',
       thumbnail_pic: '',
-      meetObject: {}
+      meetObject: {},
+      autoplay: 3000
     }
   },
 
