@@ -153,7 +153,7 @@ export default {
       totalItems: '0',
       currentPage: 1,
       itemsPerPage: 20,
-      inactivityTimeout: null,
+      inactivityTimeout: [],
       lockDuration: '0',
       categoryList1: [],
       categoryList2: [],
@@ -324,8 +324,8 @@ export default {
     },
     resetTimer () {
       if (this.inactivityTimeout) {
-        for (let i = 0; i < this.inactivityTimeout + 1000; i++) {
-          clearTimeout(i)
+        for (let i = 0; i < this.inactivityTimeout.length; i++) {
+          clearTimeout(this.inactivityTimeout[i])
         }
         // clearTimeout(this.inactivityTimeout);
       }
@@ -336,16 +336,19 @@ export default {
         console.log('wucccccccccccccccccc', this.lockDuration)
 
         if (this.inactivityTimeout) {
-          clearTimeout(this.inactivityTimeout)
+          for (let i = 0; i < this.inactivityTimeout.length; i++) {
+          clearTimeout(this.inactivityTimeout[i])
+        }
         }
         console.log('重置定时器', this.showAdvert)
 
         if (!this.meetShowAdvert) {
           console.log('开启广告')
           Toast.clear()
-          this.inactivityTimeout = setTimeout(() => {
+          let time = setTimeout(() => {
             this.showAdvert = true
           }, this.lockDuration * 1000)
+          this.inactivityTimeout.push(time)
           console.log('定时器开启', this.inactivityTimeout)
         }
       }
@@ -497,8 +500,8 @@ export default {
     }
 
     if (this.inactivityTimeout) {
-      for (let i = 0; i < this.inactivityTimeout + 1000; i++) {
-        clearTimeout(i)
+      for (let i = 0; i < this.inactivityTimeout.length; i++) {
+        clearTimeout(this.inactivityTimeout[i])
       }
     }
   }
