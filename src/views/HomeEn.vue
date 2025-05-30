@@ -342,7 +342,7 @@ export default {
 
         if (!this.meetShowAdvert) {
           console.log('开启广告')
-
+          Toast.clear()
           this.inactivityTimeout = setTimeout(() => {
             this.showAdvert = true
           }, this.lockDuration * 1000)
@@ -489,7 +489,7 @@ export default {
     window.removeEventListener('keydown', this.resetTimer)
     window.removeEventListener('touchstart', this.resetTimer)
     window.removeEventListener('touchmove', this.resetTimer)
-
+    Toast.clear()
     // 移除.container元素滚动监听
     const container = document.querySelector('.container')
     if (container) {
