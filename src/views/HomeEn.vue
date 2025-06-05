@@ -71,7 +71,7 @@
           <div class="selectContent">
             <div class="search">
               <input class="ipt" v-model="searchTxt" :placeholder="$t('placeholderen')" />
-              <div class="searchBtn" @click="searchClick">
+              <div class="searchBtn" @click="searchClick1">
                 {{ $t("searchen") }}
               </div>
             </div>
@@ -402,12 +402,16 @@ export default {
       console.log('handSelectChange2', val)
       this.categoryId2 = val
     },
+    searchClick1 () {
+      this.currentPage = 1
+      this.searchClick()
+    },
     searchClick () {
       console.log('this.value', this.categoryId2)
       console.log('searchTxt', this.categoryId1)
-      if (this.searchTxt !== '') {
-        this.currentPage = 1
-      }
+      // if (this.searchTxt !== '') {
+      //   this.currentPage = 1
+      // }
       console.log('his.currentPag', this.currentPage)
       // this.currentPage = 1
       getPosterList({
