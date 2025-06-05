@@ -74,7 +74,7 @@
           <div class="selectContent">
             <div class="search">
               <el-input class="search-input" v-model="searchTxt" :placeholder="$t('placeholderen')">
-                <el-button @click="searchClick" slot="append">{{ $t("searchen") }}</el-button>
+                <el-button @click="searchClick1" slot="append">{{ $t("searchen") }}</el-button>
               </el-input>
             </div>
             <div class="current" v-show="totalItems != 0 && isShowPage">
@@ -415,12 +415,16 @@ export default {
       console.log('handSelectChange2', val)
       this.categoryId2 = val
     },
+    searchClick1 () {
+      this.currentPage = 1
+      this.searchClick()
+    },
     searchClick () {
       console.log('this.value', this.categoryId2)
       console.log('searchTxt', this.categoryId1)
-      if (this.searchTxt !== '') {
-        this.currentPage = 1
-      }
+      // if (this.searchTxt !== '') {
+      //   this.currentPage = 1
+      // }
       console.log('his.currentPag', this.currentPage)
       // this.currentPage = 1
       getPosterList({
