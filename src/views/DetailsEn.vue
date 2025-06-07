@@ -1,6 +1,37 @@
 <template>
   <div class="container">
-    <div class="detailsPage" :style="{ width: width + 'px', height: height + 'px' }">
+    <!-- 广告层 -->
+    <div style="
+          position: fixed;
+          background-color: #f5f5f5;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+        " v-if="showAdvert && advertImages.length > 0">
+      <div class="advert" :style="{
+          width: widthBanner + 'px',
+          marginLeft: '50%',
+          transform: 'translate(-50%)',
+        }">
+        <Swipe type="mask" class="swipe" :autoplay="autoplay">
+          <SwipeItem class="advertisingImg" v-for="(item, index) in advertImages" :key="index">
+            <a v-if="item.if_jump === 0" :href="item.jump_url" target="_blank" style="text-decoration: none; outline: none;height: 100%;">
+              <img :src="item.pic_name" />
+            </a>
+            <div v-else style="text-decoration: none; outline: none;height: 100%;">
+              <img :src="item.pic_name" />
+            </div>
+          </SwipeItem>
+        </Swipe>
+        <div class="advertSwitch" @click="goBack">
+          {{ $t("closeen") }}
+        </div>
+      </div>
+    </div>
+    
+    <!-- 正常内容区 -->
+    <div class="detailsPage" :style="{ width: width + 'px', height: height + 'px' }" v-if="!showAdvert || advertImages.length === 0">
       <!-- <div class="backBtn" @click="goBack">
         <Icon name="arrow-left" />{{ $t("back") }}
       </div> -->
@@ -22,15 +53,17 @@
 
 <script>
 import Vue from 'vue'
-import { Icon, Lazyload } from 'vant'
+import { Icon, Lazyload, Swipe, SwipeItem, Toast } from 'vant'
 import VueTouch from 'vue-touch'
 import { wxShare } from '@/utils/index'
 import {
-  getMeetingList
+  getMeetingList,
+  getAdvertising
 } from '@/api/user'
 // import { getAdvertising } from "@/api/user"
 // import Banner from "components/Banner"
 Vue.use(Lazyload)
+Vue.use(Toast)
 Vue.use(VueTouch, { name: 'v-touch' })
 
 const baseUrl = 'https://eposter.tri-think.cn/uploadFile'
@@ -38,15 +71,25 @@ export default {
   name: 'details',
   components: {
     // Banner,
-    Icon
+    Icon,
+    Swipe,
+    SwipeItem
   },
   data () {
     return {
       width: window.innerWidth,
       height: window.innerHeight,
+      widthBanner: window.innerWidth, // 广告宽度
       bannerHeight: 0,
       detailImages: [],
       itemData: this.$route.params.data,
+      // 广告相关数据
+      advertImages: [],
+      showAdvert: false,
+      autoplay: 3000, // 轮播间隔时间，默认3秒
+      inactivityTimeout: [], // 不活动计时器数组
+      inactivityDelay: 60, // 不活动时间（秒），默认为60秒
+      isAdFeatureEnabled: true, // 广告功能是否开启
       // 缩放相关
       scale: 1,
       minScale: 1,
@@ -73,9 +116,33 @@ export default {
     document.title = 'eposter'
     console.log('获取banner信息成功', this.itemData, this.$route.params.data)
     this.updateDetailData()
+    
+    // 获取会议信息和广告信息
+    if (this.itemData && this.itemData.meeting_id) {
+      this.fetchAdvertisingData(this.itemData.meeting_id)
+    }
   },
   mounted () {
+    // 清除可能存在的所有定时器
+    for (let i = 0; i < 10000; i++) {
+      clearTimeout(i)
+    }
+    
     window.addEventListener('resize', this.handResize)
+    // 添加用户交互监听，用于重置不活动计时器
+    window.addEventListener('keydown', this.resetTimer)
+    window.addEventListener('mousemove', this.resetTimer)
+    window.addEventListener('touchstart', this.resetTimer)
+    window.addEventListener('touchmove', this.resetTimer)
+    
+    // 添加对.container元素滚动的监听
+    this.$nextTick(() => {
+      const container = document.querySelector('.container')
+      if (container) {
+        container.addEventListener('scroll', this.resetTimer)
+      }
+    })
+    
     this.handResize()
 
     // 添加双击缩放事件
@@ -88,8 +155,131 @@ export default {
       this.$refs.zoomContainer.$el.addEventListener('wheel', this.handleWheel, { passive: false })
     }
   },
+  beforeDestroy () {
+    window.removeEventListener('resize', this.handResize)
+    
+    // 移除用户交互监听
+    window.removeEventListener('keydown', this.resetTimer)
+    window.removeEventListener('mousemove', this.resetTimer)
+    window.removeEventListener('touchstart', this.resetTimer)
+    window.removeEventListener('touchmove', this.resetTimer)
+    
+    // 移除滚动监听
+    const container = document.querySelector('.container')
+    if (container) {
+      container.removeEventListener('scroll', this.resetTimer)
+    }
+    
+    // 清除定时器
+    if (this.inactivityTimeout) {
+      for (let i = 0; i < this.inactivityTimeout.length; i++) {
+        clearTimeout(this.inactivityTimeout[i])
+      }
+    }
+    
+    // 移除双击缩放事件
+    if (this.$refs.zoomContainer && this.$refs.zoomContainer.$el) {
+      this.$refs.zoomContainer.$el.removeEventListener('dblclick', this.handleDoubleClick)
+    }
+    // 移除鼠标滚轮缩放
+    if (this.$refs.zoomContainer && this.$refs.zoomContainer.$el) {
+      this.$refs.zoomContainer.$el.removeEventListener('wheel', this.handleWheel, { passive: false })
+    }
+  },
   methods: {
     wxShare,
+    // 获取广告数据
+    fetchAdvertisingData(meeting_id) {
+      getMeetingList({
+        id: undefined,
+        meeting_name: '', // 会议名称
+        address: '', // 地点
+        username: '', // 用户名（登录类型为会议，需要传这个）
+        customerid: 0,
+        type: '管理员',
+        page: 1, // 会议id，必填
+        pageSize: 1000, // 搜索框内容
+        uid: 1
+      }).then((res) => {
+        const { list } = res.data
+        const meet = list.find((item) => item.id == meeting_id)
+        if (meet && meet.ad_status === '已关闭') {
+          console.log('广告功能已关闭')
+          this.isAdFeatureEnabled = false
+        } else {
+          this.isAdFeatureEnabled = true
+          // 获取广告数据
+          this.getAdvertisingData(meeting_id)
+        }
+      })
+    },
+    
+    // 获取广告图片数据
+    getAdvertisingData(meeting_id) {
+      getAdvertising({
+        page: 1, // 页码
+        pageSize: 20, // 每页记录数
+        type: '广告', // 类型：广告，banner
+        memo: '', // 备注
+        status: '已开启', // 已开启（前台写死），已关闭
+        meeting_id: meeting_id, // 会议id
+        uid: 1
+      })
+        .then((res) => {
+          const { list } = res.data
+          this.advertImages = list || []
+          this.advertImages.forEach((item) => {
+            item.pic_name = baseUrl + '/' + item.pic_name
+          })
+          if (this.advertImages.length > 0) {
+            this.autoplay = this.advertImages[0].stay_duration * 1000
+            // 启动不活动监控
+            this.resetTimer()
+          }
+          console.log('获取广告信息成功')
+        })
+        .catch((err) => {
+          console.log('获取广告信息失败', err)
+        })
+    },
+    
+    // 重置不活动计时器
+    resetTimer() {
+      // 清除已有的计时器
+      if (this.inactivityTimeout) {
+        for (let i = 0; i < this.inactivityTimeout.length; i++) {
+          clearTimeout(this.inactivityTimeout[i])
+        }
+      }
+      // 如果广告功能已启用且有广告内容，则重新开始监控
+      if (this.isAdFeatureEnabled && this.advertImages.length > 0) {
+        this.monitorInactivity()
+      }
+    },
+    
+    // 监控用户不活动
+    monitorInactivity() {
+      if (this.inactivityDelay > 0 && this.isAdFeatureEnabled && this.advertImages.length > 0) {
+        console.log('启动不活动监控，倒计时', this.inactivityDelay, '秒')
+        
+        // 清除已有的计时器
+        if (this.inactivityTimeout) {
+          for (let i = 0; i < this.inactivityTimeout.length; i++) {
+            clearTimeout(this.inactivityTimeout[i])
+          }
+        }
+        this.inactivityDelay = 5
+        // 设置新的计时器
+        let timer = setTimeout(() => {
+          console.log('用户不活动时间达到阈值，显示广告')
+          Toast.clear()
+          this.showAdvert = true
+        }, this.inactivityDelay * 1000)
+        
+        this.inactivityTimeout.push(timer)
+        console.log('不活动监控计时器已启动')
+      }
+    },
     updateDetailData () {
       this.itemData = this.$route.params.data
       getMeetingList({
@@ -126,6 +316,7 @@ export default {
       if (this.width > this.height && this.width >= 768) {
         // 电脑设备，限制最大宽度，允许内容自然延展
         this.width = Math.min(window.innerWidth, 1070)
+        this.widthBanner = this.height * (9 / 16)
         // this.height = this.height
         console.log('电脑设备: 允许内容自然延展', this.width, this.height)
       } else {
@@ -295,6 +486,7 @@ export default {
 
 </script>
 <style lang="scss" scoped>
+
 .container {
   display: flex;
   justify-content: center;
@@ -302,6 +494,48 @@ export default {
   // height: 100vh;
   width: 100vw;
   background-color: #fff;
+  position: relative;
+  .advert {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  .swipe {
+    width: 100%;
+    height: 100vh;
+    .van-swipe-item {
+      background-color: #fff;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      .advertisingImg {
+        position: relative;
+        height: 100%;
+      }
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+    }
+  }
+  .advertSwitch {
+        position: absolute;
+        top: 7px;
+        right: 7px;
+        // width: 43px;
+        // height: 14px;
+        padding: 12px 20px;
+        font-size: 12px;
+        line-height: 14px;
+        text-align: center;
+        color: #fff;
+        background-color: rgba(0, 0, 0, 0.8);
+        border-radius: 3px;
+        z-index: 9;
+      }
+}
 
   .detailsPage {
     width: 100%;
