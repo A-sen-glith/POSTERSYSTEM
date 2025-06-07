@@ -295,6 +295,7 @@ export default {
       this.resetZoomAndPan()
     },
     goBack () {
+      this.showAdvert = false
       this.$router.go(-1)
     },
     // 缩放相关方法

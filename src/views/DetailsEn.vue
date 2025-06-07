@@ -45,7 +45,6 @@
           <img style="width: 100%;" v-lazy="item.pic_name" alt="">
         </div>
         <div class="copyright">Copyright @ 2018-2025 TRI-THINK All Rights Reserved.</div>
-
       </div>
     </div>
   </div>
@@ -65,7 +64,6 @@ import {
 Vue.use(Lazyload)
 Vue.use(Toast)
 Vue.use(VueTouch, { name: 'v-touch' })
-
 const baseUrl = 'https://eposter.tri-think.cn/uploadFile'
 export default {
   name: 'details',
@@ -155,37 +153,6 @@ export default {
       this.$refs.zoomContainer.$el.addEventListener('wheel', this.handleWheel, { passive: false })
     }
   },
-  beforeDestroy () {
-    window.removeEventListener('resize', this.handResize)
-    
-    // 移除用户交互监听
-    window.removeEventListener('keydown', this.resetTimer)
-    window.removeEventListener('mousemove', this.resetTimer)
-    window.removeEventListener('touchstart', this.resetTimer)
-    window.removeEventListener('touchmove', this.resetTimer)
-    
-    // 移除滚动监听
-    const container = document.querySelector('.container')
-    if (container) {
-      container.removeEventListener('scroll', this.resetTimer)
-    }
-    
-    // 清除定时器
-    if (this.inactivityTimeout) {
-      for (let i = 0; i < this.inactivityTimeout.length; i++) {
-        clearTimeout(this.inactivityTimeout[i])
-      }
-    }
-    
-    // 移除双击缩放事件
-    if (this.$refs.zoomContainer && this.$refs.zoomContainer.$el) {
-      this.$refs.zoomContainer.$el.removeEventListener('dblclick', this.handleDoubleClick)
-    }
-    // 移除鼠标滚轮缩放
-    if (this.$refs.zoomContainer && this.$refs.zoomContainer.$el) {
-      this.$refs.zoomContainer.$el.removeEventListener('wheel', this.handleWheel, { passive: false })
-    }
-  },
   methods: {
     wxShare,
     // 获取广告数据
@@ -268,7 +235,7 @@ export default {
             clearTimeout(this.inactivityTimeout[i])
           }
         }
-        this.inactivityDelay = 5
+        
         // 设置新的计时器
         let timer = setTimeout(() => {
           console.log('用户不活动时间达到阈值，显示广告')
@@ -328,6 +295,7 @@ export default {
       this.resetZoomAndPan()
     },
     goBack () {
+      this.showAdvert = false
       this.$router.go(-1)
     },
     // 缩放相关方法
@@ -475,8 +443,27 @@ export default {
   },
   beforeDestroy () {
     window.removeEventListener('resize', this.handResize)
+    
+    // 移除不活动监控的事件监听器
+    window.removeEventListener('keydown', this.resetTimer)
+    window.removeEventListener('mousemove', this.resetTimer)
+    window.removeEventListener('touchstart', this.resetTimer)
+    window.removeEventListener('touchmove', this.resetTimer)
+    
+    // 移除滚动事件监听器
+    const container = document.querySelector('.container')
+    if (container) {
+      container.removeEventListener('scroll', this.resetTimer)
+    }
+    
+    // 清除所有定时器
+    if (this.inactivityTimeout) {
+      for (let i = 0; i < this.inactivityTimeout.length; i++) {
+        clearTimeout(this.inactivityTimeout[i])
+      }
+    }
 
-    // 移除事件监听器
+    // 移除缩放相关事件监听器
     if (this.$refs.zoomContainer && this.$refs.zoomContainer.$el) {
       this.$refs.zoomContainer.$el.removeEventListener('dblclick', this.handleDoubleClick)
       this.$refs.zoomContainer.$el.removeEventListener('wheel', this.handleWheel)
@@ -486,7 +473,6 @@ export default {
 
 </script>
 <style lang="scss" scoped>
-
 .container {
   display: flex;
   justify-content: center;
@@ -496,31 +482,28 @@ export default {
   background-color: #fff;
   position: relative;
   .advert {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  box-sizing: border-box;
-  .swipe {
-    width: 100%;
-    height: 100vh;
-    .van-swipe-item {
-      background-color: #fff;
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      .advertisingImg {
-        position: relative;
-        height: 100%;
-      }
-      img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 99;
+
+      .swipe {
         width: 100%;
         height: 100%;
-        object-fit: contain;
+        z-index: 8;
+
+        .advertisingImg {
+          img {
+            width: 100%;
+            height: 100%;
+            z-index: 99;
+          }
+        }
       }
-    }
-  }
-  .advertSwitch {
+
+      .advertSwitch {
         position: absolute;
         top: 7px;
         right: 7px;
@@ -535,7 +518,7 @@ export default {
         border-radius: 3px;
         z-index: 9;
       }
-}
+    }
 
   .detailsPage {
     width: 100%;
@@ -559,12 +542,12 @@ export default {
       height: 100%;
       width: 100%;
       overflow: auto;
-      /* 允许内容溢出时显示滚动条 */
+      /* 允许内容溢出时滚动 */
       box-sizing: border-box;
       position: relative;
       /* 添加相对定位 */
 
-      /* 隐藏滚动条 */
+      /* 隐藏滚动条但保留滚动功能 */
       &::-webkit-scrollbar {
         width: 0;
         height: 0;
