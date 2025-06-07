@@ -298,7 +298,18 @@ export default {
     },
     goBack () {
       this.showAdvert = false
-      this.$router.go(-1)
+      // 返回上一页并传递参数
+      if (this.$route.params.data) {
+        this.$router.push({
+          path: '/',
+          query: {
+            meeting_id: this.$route.params.data.meeting_id,
+            fromDetail: 'true'
+          }
+        })
+      } else {
+        this.$router.go(-1)
+      }
     },
     // 缩放相关方法
     onPinchStart () {
@@ -432,6 +443,7 @@ export default {
     // 监听路由参数变化
     '$route': {
       handler (to, from) {
+        this.showAdvert = false
         document.title = '壁报展示'
         if (to.name === 'details' && to.params.data) {
           console.log('路由参数变化，更新数据', to.params.data)

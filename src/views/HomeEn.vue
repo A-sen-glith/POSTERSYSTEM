@@ -166,7 +166,8 @@ export default {
       isShowBanner: true,
       widthBanner: 0,
       calculatedHeight: 0,
-      autoplay: 3000
+      autoplay: 3000,
+      isFromDetail: false // 标记是否是从详情页返回
     }
   },
 
@@ -205,7 +206,7 @@ export default {
         this.showAdvert = false
         this.meetShowAdvert = false
       } else {
-        this.showAdvert = true
+        this.showAdvert = this.$route.query.fromDetail && this.$route.query.fromDetail === 'true' ? false : true
         this.meetShowAdvert = false
         console.log('广告开启xxxx')
       }
@@ -455,6 +456,7 @@ export default {
   watch: {
     '$route': {
       handler (to, from) {
+        this.showAdvert = this.$route.query.fromDetail && this.$route.query.fromDetail === 'true' ? false : true
         document.title = 'eposter'
         getMeetingList({
           id: undefined,

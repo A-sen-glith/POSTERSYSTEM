@@ -166,7 +166,8 @@ export default {
       isShowBanner: true,
       widthBanner: 0,
       calculatedHeight: 0,
-      autoplay: 3000
+      autoplay: 3000,
+      isFromDetail: false // 标记是否是从详情页返回
     }
   },
 
@@ -182,6 +183,7 @@ export default {
     if (meeting_id) {
       this.meeting_id = Number(meeting_id)
     }
+    
     console.log(this.meeting_id, '会议id')
     getMeetingList({
       id: undefined,
@@ -205,7 +207,7 @@ export default {
         this.showAdvert = false
         this.meetShowAdvert = false
       } else {
-        this.showAdvert = true
+        this.showAdvert = this.$route.query.fromDetail && this.$route.query.fromDetail === 'true' ? false : true
         this.meetShowAdvert = false
         console.log('广告开启xxxx')
       }
@@ -332,18 +334,21 @@ export default {
       this.monitorInactivity() // 重新开始监控
     },
     monitorInactivity () {
+      // 如果是从详情页返回，并且这是首次监控，则不启动广告定时器
+      
       if (this.lockDuration > 0) {
-        console.log('wucccccccccccccccccc', this.lockDuration)
+        console.log('延时时间：', this.lockDuration)
 
+        // 清除已有计时器
         if (this.inactivityTimeout) {
           for (let i = 0; i < this.inactivityTimeout.length; i++) {
-          clearTimeout(this.inactivityTimeout[i])
-        }
+            clearTimeout(this.inactivityTimeout[i])
+          }
         }
         console.log('重置定时器', this.showAdvert)
 
         if (!this.meetShowAdvert) {
-          console.log('开启广告')
+          console.log('开启广告定时器')
           Toast.clear()
           let time = setTimeout(() => {
             this.showAdvert = true
@@ -455,6 +460,7 @@ export default {
   watch: {
     '$route': {
       handler (to, from) {
+        this.showAdvert = this.$route.query.fromDetail && this.$route.query.fromDetail === 'true' ? false : true
         document.title = '壁报展示'
         getMeetingList({
           id: undefined,
