@@ -220,6 +220,8 @@ export default {
       }
       // 如果广告功能已启用且有广告内容，则重新开始监控
       if (this.isAdFeatureEnabled && this.advertImages.length > 0) {
+        console.log('广告功能已启用且有广告内容，则重新开始监控', this.itemData.lockDuration)
+        this.inactivityDelay = this.itemData.lockDuration
         this.monitorInactivity()
       }
     },

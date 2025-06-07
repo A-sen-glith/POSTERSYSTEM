@@ -220,6 +220,7 @@ export default {
       }
       // 如果广告功能已启用且有广告内容，则重新开始监控
       if (this.isAdFeatureEnabled && this.advertImages.length > 0) {
+        this.inactivityDelay = this.itemData.lockDuration
         this.monitorInactivity()
       }
     },
@@ -235,7 +236,7 @@ export default {
             clearTimeout(this.inactivityTimeout[i])
           }
         }
-        
+
         // 设置新的计时器
         let timer = setTimeout(() => {
           console.log('用户不活动时间达到阈值，显示广告')

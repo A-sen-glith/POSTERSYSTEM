@@ -448,6 +448,7 @@ export default {
         console.log('item111', item.pic_list[0].pic_name)
         return Toast(this.$t('wallNewspaperTipsen'))
       }
+      item.lockDuration = this.lockDuration
       this.$router.push({ name: 'detailsEn', params: { data: item } })
     }
   },
