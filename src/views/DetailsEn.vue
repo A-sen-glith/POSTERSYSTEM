@@ -300,7 +300,7 @@ export default {
       // 返回上一页并传递参数
       if (this.$route.params.data) {
         this.$router.push({
-          path: '/',
+          path: '/En',
           query: {
             meeting_id: this.$route.params.data.meeting_id,
             fromDetail: 'true'
