@@ -206,7 +206,7 @@ export default {
         this.showAdvert = false
         this.meetShowAdvert = false
       } else {
-        this.showAdvert = this.$route.query.fromDetail && this.$route.query.fromDetail === 'true' ? false : true
+        this.showAdvert = !(this.$route.query.fromDetail && this.$route.query.fromDetail === 'true')
         this.meetShowAdvert = false
         console.log('广告开启xxxx')
       }
@@ -338,8 +338,8 @@ export default {
 
         if (this.inactivityTimeout) {
           for (let i = 0; i < this.inactivityTimeout.length; i++) {
-          clearTimeout(this.inactivityTimeout[i])
-        }
+            clearTimeout(this.inactivityTimeout[i])
+          }
         }
         console.log('重置定时器', this.showAdvert)
 
@@ -456,8 +456,12 @@ export default {
   watch: {
     '$route': {
       handler (to, from) {
-        this.showAdvert = this.$route.query.fromDetail && this.$route.query.fromDetail === 'true' ? false : true
+        this.showAdvert = !(this.$route.query.fromDetail && this.$route.query.fromDetail === 'true')
         document.title = 'eposter'
+        this.searchTxt = ''
+        this.categoryId1 = ''
+        this.categoryId2 = ''
+        this.searchClick1()
         getMeetingList({
           id: undefined,
           meeting_name: '', // 会议名称
@@ -485,6 +489,11 @@ export default {
       } else {
         this.resetTimer()
       }
+      // 无论广告弹窗是显示还是关闭，都刷新列表数据
+      this.searchTxt = ''
+      this.categoryId1 = ''
+      this.categoryId2 = ''
+      this.searchClick1()
     },
     width (val) {
       this.width = val

@@ -183,7 +183,7 @@ export default {
     if (meeting_id) {
       this.meeting_id = Number(meeting_id)
     }
-    
+
     console.log(this.meeting_id, '会议id')
     getMeetingList({
       id: undefined,
@@ -207,7 +207,7 @@ export default {
         this.showAdvert = false
         this.meetShowAdvert = false
       } else {
-        this.showAdvert = this.$route.query.fromDetail && this.$route.query.fromDetail === 'true' ? false : true
+        this.showAdvert = !(this.$route.query.fromDetail && this.$route.query.fromDetail === 'true')
         this.meetShowAdvert = false
         console.log('广告开启xxxx')
       }
@@ -335,7 +335,7 @@ export default {
     },
     monitorInactivity () {
       // 如果是从详情页返回，并且这是首次监控，则不启动广告定时器
-      
+
       if (this.lockDuration > 0) {
         console.log('延时时间：', this.lockDuration)
 
@@ -407,7 +407,7 @@ export default {
       console.log('handSelectChange2', val)
       this.categoryId2 = val
     },
-    searchClick1() {
+    searchClick1 () {
       this.currentPage = 1
       this.searchClick()
     },
@@ -460,8 +460,12 @@ export default {
   watch: {
     '$route': {
       handler (to, from) {
-        this.showAdvert = this.$route.query.fromDetail && this.$route.query.fromDetail === 'true' ? false : true
+        this.showAdvert = !(this.$route.query.fromDetail && this.$route.query.fromDetail === 'true')
         document.title = '壁报展示'
+        this.searchTxt = ''
+        this.categoryId1 = ''
+        this.categoryId2 = ''
+        this.searchClick1()
         getMeetingList({
           id: undefined,
           meeting_name: '', // 会议名称
@@ -489,6 +493,11 @@ export default {
       } else {
         this.resetTimer()
       }
+      // 无论广告弹窗是显示还是关闭，都刷新列表数据
+      this.searchTxt = ''
+      this.categoryId1 = ''
+      this.categoryId2 = ''
+      this.searchClick1()
     },
     width (val) {
       this.width = val
