@@ -456,6 +456,7 @@ export default {
       if (!item.pic_list[0].pic_name) {
         return Toast(this.$t('wallNewspaperTipsen'))
       }
+      item.lockDuration = this.lockDuration
       this.$router.push({
         name: 'detailsEn',
         query: {
