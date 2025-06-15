@@ -80,7 +80,7 @@ export default {
       widthBanner: window.innerWidth, // 广告宽度
       bannerHeight: 0,
       detailImages: [],
-      itemData: this.$route.params.data,
+      itemData: this.$route.query.data,
       // 广告相关数据
       advertImages: [],
       showAdvert: false,
@@ -112,7 +112,7 @@ export default {
   },
   created () {
     document.title = 'eposter'
-    console.log('获取banner信息成功', this.itemData, this.$route.params.data)
+    console.log('获取banner信息成功', this.itemData, this.$route.query.data)
     this.updateDetailData()
     
     // 获取会议信息和广告信息
@@ -220,6 +220,7 @@ export default {
       }
       // 如果广告功能已启用且有广告内容，则重新开始监控
       if (this.isAdFeatureEnabled && this.advertImages.length > 0) {
+        console.log('广告功能已启用且有广告内容，则重新开始监控', this.itemData.lockDuration)
         this.inactivityDelay = this.itemData.lockDuration
         this.monitorInactivity()
       }
@@ -236,7 +237,6 @@ export default {
             clearTimeout(this.inactivityTimeout[i])
           }
         }
-
         // 设置新的计时器
         let timer = setTimeout(() => {
           console.log('用户不活动时间达到阈值，显示广告')
@@ -249,7 +249,7 @@ export default {
       }
     },
     updateDetailData () {
-      this.itemData = this.$route.params.data
+      this.itemData = this.$route.query.data
       getMeetingList({
         id: undefined,
         meeting_name: '', // 会议名称
@@ -262,6 +262,7 @@ export default {
         uid: 1
       }).then((res) => {
         const { list } = res.data
+        console.log('获取会议信息成功', this.$route.query.data)
         const meet = list.find((item) => item.id == this.itemData.meeting_id)
         this.wxShare(meet, sessionStorage.getItem('pageHref'))
       })
@@ -297,7 +298,18 @@ export default {
     },
     goBack () {
       this.showAdvert = false
-      this.$router.go(-1)
+      // 返回上一页并传递参数
+      if (this.$route.query.data) {
+        this.$router.push({
+          path: '/',
+          query: {
+            meeting_id: this.$route.query.data.meeting_id,
+            fromDetail: 'true'
+          }
+        })
+      } else {
+        this.$router.go(-1)
+      }
     },
     // 缩放相关方法
     onPinchStart () {
@@ -431,9 +443,10 @@ export default {
     // 监听路由参数变化
     '$route': {
       handler (to, from) {
+        this.showAdvert = false
         document.title = 'eposter'
-        if (to.name === 'detailsEn' && to.params.data) {
-          console.log('路由参数变化，更新数据', to.params.data)
+        if (to.name === 'details' && to.query.data) {
+          console.log('路由参数变化，更新数据', to.query.data)
           this.updateDetailData()
           // 重置缩放和平移状态
           this.resetZoomAndPan()

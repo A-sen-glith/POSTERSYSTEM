@@ -473,12 +473,38 @@ export default {
   watch: {
     '$route': {
       handler (to, from) {
+        this.showAdvert = !(this.$route.query.fromDetail && this.$route.query.fromDetail === 'true')
         document.title = 'eposter'
+        this.searchTxt = ''
+        this.categoryId1 = ''
+        this.categoryId2 = ''
+        this.searchClick1()
+        getMeetingList({
+          id: undefined,
+          meeting_name: '', // 会议名称
+          address: '', // 地点
+          username: '', // 用户名（登录类型为会议，需要传这个）
+          customerid: 0,
+          type: '管理员',
+          page: 1, // 会议id，必填
+          pageSize: 1000, // 搜索框内容
+          uid: 1
+        }).then((res) => {
+          const { list } = res.data
+          console.log(list, '获取会议列表成功')
+          const meet = list.find((item) => item.id == this.meeting_id)
+          this.wxShare(meet, window.location.href)
+          sessionStorage.setItem('pageHref', window.location.href)
+        })
       },
       deep: true
     },
     showAdvert (val) {
       console.log('watch', val)
+      this.searchTxt = ''
+      this.categoryId1 = ''
+      this.categoryId2 = ''
+      this.searchClick1()
       if (!val) {
         this.monitorInactivity()
       } else {
