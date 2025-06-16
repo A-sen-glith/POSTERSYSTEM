@@ -164,7 +164,7 @@ export default {
       totalItems: '0',
       currentPage: 1,
       itemsPerPage: 20,
-      inactivityTimeout: null,
+      inactivityTimeout: [],
       lockDuration: '0',
       categoryList1: [],
       categoryList2: [],
@@ -225,7 +225,7 @@ export default {
         this.showAdvert = false
         this.meetShowAdvert = false
       } else {
-        this.showAdvert = true
+        this.showAdvert = !(this.$route.query.fromDetail && this.$route.query.fromDetail === 'true')
         this.meetShowAdvert = false
         console.log('广告开启xxxx')
       }
@@ -326,6 +326,16 @@ export default {
     }
     window.addEventListener('resize', this.handResize)
     window.addEventListener('keydown', this.resetTimer)
+    window.addEventListener('mousemove', this.resetTimer)
+    window.addEventListener('touchstart', this.resetTimer)
+    window.addEventListener('touchmove', this.resetTimer)
+    // 添加对.container元素滚动的监听
+    this.$nextTick(() => {
+      const container = document.querySelector('.container')
+      if (container) {
+        container.addEventListener('scroll', this.resetTimer)
+      }
+    })
     this.handResize()
   },
   methods: {
@@ -343,7 +353,9 @@ export default {
     resetTimer () {
       console.log(this.lockDuration, '重置定时器111')
       if (this.inactivityTimeout) {
-        clearTimeout(this.inactivityTimeout)
+        for (let i = 0; i < this.inactivityTimeout.length; i++) {
+          clearTimeout(this.inactivityTimeout[i])
+        }
       }
       this.monitorInactivity() // 重新开始监控
     },
@@ -352,16 +364,19 @@ export default {
         console.log('wucccccccccccccccccc', this.lockDuration)
 
         if (this.inactivityTimeout) {
-          clearTimeout(this.inactivityTimeout)
+          for (let i = 0; i < this.inactivityTimeout.length; i++) {
+            clearTimeout(this.inactivityTimeout[i])
+          }
         }
         console.log('重置定时器', this.showAdvert)
 
         if (!this.meetShowAdvert) {
           console.log('开启广告')
 
-          this.inactivityTimeout = setTimeout(() => {
+          const timer = setTimeout(() => {
             this.showAdvert = true
           }, this.lockDuration * 1000)
+          this.inactivityTimeout.push(timer)
           console.log('定时器开启', this.inactivityTimeout)
         }
       }
@@ -522,8 +537,18 @@ export default {
     window.removeEventListener('resize', this.handResize)
     // window.removeEventListener("mousemove", this.resetTimer);
     window.removeEventListener('keydown', this.resetTimer)
+    window.removeEventListener('mousemove', this.resetTimer)
+    window.removeEventListener('touchstart', this.resetTimer)
+    window.removeEventListener('touchmove', this.resetTimer)
+    // 移除滚动事件监听器
+    const container = document.querySelector('.container')
+    if (container) {
+      container.removeEventListener('scroll', this.resetTimer)
+    }
     if (this.inactivityTimeout) {
-      clearTimeout(this.inactivityTimeout)
+      for (let i = 0; i < this.inactivityTimeout.length; i++) {
+        clearTimeout(this.inactivityTimeout[i])
+      }
     }
   }
 }

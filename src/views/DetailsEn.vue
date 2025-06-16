@@ -29,7 +29,7 @@
         </div>
       </div>
     </div>
-    
+
     <!-- 正常内容区 -->
     <div class="detailsPage" :style="{ width: width + 'px', height: height + 'px' }" v-if="!showAdvert || advertImages.length === 0">
       <!-- <div class="backBtn" @click="goBack">
@@ -114,7 +114,7 @@ export default {
     document.title = 'eposter'
     console.log('获取banner信息成功', this.itemData, this.$route.query.data)
     this.updateDetailData()
-    
+
     // 获取会议信息和广告信息
     if (this.itemData && this.itemData.meeting_id) {
       this.fetchAdvertisingData(this.itemData.meeting_id)
@@ -125,14 +125,14 @@ export default {
     for (let i = 0; i < 10000; i++) {
       clearTimeout(i)
     }
-    
+
     window.addEventListener('resize', this.handResize)
     // 添加用户交互监听，用于重置不活动计时器
     window.addEventListener('keydown', this.resetTimer)
     window.addEventListener('mousemove', this.resetTimer)
     window.addEventListener('touchstart', this.resetTimer)
     window.addEventListener('touchmove', this.resetTimer)
-    
+
     // 添加对.container元素滚动的监听
     this.$nextTick(() => {
       const container = document.querySelector('.container')
@@ -140,7 +140,7 @@ export default {
         container.addEventListener('scroll', this.resetTimer)
       }
     })
-    
+
     this.handResize()
 
     // 添加双击缩放事件
@@ -156,7 +156,7 @@ export default {
   methods: {
     wxShare,
     // 获取广告数据
-    fetchAdvertisingData(meeting_id) {
+    fetchAdvertisingData (meeting_id) {
       getMeetingList({
         id: undefined,
         meeting_name: '', // 会议名称
@@ -180,9 +180,9 @@ export default {
         }
       })
     },
-    
+
     // 获取广告图片数据
-    getAdvertisingData(meeting_id) {
+    getAdvertisingData (meeting_id) {
       getAdvertising({
         page: 1, // 页码
         pageSize: 20, // 每页记录数
@@ -209,9 +209,9 @@ export default {
           console.log('获取广告信息失败', err)
         })
     },
-    
+
     // 重置不活动计时器
-    resetTimer() {
+    resetTimer () {
       // 清除已有的计时器
       if (this.inactivityTimeout) {
         for (let i = 0; i < this.inactivityTimeout.length; i++) {
@@ -225,12 +225,12 @@ export default {
         this.monitorInactivity()
       }
     },
-    
+
     // 监控用户不活动
-    monitorInactivity() {
+    monitorInactivity () {
       if (this.inactivityDelay > 0 && this.isAdFeatureEnabled && this.advertImages.length > 0) {
         console.log('启动不活动监控，倒计时', this.inactivityDelay, '秒')
-        
+
         // 清除已有的计时器
         if (this.inactivityTimeout) {
           for (let i = 0; i < this.inactivityTimeout.length; i++) {
@@ -243,7 +243,7 @@ export default {
           Toast.clear()
           this.showAdvert = true
         }, this.inactivityDelay * 1000)
-        
+
         this.inactivityTimeout.push(timer)
         console.log('不活动监控计时器已启动')
       }
@@ -301,7 +301,7 @@ export default {
       // 返回上一页并传递参数
       if (this.$route.query.data) {
         this.$router.push({
-          path: '/',
+          path: '/En',
           query: {
             meeting_id: this.$route.query.data.meeting_id,
             fromDetail: 'true'
@@ -457,19 +457,19 @@ export default {
   },
   beforeDestroy () {
     window.removeEventListener('resize', this.handResize)
-    
+
     // 移除不活动监控的事件监听器
     window.removeEventListener('keydown', this.resetTimer)
     window.removeEventListener('mousemove', this.resetTimer)
     window.removeEventListener('touchstart', this.resetTimer)
     window.removeEventListener('touchmove', this.resetTimer)
-    
+
     // 移除滚动事件监听器
     const container = document.querySelector('.container')
     if (container) {
       container.removeEventListener('scroll', this.resetTimer)
     }
-    
+
     // 清除所有定时器
     if (this.inactivityTimeout) {
       for (let i = 0; i < this.inactivityTimeout.length; i++) {

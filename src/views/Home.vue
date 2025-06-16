@@ -164,7 +164,7 @@ export default {
       totalItems: '0',
       currentPage: 1,
       itemsPerPage: 20,
-      inactivityTimeout: null,
+      inactivityTimeout: [],
       lockDuration: '0',
       categoryList1: [],
       categoryList2: [],
@@ -226,8 +226,8 @@ export default {
         this.showAdvert = false
         this.meetShowAdvert = false
       } else {
-        this.showAdvert = true
-        this.meetShowAdvert = true
+        this.showAdvert = !(this.$route.query.fromDetail && this.$route.query.fromDetail === 'true')
+        this.meetShowAdvert = false
         console.log('广告开启')
       }
       if (meet.banner_status === '已关闭') {
@@ -327,6 +327,16 @@ export default {
     }
     window.addEventListener('resize', this.handResize)
     window.addEventListener('keydown', this.resetTimer)
+    window.addEventListener('mousemove', this.resetTimer)
+    window.addEventListener('touchstart', this.resetTimer)
+    window.addEventListener('touchmove', this.resetTimer)
+    // 添加对.container元素滚动的监听
+    this.$nextTick(() => {
+      const container = document.querySelector('.container')
+      if (container) {
+        container.addEventListener('scroll', this.resetTimer)
+      }
+    })
     this.handResize()
   },
   methods: {
@@ -344,26 +354,35 @@ export default {
     resetTimer () {
       console.log(this.lockDuration, '重置定时器111')
       if (this.inactivityTimeout) {
-        clearTimeout(this.inactivityTimeout)
+        for (let i = 0; i < this.inactivityTimeout.length; i++) {
+          clearTimeout(this.inactivityTimeout[i])
+        }
       }
       this.monitorInactivity() // 重新开始监控
     },
     monitorInactivity () {
-      if (this.lockDuration > 0) {
-        console.log('监控用户不活动', this.lockDuration)
+      // 如果是从详情页返回，并且这是首次监控，则不启动广告定时器
 
+      if (this.lockDuration > 0) {
+        console.log('延时时间：', this.lockDuration)
+
+        // 清除已有计时器
         if (this.inactivityTimeout) {
-          clearTimeout(this.inactivityTimeout)
+          for (let i = 0; i < this.inactivityTimeout.length; i++) {
+            clearTimeout(this.inactivityTimeout[i])
+          }
         }
         console.log('重置定时器', this.showAdvert)
 
-        // 移除条件判断，确保定时器总是会被设置
-        console.log('开启广告监控')
-
-        this.inactivityTimeout = setTimeout(() => {
-          this.showAdvert = true
-        }, this.lockDuration * 1000)
-        console.log('定时器开启', this.inactivityTimeout)
+        if (!this.meetShowAdvert) {
+          console.log('开启广告定时器')
+          Toast.clear()
+          let time = setTimeout(() => {
+            this.showAdvert = true
+          }, this.lockDuration * 1000)
+          this.inactivityTimeout.push(time)
+          console.log('定时器开启', this.inactivityTimeout)
+        }
       }
     },
     handResize () {
@@ -520,10 +539,19 @@ export default {
   },
   beforeDestroy () {
     window.removeEventListener('resize', this.handResize)
-    // window.removeEventListener("mousemove", this.resetTimer);
     window.removeEventListener('keydown', this.resetTimer)
+    window.removeEventListener('mousemove', this.resetTimer)
+    window.removeEventListener('touchstart', this.resetTimer)
+    window.removeEventListener('touchmove', this.resetTimer)
+    // 移除对.container元素滚动的监听
+    const container = document.querySelector('.container')
+    if (container) {
+      container.removeEventListener('scroll', this.resetTimer)
+    }
     if (this.inactivityTimeout) {
-      clearTimeout(this.inactivityTimeout)
+      for (let i = 0; i < this.inactivityTimeout.length; i++) {
+        clearTimeout(this.inactivityTimeout[i])
+      }
     }
   }
 }
