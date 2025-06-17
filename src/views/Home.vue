@@ -14,7 +14,7 @@
           marginLeft: '50%',
           transform: 'translate(-50%)',
         }">
-          <Swipe type="mask" class="swipe" :autoplay="autoplay">
+          <Swipe type="mask" class="swipe"  :autoplay="autoplay">
             <SwipeItem class="advertisingImg" v-for="(item, index) in advertImages" :key="index">
               <a v-if="item.if_jump === 0" :href="item.jump_url" target="_blank" style="text-decoration: none; outline: none">
                 <img v-lazy="item.pic_name" />
@@ -130,13 +130,13 @@
 import Vue from 'vue'
 import { Swipe, SwipeItem, Lazyload, Toast } from 'vant'
 import Banner from 'components/Banner'
-import { wxShare } from '@/utils/index'
 import {
   getMeetingList,
   getAdvertising,
   getPosterList,
   getCategoryList
 } from '@/api/user'
+import { wxShare } from '@/utils/index'
 // const { mapActions } = createNamespacedHelpers('test') // u53efu4f7fu7528u8fd9u79cdu65b9u5f0fu76f4u63a5u83b7u5f97testu6a21u677f
 Vue.use(Lazyload)
 Vue.use(Toast)
@@ -217,18 +217,17 @@ export default {
       const { list } = res.data
       console.log(list, '获取会议列表成功')
       const meet = list.find((item) => item.id == this.meeting_id)
-
-      console.log(meet, 'xxxxxxxxx')
       this.meetObject = meet
       this.wxShare(this.meetObject, window.location.href)
+      console.log(meet, 'xxxxxxxxx')
       if (meet.ad_status === '已关闭') {
-        console.log('广告已关闭')
+        console.log('广告xxxx')
         this.showAdvert = false
         this.meetShowAdvert = false
       } else {
         this.showAdvert = !(this.$route.query.fromDetail && this.$route.query.fromDetail === 'true')
         this.meetShowAdvert = false
-        console.log('广告开启')
+        console.log('广告开启xxxx')
       }
       if (meet.banner_status === '已关闭') {
         this.isShowBanner = false
@@ -270,11 +269,11 @@ export default {
         })
         if (this.advertImages.length > 0) {
           this.autoplay = this.advertImages[0].stay_duration * 1000
-          this.showAdvert = true
-          setTimeout(() => {
-            console.log('广告结束')
-            this.showAdvert = false
-          }, list[0].stay_duration * 1000)
+          // this.showAdvert = true
+          // setTimeout(() => {
+          //   console.log('广告结束')
+          //   this.showAdvert = false
+          // }, list[0].stay_duration * 1000)
         }
         console.log(
           '获取广告信息成功',
@@ -361,12 +360,9 @@ export default {
       this.monitorInactivity() // 重新开始监控
     },
     monitorInactivity () {
-      // 如果是从详情页返回，并且这是首次监控，则不启动广告定时器
-
       if (this.lockDuration > 0) {
-        console.log('延时时间：', this.lockDuration)
+        console.log('wucccccccccccccccccc', this.lockDuration)
 
-        // 清除已有计时器
         if (this.inactivityTimeout) {
           for (let i = 0; i < this.inactivityTimeout.length; i++) {
             clearTimeout(this.inactivityTimeout[i])
@@ -375,12 +371,12 @@ export default {
         console.log('重置定时器', this.showAdvert)
 
         if (!this.meetShowAdvert) {
-          console.log('开启广告定时器')
-          Toast.clear()
-          let time = setTimeout(() => {
+          console.log('开启广告')
+
+          const timer = setTimeout(() => {
             this.showAdvert = true
           }, this.lockDuration * 1000)
-          this.inactivityTimeout.push(time)
+          this.inactivityTimeout.push(timer)
           console.log('定时器开启', this.inactivityTimeout)
         }
       }
@@ -539,11 +535,12 @@ export default {
   },
   beforeDestroy () {
     window.removeEventListener('resize', this.handResize)
+    // window.removeEventListener("mousemove", this.resetTimer);
     window.removeEventListener('keydown', this.resetTimer)
     window.removeEventListener('mousemove', this.resetTimer)
     window.removeEventListener('touchstart', this.resetTimer)
     window.removeEventListener('touchmove', this.resetTimer)
-    // 移除对.container元素滚动的监听
+    // 移除滚动事件监听器
     const container = document.querySelector('.container')
     if (container) {
       container.removeEventListener('scroll', this.resetTimer)
