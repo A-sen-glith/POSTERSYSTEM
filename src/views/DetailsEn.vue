@@ -307,8 +307,10 @@ export default {
             fromDetail: 'true'
           }
         })
+        window.location.reload()
       } else {
         this.$router.go(-1)
+        window.location.reload()
       }
     },
     // 缩放相关方法

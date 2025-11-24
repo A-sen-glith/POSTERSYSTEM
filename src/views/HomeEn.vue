@@ -822,7 +822,6 @@ html {
       flex-direction: column;
       width: 100%;
       height: 100%;
-      border: 1px solid #ccc;
 
       .searchContent {
         width: 100%;
