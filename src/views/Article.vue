@@ -29,66 +29,87 @@
   </div>
 </template>
 <script>
-import { Tabbar, TabbarItem } from "vant";
-import { fetchList } from "api/article";
-import dayjs from "dayjs";
-import FooterTabbar from "components/FooterTabbar";
-import VoPages from "vo-pages";
-import "vo-pages/lib/vo-pages.css";
+import { Tabbar, TabbarItem } from 'vant'
+import { fetchList } from 'api/article'
+import dayjs from 'dayjs'
+import FooterTabbar from 'components/FooterTabbar'
+import VoPages from 'vo-pages'
+import 'vo-pages/lib/vo-pages.css'
 export default {
-  name: "Article",
-  data() {
+  name: 'Article',
+  data () {
     return {
       active: 1,
       list: [],
       total: 0,
       page: 1,
-      loadedAll: false,
-    };
+      loadedAll: false
+    }
   },
-  mounted() {
-    this.getList();
+  mounted () {
+    // 重置页面缩放到正常大小
+    this.resetPageZoom()
+    this.getList()
   },
   components: {
     [Tabbar.name]: Tabbar,
     [TabbarItem.name]: TabbarItem,
     VoPages,
-    FooterTabbar,
+    FooterTabbar
   },
   methods: {
-    pullingDown() {
-      this.beforePullDown = false;
-      this.page = 1;
-      this.getList(false);
+    // 重置页面缩放到正常大小
+    resetPageZoom () {
+      // 1. 重置 viewport
+      const viewport = document.querySelector('meta[name="viewport"]')
+      if (viewport) {
+        viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no')
+      }
+
+      // 2. 重置 body 和 html 的缩放相关样式
+      document.documentElement.style.transform = 'scale(1)'
+      document.documentElement.style.transformOrigin = '0 0'
+      document.documentElement.style.zoom = '1'
+      document.body.style.transform = 'scale(1)'
+      document.body.style.transformOrigin = '0 0'
+      document.body.style.zoom = '1'
+
+      // 3. 滚动到顶部
+      window.scrollTo(0, 0)
     },
-    pullingUp() {
-      this.page += 1;
-      this.getList();
+    pullingDown () {
+      this.beforePullDown = false
+      this.page = 1
+      this.getList(false)
     },
-    async getList(loadMore = true) {
+    pullingUp () {
+      this.page += 1
+      this.getList()
+    },
+    async getList (loadMore = true) {
       const data = {
-        page: this.page,
-      };
-      const result = await fetchList(data);
-      this.total = result.data.total;
+        page: this.page
+      }
+      const result = await fetchList(data)
+      this.total = result.data.total
       const newList = result.data.items.map((article) => {
         article.displayTimeFormart = dayjs(article.display_time).format(
-          "YYYY-MM-DD"
-        );
-        return article;
-      });
+          'YYYY-MM-DD'
+        )
+        return article
+      })
       if (loadMore) {
-        this.list = this.list.concat(newList);
+        this.list = this.list.concat(newList)
       } else {
-        this.list = newList;
+        this.list = newList
       }
       if (!this.beforePullDown) {
-        this.beforePullDown = true;
+        this.beforePullDown = true
       }
-      this.loadedAll = this.total <= this.list.length;
-    },
-  },
-};
+      this.loadedAll = this.total <= this.list.length
+    }
+  }
+}
 </script>
 <style lang="scss" scoped>
 p {
@@ -98,7 +119,8 @@ p {
 .container {
   height: 100%;
   width: 100%;
-  background: #f5f5f5;
+  background: url('../assets/bigBG.png') no-repeat center center fixed;
+  background-size: cover;
   .list-wrap {
     height: calc(100% - 50px);
     overflow-y: hidden;

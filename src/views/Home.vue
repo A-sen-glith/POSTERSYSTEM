@@ -321,6 +321,8 @@ export default {
   },
 
   mounted () {
+    // 重置页面缩放到正常大小
+
     for (let i = 0; i < 10000; i++) {
       clearTimeout(i)
     }
@@ -472,17 +474,12 @@ export default {
         return Toast(this.$t('wallNewspaperTips'))
       }
       item.lockDuration = this.lockDuration
-      this.$router.push({
-        name: 'details',
-        query: {
-          data: item,
-          meeting_id: this.meeting_id,
-          poster_banner_status: this.poster_banner_status,
-          like_status: this.like_status,
-          watermark: this.watermark || '',
-          pageUrl: window.location.href
-        }
-      })
+      // 使用 window.open 在新标签页打开详情页
+      const queryData = encodeURIComponent(JSON.stringify(item))
+      // 获取基础路径（去除 # 及之后的内容）
+      const basePath = window.location.origin + window.location.pathname.replace(/\/$/, '')
+      const url = `${basePath}/#/details?data=${queryData}&meeting_id=${this.meeting_id}&poster_banner_status=${this.poster_banner_status}&like_status=${this.like_status}&watermark=${this.watermark || ''}&pageUrl=${encodeURIComponent(window.location.href)}`
+      window.open(url, '_blank')
     }
   },
   watch: {
@@ -689,7 +686,8 @@ html {
   align-items: center;
   // height: 100vh;
   width: 100vw;
-  background-color: #fff;
+  background: url('../assets/bigBG.png') no-repeat center center fixed;
+  background-size: cover;
 
   /* 隐藏滚动条但保留滚动功能 */
   &::-webkit-scrollbar {
@@ -775,7 +773,8 @@ html {
 
   .main {
     position: relative;
-    background-color: #fff;
+    background: url('../assets/bigBG.png') no-repeat center center fixed;
+    background-size: cover;
     height: 100%;
 
     .advert {

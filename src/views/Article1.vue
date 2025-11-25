@@ -46,6 +46,8 @@ export default {
     }
   },
   mounted () {
+    // 重置页面缩放到正常大小
+    this.resetPageZoom()
     this.getList()
   },
   components: {
@@ -55,6 +57,25 @@ export default {
     FooterTabbar
   },
   methods: {
+    // 重置页面缩放到正常大小
+    resetPageZoom () {
+      // 1. 重置 viewport
+      const viewport = document.querySelector('meta[name="viewport"]')
+      if (viewport) {
+        viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no')
+      }
+
+      // 2. 重置 body 和 html 的缩放相关样式
+      document.documentElement.style.transform = 'scale(1)'
+      document.documentElement.style.transformOrigin = '0 0'
+      document.documentElement.style.zoom = '1'
+      document.body.style.transform = 'scale(1)'
+      document.body.style.transformOrigin = '0 0'
+      document.body.style.zoom = '1'
+
+      // 3. 滚动到顶部
+      window.scrollTo(0, 0)
+    },
     pullingDown () {
       this.beforePullDown = false
       this.page = 1
@@ -95,7 +116,8 @@ p{
 .container{
   height: 100%;
   width: 100%;
-  background: #f5f5f5;
+  background: url('../assets/bigBG.png') no-repeat center center fixed;
+  background-size: cover;
   .list-wrap{
     height: calc(100% - 50px);
     overflow-y: hidden;

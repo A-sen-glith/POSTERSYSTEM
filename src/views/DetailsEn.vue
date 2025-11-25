@@ -74,13 +74,24 @@ export default {
     SwipeItem
   },
   data () {
+    // 解析 URL 参数中的 data（可能是 JSON 字符串）
+    let itemData = this.$route.query.data
+    if (typeof itemData === 'string') {
+      try {
+        itemData = JSON.parse(decodeURIComponent(itemData))
+      } catch (e) {
+        console.error('解析 data 参数失败', e)
+        itemData = null
+      }
+    }
+
     return {
       width: window.innerWidth,
       height: window.innerHeight,
       widthBanner: window.innerWidth, // 广告宽度
       bannerHeight: 0,
       detailImages: [],
-      itemData: this.$route.query.data,
+      itemData: itemData,
       // 广告相关数据
       advertImages: [],
       showAdvert: false,
@@ -249,7 +260,17 @@ export default {
       }
     },
     updateDetailData () {
-      this.itemData = this.$route.query.data
+      // 解析 URL 参数中的 data（可能是 JSON 字符串）
+      let itemData = this.$route.query.data
+      if (typeof itemData === 'string') {
+        try {
+          itemData = JSON.parse(decodeURIComponent(itemData))
+        } catch (e) {
+          console.error('解析 data 参数失败', e)
+          itemData = null
+        }
+      }
+      this.itemData = itemData
       getMeetingList({
         id: undefined,
         meeting_name: '', // 会议名称
@@ -263,7 +284,7 @@ export default {
       }).then((res) => {
         const { list } = res.data
         console.log('获取会议信息成功', this.$route.query.data)
-        const meet = list.find((item) => item.id == this.itemData.meeting_id)
+        const meet = list.find((item) => item.id === itemData.meeting_id)
         this.wxShare(meet, sessionStorage.getItem('pageHref'))
       })
       if (!this.itemData) {
@@ -298,20 +319,7 @@ export default {
     },
     goBack () {
       this.showAdvert = false
-      // 返回上一页并传递参数
-      if (this.$route.query.data) {
-        this.$router.push({
-          path: '/En',
-          query: {
-            meeting_id: this.$route.query.data.meeting_id,
-            fromDetail: 'true'
-          }
-        })
-        window.location.reload()
-      } else {
-        this.$router.go(-1)
-        window.location.reload()
-      }
+      window.close()
     },
     // 缩放相关方法
     onPinchStart () {
