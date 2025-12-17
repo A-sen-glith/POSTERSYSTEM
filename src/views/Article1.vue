@@ -116,7 +116,7 @@ p{
 .container{
   height: 100%;
   width: 100%;
-  background: url('../assets/bigBG.png') no-repeat center center fixed;
+  background: url('../assets/bigBG.jpg') no-repeat center center fixed;
   background-size: cover;
   .list-wrap{
     height: calc(100% - 50px);

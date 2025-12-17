@@ -12,7 +12,7 @@ export default {
   tips: '提示：页面可滑动放大',
   wallNewspaperTips: '壁报暂未上传，请稍后重试',
   like: '点赞',
-  noData: '暂无数据',
+  noData: '请访问正确的链接',
   type1en: 'Category',
   type2en: 'Sub-category',
   pleaseSelecten: 'Please Select',
