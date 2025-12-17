@@ -25,6 +25,6 @@ export default {
   backen: 'Back',
   tipsen: 'Tip: The page can be enlarged by sliding it',
   wallNewspaperTipsen: 'The poster has not been uploaded yet. Please try again later',
-  noDataen: 'No data',
-  likeen: 'like'
+  noDataen: 'Please visit the correct link',
+  likeen: 'Like'
 }
