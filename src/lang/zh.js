@@ -26,5 +26,7 @@ export default {
   tipsen: 'Tip: The page can be enlarged by sliding it',
   wallNewspaperTipsen: 'The poster has not been uploaded yet. Please try again later',
   noDataen: 'No data',
-  likeen: 'like'
+  likeen: 'like',
+  noID: '请访问正确的链接',
+  noIDen: 'Please visit the correct link'
 }

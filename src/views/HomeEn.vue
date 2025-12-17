@@ -1,5 +1,8 @@
 <template>
   <div class="container">
+    <div class="overlay" v-if="!meeting_id">
+      <div>{{ $t('noIDen') }}</div>
+    </div>
     <div class="main" :style="{ width: width + 'px' }">
       <div style="
           position: fixed;
@@ -768,6 +771,28 @@ html {
       background: #47526e;
       border-color: #47526e;
       color: #c2e4ff;
+    }
+  }
+
+  .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 99999;
+    background: url('~@/assets/zhezhao.jpg') no-repeat center center;
+    background-size: 100% 100%;
+    div {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 0.2rem;
+      text-align: center;
+      line-height: 1.5;
     }
   }
 
