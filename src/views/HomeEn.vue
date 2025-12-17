@@ -110,7 +110,7 @@
             <div class="no-data" v-else>
               <div class="no-data-content">
                 <i class="el-icon-warning-outline"></i>
-                <p>{{ $t('noDataen') || '请访问正确的链接' }}</p>
+                <p>{{ $t('noDataen') || '暂无数据' }}</p>
               </div>
             </div>
             <div class="current" v-show="totalItems != 0 && !isShowPage">
@@ -686,7 +686,7 @@ html {
   align-items: center;
   // height: 100vh;
   width: 100vw;
-  background: url('../assets/bigBG.jpg') no-repeat center center fixed;
+  background: url('../assets/bigBG.png') no-repeat center center fixed;
   background-size: cover;
 
   /* 隐藏滚动条但保留滚动功能 */
@@ -773,7 +773,7 @@ html {
 
   .main {
     position: relative;
-    background: url('../assets/bigBG.jpg') no-repeat center center fixed;
+    background: url('../assets/bigBG.png') no-repeat center center fixed;
     background-size: cover;
     height: 100%;
 
@@ -825,7 +825,7 @@ html {
       .searchContent {
         width: 100%;
         flex-grow: 1;
-        // background: url("../assets/bigBG.jpg") no-repeat center center;
+        background: url("../assets/bigBG.png") no-repeat center center;
         background-size: 100% 100%;
         // height: 80%;
 
@@ -984,10 +984,9 @@ html {
               display: flex;
               flex-direction: row;
               align-items: center;
-              font-size: 35px;
-              font-weight: bolder;
+
               i {
-                font-size: 35px;
+                font-size: 24px;
                 margin-right: 10px;
               }
             }
