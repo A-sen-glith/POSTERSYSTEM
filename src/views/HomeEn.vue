@@ -81,7 +81,7 @@
                 :total="totalItems">
               </Pagination>
             </div>
-            <div class="contentList" v-if="searchList && searchList.length > 0">
+            <div class="contentList" v-if="searchList">
               <div class="contentListItems" v-for="item in searchList" :key="item.id" @click="goDetail(item)">
                 <div class="serialNumber public">
                   <div>{{ $t("noen") }}：</div>
@@ -97,7 +97,6 @@
                 </div>
               </div>
             </div>
-            <div v-else class="no-data">{{ $t("noDataen") }}</div>
             <div class="current" v-show="totalItems != 0 && !isShowPage">
               <Pagination small layout="prev, pager, next" :current-page.sync="currentPage"
                 @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-size="8"
@@ -528,19 +527,14 @@ export default {
 html {
   font-size: 6px;
 }
-.no-data {
-  text-align: center;
-  color: #fff;
-  font-size: 35px;
-  margin-top: 20px;
-}
+
 .container {
   display: flex;
   justify-content: center;
   align-items: center;
   // height: 100vh;
   width: 100vw;
-  // background-color: #fff;
+  background-color: #fff;
 
   /* 隐藏滚动条但保留滚动功能 */
   &::-webkit-scrollbar {
@@ -624,8 +618,7 @@ html {
 
   .main {
     position: relative;
-    background: url('../assets/bigBG.jpg') no-repeat center center;
-    background-size: cover;
+    background-color: #fff;
     height: 100%;
 
     .advert {
@@ -670,7 +663,7 @@ html {
     .content {
       width: 100%;
       // height: 100%;
-      // border: 1px solid #ccc;
+      border: 1px solid #ccc;
 
       .searchContent {
         width: 100%;
