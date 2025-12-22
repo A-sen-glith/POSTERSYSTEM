@@ -1,5 +1,8 @@
 <template>
   <div class="container">
+    <div class="overlay" v-if="!meeting_id">
+      <div>{{ $t('noIDen') }}</div>
+    </div>
     <div class="main" :style="{ width: width + 'px' }">
       <div style="
           position: fixed;
@@ -614,6 +617,28 @@ html {
   ::v-deep .el-input__inner {
     height: 0.58667rem;
     font-size: 10px;
+  }
+
+  .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 99999;
+    background: url('~@/assets/bigBJ.jpg') no-repeat center center;
+    background-size: 100% 100%;
+    div {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 35px;
+      text-align: center;
+      line-height: 1.5;
+    }
   }
 
   .main {
