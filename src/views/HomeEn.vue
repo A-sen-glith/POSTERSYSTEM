@@ -1,7 +1,7 @@
 <template>
   <div class="container">
-    <div class="overlay" v-if="!meeting_id">
-      <div>{{ $t('noIDen') }}</div>
+    <div class="overlay" v-if="!meeting_id" >
+      <div class="overlay-bj" :style="{ width: widthBanner + 'px' }">{{ $t('noIDen') }}</div>
     </div>
     <div class="main" :style="{ width: width + 'px' }">
       <div style="
@@ -626,8 +626,18 @@ html {
     width: 100vw;
     height: 100vh;
     z-index: 99999;
-    background: url('~@/assets/bigBJ.jpg') no-repeat center center;
-    background-size: 100% 100%;
+    background-color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .overlay-bj {
+      background: url('~@/assets/bigBJ.jpg') no-repeat center center;
+      background-size: 100% 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
     div {
       width: 100%;
       height: 100%;
@@ -638,6 +648,7 @@ html {
       font-size: 35px;
       text-align: center;
       line-height: 1.5;
+      letter-spacing: 8px;
     }
   }
 
